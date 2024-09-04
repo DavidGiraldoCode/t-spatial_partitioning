@@ -32,7 +32,10 @@ private:
             m_index = other.m_index;
             m_position = other.m_position;
         }
-        ~Voxel();
+        ~Voxel()
+        {
+            
+        }
     };
     std::vector<Voxel> voxels;
     size_t m_nx, m_ny, m_nz; //number of vertices

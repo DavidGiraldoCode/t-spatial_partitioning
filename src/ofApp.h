@@ -36,7 +36,7 @@ class ofApp : public ofBaseApp{
         ofMaterial roadMaterial;
         //configurations for the test
         int voxelGridResolution;
-        UniformGrid uniformGrid;
+        UniformGrid uniformGrid = UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
         /*GUI*/
         ofParameter<float> guiFramesPerSecond;
         ofParameter<int> guiVoxelResolution;
