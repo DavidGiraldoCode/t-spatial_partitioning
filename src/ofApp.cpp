@@ -10,6 +10,11 @@ void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
     voxelGridResolution = 1;
     Messenger myMessenger = Messenger();
+    
+    std::cout << "Building the grid" << '\n';
+    uniformGrid = UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
+    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    
     ofEnableSmoothing();
     
     light.setup();

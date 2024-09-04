@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Messenger.hpp"
+#include "UniformGrid.hpp"
 #include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
@@ -35,7 +36,7 @@ class ofApp : public ofBaseApp{
         ofMaterial roadMaterial;
         //configurations for the test
         int voxelGridResolution;
-    
+        UniformGrid uniformGrid;
         /*GUI*/
         ofParameter<float> guiFramesPerSecond;
         ofParameter<int> guiVoxelResolution;
