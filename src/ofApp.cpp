@@ -15,6 +15,46 @@ void ofApp::setup(){
     //uniformGrid = 
     std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
     
+    /* Custom Voxel*/
+    mesh.addVertex(ofVec3f(0,0,0));
+    mesh.addColor(ofColor::red);
+    mesh.addVertex(ofVec3f(100,0,0));
+    mesh.addColor(ofColor::red);
+    mesh.setMode(OF_PRIMITIVE_LINES);
+    mesh2 = mesh;
+    
+    ofVec3f pointA = ofVec3f(0,0,0);
+    ofVec3f pointB = ofVec3f(100,0,0);
+    ofVec3f pointC = ofVec3f(0,100,0);
+    ofVec3f pointD = ofVec3f(100,100,0);
+    
+    ofVec3f pointE = ofVec3f(0,0,100);
+    ofVec3f pointF = ofVec3f(100,0,100);
+    ofVec3f pointG = ofVec3f(0,100,100);
+    ofVec3f pointI = ofVec3f(100,100,100);
+    
+    polyline.lineTo(pointA.x,pointA.y,pointA.z);
+    polyline.lineTo(pointB.x,pointB.y,pointB.z);
+    polyline.lineTo(pointD.x,pointD.y,pointD.z);
+    polyline.lineTo(pointC.x,pointC.y,pointC.z);
+    polyline.lineTo(pointA.x,pointA.y,pointA.z);
+    
+    polyline.lineTo(pointE.x,pointE.y,pointE.z);
+    polyline.lineTo(pointF.x,pointF.y,pointF.z);
+    polyline.lineTo(pointI.x,pointI.y,pointI.z);
+    polyline.lineTo(pointG.x,pointG.y,pointG.z);
+    polyline.lineTo(pointE.x,pointE.y,pointE.z);
+    
+    polyline.close();
+    //ofVoxel
+    ofVoxel.set(100);
+    ofVoxel.setGlobalPosition(ofVoxel.getHeight()/2, ofVoxel.getHeight()/2, -ofVoxel.getHeight()/2);
+    ofVoxel.setResolution(1);
+    
+    ofVoxelB.set(100);
+    ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
+    ofVoxelB.setResolution(1);
+    
     ofEnableSmoothing();
     
     light.setup();
@@ -34,11 +74,11 @@ void ofApp::setup(){
     box.setResolution(1);
     
 
-    ofFloatColor roadColor(0.7, 0.7);
-    roadMaterial.setAmbientColor(roadColor);
-    roadColor.a = 1.0;
+    ofFloatColor roadColor(1,0,0,0.2);
     roadMaterial.setDiffuseColor(roadColor);
-    roadMaterial.setShininess(0.01);
+    //roadColor.a = 1.0;
+    //roadMaterial.setDiffuseColor(roadColor);
+    //roadMaterial.setShininess(0.01);
 
     //Set our camera up in a nice location to view our awesome car
     //-965, 586, -1084
@@ -65,6 +105,9 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    /*Custom Voxel*/
+    //mesh.getVertices()[1].x+=0.1;
+    //mesh2.getVertices()[1].x=mesh.getVertices()[1].x + 0.1;
     
 }
 
@@ -81,14 +124,23 @@ void ofApp::draw(){
     
         roadMaterial.begin();
         //plane.draw();
+        //ofVoxel.draw();
         roadMaterial.end();
     
         plane.drawAxes(500);
         ofSetColor(50, 50, 50);
         box.drawWireframe();
-        //ofSetColor(255, 100, 100);
+    
+        
+        ofSetColor(255, 100, 100, 50);
+        ofVoxel.drawFaces();
+        ofVoxelB.drawFaces();
         //box.drawNormals(10);
     
+        /*Custom Voxel*/
+        //mesh.draw();
+        //mesh2.draw(); // fast!!
+        //polyline.draw();
     
     ofDisableDepthTest();
     cam.end();
