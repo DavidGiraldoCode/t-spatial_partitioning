@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Messenger.hpp"
+#include "UniformGrid.hpp"
 #include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
@@ -35,8 +36,17 @@ class ofApp : public ofBaseApp{
         ofMaterial roadMaterial;
         //configurations for the test
         int voxelGridResolution;
+        UniformGrid uniformGrid = UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
     
+        /* Custom Voxel*/
+        ofVboMesh mesh;
+        ofVboMesh mesh2;
+        ofPolyline polyline;
+    
+        ofBoxPrimitive ofVoxel;
+        ofBoxPrimitive ofVoxelB;
         /*GUI*/
+    
         ofParameter<float> guiFramesPerSecond;
         ofParameter<int> guiVoxelResolution;
         ofParameter<ofColor> color;
