@@ -4,6 +4,7 @@
 #include "Messenger.hpp"
 #include "UniformGrid.hpp"
 #include "ofxGui.h"
+#include "Boid.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -45,6 +46,13 @@ class ofApp : public ofBaseApp{
     
         ofBoxPrimitive ofVoxel;
         ofBoxPrimitive ofVoxelB;
+    
+        /*Boid behaviour*/
+        std::vector<Boid> boids = {};
+        std::vector<ofSpherePrimitive> boidSpheres = {};
+        //Boid boid;
+        //ofSpherePrimitive boidSphere;
+        
         /*GUI*/
     
         ofParameter<float> guiFramesPerSecond;

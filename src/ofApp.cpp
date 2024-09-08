@@ -4,7 +4,7 @@
 /*
  In OpenGL Y is Up
  */
-
+const int BOIDS_COUNT = 100;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
@@ -55,6 +55,9 @@ void ofApp::setup(){
     ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
     ofVoxelB.setResolution(1);
     
+    
+
+    
     ofEnableSmoothing();
     
     light.setup();
@@ -89,6 +92,16 @@ void ofApp::setup(){
     //cam.setNearClip(0);
     cam.setFarClip(10000);
     
+    /*Boid*/
+    //boid = Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z);
+   // boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
+    
+    for(size_t i = 0; i < BOIDS_COUNT; i++)
+    {
+        boids.push_back(Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z));
+        boidSpheres.push_back(ofSpherePrimitive());
+    }
+    
     /*GUI*/
 
     gui.setup("Test settings"); // most of the time you don't need a name but don't forget to call setup
@@ -108,6 +121,16 @@ void ofApp::update(){
     /*Custom Voxel*/
     //mesh.getVertices()[1].x+=0.1;
     //mesh2.getVertices()[1].x=mesh.getVertices()[1].x + 0.1;
+    //boid.move();
+    //boid.applyBoundingForce(ofVec3f(box.getPosition()), box.getWidth(), box.getHeight(), box.getDepth());
+    //boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
+    
+    for(size_t i = 0; i < BOIDS_COUNT; i++)
+    {
+        boids[i].applyBoundingForce(ofVec3f(box.getPosition()), box.getWidth(), box.getHeight(), box.getDepth());
+        boids[i].move();
+        boidSpheres[i].setGlobalPosition(boids[i].getPosition().x, boids[i].getPosition().y, boids[i].getPosition().z);
+    }
     
 }
 
@@ -121,10 +144,16 @@ void ofApp::draw(){
     
     ofEnableDepthTest();
     cam.begin();
-    
+        
         roadMaterial.begin();
         //plane.draw();
         //ofVoxel.draw();
+        
+        //boidSphere.draw();
+        for(size_t i = 0; i < BOIDS_COUNT; i++)
+        {
+            boidSpheres[i].draw();
+        }
         roadMaterial.end();
     
         plane.drawAxes(500);
