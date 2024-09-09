@@ -16,6 +16,8 @@ Boid::Boid(float x, float y, float z)
     
     speedConstrain = (ofVec3f(MAX_SPEED,MAX_SPEED,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
     wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+    
+    wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
 }
 
 Boid::~Boid()
@@ -28,26 +30,25 @@ void Boid::move()
     dampingVelocity();
     //std::cout <<  ofGetElapsedTimef() << '\n';
     //std::cout <<  ofGetElapsedTimeMillis() << '\n';
-    acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
+    //acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
     
     
-    if(wanderCounter >= 200)
+    if(wanderCounter >= wanderChange)
     {
         wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+        wanderDirection = wanderDirection.normalize() * velocity.length();
         wanderCounter = 0;
     }
     
     wanderCounter++;
-       
-    
-    wanderDirection = wanderDirection.normalize() * velocity.length();
     
     //std::cout << wanderCounter <<"wanderCounter updated\n";
     //std::cout << wanderDirection <<"wanderDirection updated\n";
     
-    acceleration = acceleration + wanderDirection + speedConstrain + boundingForce;//.normalize();
+    //acceleration = acceleration + wanderDirection + speedConstrain + boundingForce;//.normalize();
     
-    velocity = velocity + acceleration * 0.01f;
+    //velocity = velocity + acceleration * 0.01f;
+    velocity = velocity + wanderDirection + boundingForce;// * 0.001f;
     
     position = position + velocity;
     
@@ -80,19 +81,27 @@ void Boid::applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, f
     boundingForce.y + (height/2) >= position.y &&
     boundingForce.z + (depth/2)  >= position.z;
     
-    if(isWithinBoundaries)
-        boundingForce = ofVec3f(0.0f,0.0f,0.0f);
-    else
-        boundingForce = (boundingAreaCenter - position);
+    boundingForce = (boundingAreaCenter - position);
     
-    //boundingForce *= 0.25f; //scale factor, so the force is not too strong
+    if(isWithinBoundaries)
+        boundingForce *= 0.000001f;
+    else
+        boundingForce *= 0.001f;
+    
+//    if(isWithinBoundaries)
+//        boundingForce = ofVec3f(0.0f,0.0f,0.0f);
+//    else
+//        boundingForce = (boundingAreaCenter - position);
+    
+    //boundingForce *= 0.05f; //scale factor, so the force is not too strong
+    //boundingForce = boundingForce.normalize() * MAX_SPEED; //scale factor, so the force is not too strong
 
     //std::cout << boundingForce <<"Bounding force updated\n";
 }
 
 void Boid::dampingVelocity()
 {
-    speedConstrain = (ofVec3f(MAX_SPEED,MAX_SPEED,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
+    speedConstrain = (ofVec3f(0.0f,0.0f,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
 }
 /*
  std::cout

@@ -4,7 +4,7 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 100;
+const int BOIDS_COUNT = 1000;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
@@ -100,6 +100,7 @@ void ofApp::setup(){
     {
         boids.push_back(Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z));
         boidSpheres.push_back(ofSpherePrimitive());
+        boidSpheres[i].set(10, 16);
     }
     
     /*GUI*/
