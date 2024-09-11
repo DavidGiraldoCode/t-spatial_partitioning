@@ -8,12 +8,8 @@ const int BOIDS_COUNT = 1000;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
-    voxelGridResolution = 1;
-    Messenger myMessenger = Messenger();
     
-    std::cout << "Building the grid" << '\n';
-    //uniformGrid = 
-    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    Messenger myMessenger = Messenger();
     
     /* Custom Voxel*/
     mesh.addVertex(ofVec3f(0,0,0));
@@ -108,6 +104,7 @@ void ofApp::setup(){
     gui.setup("Test settings"); // most of the time you don't need a name but don't forget to call setup
     gui.add(guiFramesPerSecond.set( "FPS", 1));
     gui.add(guiVoxelResolution.set( "Voxels", 1, 1, 100));
+    
     gui.add(guiVoxelVisibility.set("Voxel visibility", true));
     //gui.add(center.set("center",glm::vec2(ofGetWidth()*.5,ofGetHeight()*.5),glm::vec2(0,0),glm::vec2(ofGetWidth(),ofGetHeight())));
     //gui.add(color.set("color",ofColor(100,100,140),ofColor(0,0),ofColor(255,255)));
@@ -115,6 +112,17 @@ void ofApp::setup(){
     //gui.add(twoCircles.setup("twoCircles"));
     //gui.add(ringButton.setup("ring"));
     //gui.add(screenSize.set("screenSize", ""));
+    gui.add(guiGridWidth.set( "Grid Width", 1, 1, 100));
+    gui.add(guiGridHeight.set( "Grid Height", 1, 1, 100));
+    gui.add(guiGridDepth.set( "Grid Depth", 1, 1, 100));
+
+    // 
+    //--------   Uniform grid
+    //
+    voxelGridResolution = 1;
+    
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
+    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
 }
 
 //--------------------------------------------------------------
@@ -151,10 +159,10 @@ void ofApp::draw(){
         //ofVoxel.draw();
         
         //boidSphere.draw();
-        for(size_t i = 0; i < BOIDS_COUNT; i++)
-        {
-            boidSpheres[i].draw();
-        }
+//        for(size_t i = 0; i < BOIDS_COUNT; i++)
+//        {
+//            boidSpheres[i].draw();
+//        }
         roadMaterial.end();
     
         plane.drawAxes(500);
@@ -163,29 +171,36 @@ void ofApp::draw(){
     
         
         ofSetColor(255, 100, 100, 50);
-        ofVoxel.drawFaces();
-        ofVoxelB.drawFaces();
+        //ofVoxel.drawFaces();
+        
         //box.drawNormals(10);
     
         /*Custom Voxel*/
         //mesh.draw();
         //mesh2.draw(); // fast!!
         //polyline.draw();
+    //
+    //--------   Uniform grid
+    //
+        for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
+        {
+            ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
+            
+            ofVoxelB.setGlobalPosition(pos.x, pos.y, pos.z);
+            ofVoxelB.drawFaces();
+        }
     
     ofDisableDepthTest();
     cam.end();
     
-    
-    
-//    stringstream ss;
-//    ss << "Spatial partitioning: " << '\n' << '\n';
-//    ss << "FPS: " << ofToString(ofGetFrameRate(),0) << '\n' ;
-//    ss << "Voxel Grid Resolution: " << voxelGridResolution << '\n' ;
-//    ofDrawBitmapStringHighlight(ss.str().c_str(), 20, 20);
-    
     /*GUI*/
     guiFramesPerSecond.set(ofGetFrameRate());
     gui.draw();
+    
+    //
+    //--------   Uniform grid
+    //
+    
     
 }
 

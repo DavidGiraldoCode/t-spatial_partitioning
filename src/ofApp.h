@@ -35,9 +35,6 @@ class ofApp : public ofBaseApp{
         ofPlanePrimitive plane;
         
         ofMaterial roadMaterial;
-        //configurations for the test
-        int voxelGridResolution;
-        UniformGrid uniformGrid = UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
     
         /* Custom Voxel*/
         ofVboMesh mesh;
@@ -57,6 +54,11 @@ class ofApp : public ofBaseApp{
     
         ofParameter<float> guiFramesPerSecond;
         ofParameter<int> guiVoxelResolution;
+    
+        ofParameter<unsigned> guiGridWidth;
+        ofParameter<unsigned> guiGridHeight;
+        ofParameter<unsigned> guiGridDepth;
+    
         ofParameter<ofColor> color;
         ofParameter<glm::vec2> center;
         ofParameter<int> circleResolution;
@@ -66,4 +68,11 @@ class ofApp : public ofBaseApp{
         ofParameter<string> screenSize;
     
         ofxPanel gui;
+    
+        // Uniform spatial partitioning
+        //configurations for the test
+        int voxelGridResolution;
+        unsigned gridWidth = 8, gridHeight = 8, gridDepth = 8;
+        //UniformGrid uniformGrid; //= UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
+        UniformGrid uniformGrid;// = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
 };
