@@ -16,6 +16,7 @@
 		"8F2B853E-618F-4508-BADA-CB4E3FDDAB61" /* ofxInputField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "9DE345E9-FC0B-4372-B320-0691343B7367" /* ofxInputField.cpp */; };
 		9616BD362C88EEE1006DC1FC /* UniformGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9616BD342C88EEE1006DC1FC /* UniformGrid.cpp */; };
 		9628417C2C8DE325000FE64C /* Boid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9628417A2C8DE325000FE64C /* Boid.cpp */; };
+		969204B32C916EDD000BC71D /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969204B12C916EDD000BC71D /* Scene.cpp */; };
 		"9ECDADA9-0166-4BF9-B228-F78F820B4B9D" /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "E492D914-70C5-4BD4-B5A1-78AE8700DA62" /* ofxGuiGroup.cpp */; };
 		"A9A81929-7663-4A31-827A-8695AF92F1AD" /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "B1D38177-6C5E-4482-844B-D89B0FA91A22" /* ofxSliderGroup.cpp */; };
 		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
@@ -72,6 +73,8 @@
 		9616BD352C88EEE1006DC1FC /* UniformGrid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UniformGrid.hpp; sourceTree = "<group>"; };
 		9628417A2C8DE325000FE64C /* Boid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Boid.cpp; sourceTree = "<group>"; };
 		9628417B2C8DE325000FE64C /* Boid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Boid.hpp; sourceTree = "<group>"; };
+		969204B12C916EDD000BC71D /* Scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
+		969204B22C916EDD000BC71D /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
 		"9DE345E9-FC0B-4372-B320-0691343B7367" /* ofxInputField.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxInputField.cpp; path = ../../../addons/ofxGui/src/ofxInputField.cpp; sourceTree = SOURCE_ROOT; };
 		"AB9A5418-1BA6-4659-8CCF-A36DCACBDC0F" /* ofxInputField.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxInputField.h; path = ../../../addons/ofxGui/src/ofxInputField.h; sourceTree = SOURCE_ROOT; };
 		"B1D38177-6C5E-4482-844B-D89B0FA91A22" /* ofxSliderGroup.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxSliderGroup.cpp; path = ../../../addons/ofxGui/src/ofxSliderGroup.cpp; sourceTree = SOURCE_ROOT; };
@@ -171,6 +174,8 @@
 				9616BD352C88EEE1006DC1FC /* UniformGrid.hpp */,
 				9628417A2C8DE325000FE64C /* Boid.cpp */,
 				9628417B2C8DE325000FE64C /* Boid.hpp */,
+				969204B12C916EDD000BC71D /* Scene.cpp */,
+				969204B22C916EDD000BC71D /* Scene.hpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -270,6 +275,7 @@
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				"5569DE7A-82D8-4688-AFC7-1521A999B206" /* Messenger.cpp in Sources */,
+				969204B32C916EDD000BC71D /* Scene.cpp in Sources */,
 				"03B26CDE-09A5-4E49-93A2-6A973234DB9C" /* myClass.cpp in Sources */,
 				"F90707E4-E84A-4E9F-AC9C-CDB49719F2D8" /* ofxBaseGui.cpp in Sources */,
 				9616BD362C88EEE1006DC1FC /* UniformGrid.cpp in Sources */,
