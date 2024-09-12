@@ -71,6 +71,8 @@ void ofApp::setup(){
 
     ofFloatColor roadColor(1,0,0,0.2);
     roadMaterial.setDiffuseColor(roadColor);
+    
+    
     //roadColor.a = 1.0;
     //roadMaterial.setDiffuseColor(roadColor);
     //roadMaterial.setShininess(0.01);
@@ -127,6 +129,9 @@ void ofApp::setup(){
     ofVoxelB.set(VOXEL_SIZE);
     ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
     ofVoxelB.setResolution(1);
+    
+    ofFloatColor emptyColor(1,1,1,0.1);
+    emptyVoxelMAT.setDiffuseColor(emptyColor);
 }
 
 //--------------------------------------------------------------
@@ -186,6 +191,8 @@ void ofApp::draw(){
     //
     //--------   Uniform grid
     //
+        //emptyVoxelMAT.begin();
+        ofSetColor(255, 255, 255, 10);
         for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
         {
             ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
@@ -196,6 +203,7 @@ void ofApp::draw(){
             boidSphere.setGlobalPosition(pos.x, pos.y, pos.z);
             boidSphere.draw();
         }
+        //emptyVoxelMAT.end();
     
     ofDisableDepthTest();
     cam.end();

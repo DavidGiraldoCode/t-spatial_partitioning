@@ -75,4 +75,5 @@ class ofApp : public ofBaseApp{
         unsigned gridWidth, gridHeight, gridDepth;
         //UniformGrid uniformGrid; //= UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
         UniformGrid uniformGrid;// = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
+        ofMaterial emptyVoxelMAT;
 };
