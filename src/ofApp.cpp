@@ -4,7 +4,7 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 1000;
+const int BOIDS_COUNT = 1;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
@@ -46,10 +46,6 @@ void ofApp::setup(){
     ofVoxel.set(100);
     ofVoxel.setGlobalPosition(ofVoxel.getHeight()/2, ofVoxel.getHeight()/2, -ofVoxel.getHeight()/2);
     ofVoxel.setResolution(1);
-    
-    ofVoxelB.set(100);
-    ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
-    ofVoxelB.setResolution(1);
     
     
 
@@ -120,11 +116,17 @@ void ofApp::setup(){
     //--------   Uniform grid
     //
     voxelGridResolution = 1;
-    gridWidth = 8;
-    gridHeight = 6;
-    gridDepth = 10;
-    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
+    gridWidth = 2;
+    gridHeight = 2;
+    gridDepth = 2;
+    float VOXEL_SIZE = 500;
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0), VOXEL_SIZE);
+    boidSphere.set(10, 16);
     std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    
+    ofVoxelB.set(VOXEL_SIZE);
+    ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
+    ofVoxelB.setResolution(1);
 }
 
 //--------------------------------------------------------------
@@ -161,10 +163,10 @@ void ofApp::draw(){
         //ofVoxel.draw();
         
         //boidSphere.draw();
-//        for(size_t i = 0; i < BOIDS_COUNT; i++)
-//        {
-//            boidSpheres[i].draw();
-//        }
+        for(size_t i = 0; i < BOIDS_COUNT; i++)
+        {
+            boidSpheres[i].draw();
+        }
         roadMaterial.end();
     
         plane.drawAxes(500);
@@ -190,6 +192,9 @@ void ofApp::draw(){
             
             ofVoxelB.setGlobalPosition(pos.x, pos.y, pos.z);
             ofVoxelB.drawFaces();
+            
+            boidSphere.setGlobalPosition(pos.x, pos.y, pos.z);
+            boidSphere.draw();
         }
     
     ofDisableDepthTest();

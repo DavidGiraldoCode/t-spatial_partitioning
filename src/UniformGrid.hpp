@@ -14,7 +14,7 @@ class UniformGrid
 public:
     UniformGrid(){};
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
-    UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot);
+    UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
     ~UniformGrid();
     void            getVoxelByWorldCoordinates(ofVec3f point);
     void            getVoxelByIndex(size_t index);
@@ -47,5 +47,5 @@ private:
     size_t  m_nx, m_ny, m_nz = 2; //number of vertices
     size_t  m_nCols, m_nRows, m_nLayers = 1; // Columns X, Rows Y, and Layers Z
     size_t  width, height, depth = 1; // Columns X, Rows Y, and Layers Z
-    float   m_voxelSize = 10, m_dx, m_dy, m_dz; // voxel size
+    float   m_voxelSize, m_dx, m_dy, m_dz; // voxel size
 };

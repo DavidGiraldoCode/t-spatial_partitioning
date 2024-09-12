@@ -48,7 +48,7 @@ class ofApp : public ofBaseApp{
         std::vector<Boid> boids = {};
         std::vector<ofSpherePrimitive> boidSpheres = {};
         //Boid boid;
-        //ofSpherePrimitive boidSphere;
+        ofSpherePrimitive boidSphere;
         
         /*GUI*/
     

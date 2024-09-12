@@ -35,7 +35,7 @@ private:
     ofVec3f speedConstrain;
     int wanderCounter = 0;
     int wanderChange = 0;
-    float MAX_SPEED = 5.0f;
+    float MAX_SPEED = 20.0f;
     void dampingVelocity();
 };
 
