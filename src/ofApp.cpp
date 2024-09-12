@@ -4,16 +4,12 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 1000;
+const int BOIDS_COUNT = 1;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
-    voxelGridResolution = 1;
-    Messenger myMessenger = Messenger();
     
-    std::cout << "Building the grid" << '\n';
-    //uniformGrid = 
-    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    Messenger myMessenger = Messenger();
     
     /* Custom Voxel*/
     mesh.addVertex(ofVec3f(0,0,0));
@@ -50,10 +46,6 @@ void ofApp::setup(){
     ofVoxel.set(100);
     ofVoxel.setGlobalPosition(ofVoxel.getHeight()/2, ofVoxel.getHeight()/2, -ofVoxel.getHeight()/2);
     ofVoxel.setResolution(1);
-    
-    ofVoxelB.set(100);
-    ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
-    ofVoxelB.setResolution(1);
     
     
 
@@ -108,6 +100,7 @@ void ofApp::setup(){
     gui.setup("Test settings"); // most of the time you don't need a name but don't forget to call setup
     gui.add(guiFramesPerSecond.set( "FPS", 1));
     gui.add(guiVoxelResolution.set( "Voxels", 1, 1, 100));
+    
     gui.add(guiVoxelVisibility.set("Voxel visibility", true));
     //gui.add(center.set("center",glm::vec2(ofGetWidth()*.5,ofGetHeight()*.5),glm::vec2(0,0),glm::vec2(ofGetWidth(),ofGetHeight())));
     //gui.add(color.set("color",ofColor(100,100,140),ofColor(0,0),ofColor(255,255)));
@@ -115,6 +108,25 @@ void ofApp::setup(){
     //gui.add(twoCircles.setup("twoCircles"));
     //gui.add(ringButton.setup("ring"));
     //gui.add(screenSize.set("screenSize", ""));
+    gui.add(guiGridWidth.set( "Grid Width", 1, 1, 100));
+    gui.add(guiGridHeight.set( "Grid Height", 1, 1, 100));
+    gui.add(guiGridDepth.set( "Grid Depth", 1, 1, 100));
+
+    // 
+    //--------   Uniform grid
+    //
+    voxelGridResolution = 1;
+    gridWidth = 2;
+    gridHeight = 2;
+    gridDepth = 2;
+    float VOXEL_SIZE = 500;
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0), VOXEL_SIZE);
+    boidSphere.set(10, 16);
+    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    
+    ofVoxelB.set(VOXEL_SIZE);
+    ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
+    ofVoxelB.setResolution(1);
 }
 
 //--------------------------------------------------------------
@@ -163,29 +175,39 @@ void ofApp::draw(){
     
         
         ofSetColor(255, 100, 100, 50);
-        ofVoxel.drawFaces();
-        ofVoxelB.drawFaces();
+        //ofVoxel.drawFaces();
+        
         //box.drawNormals(10);
     
         /*Custom Voxel*/
         //mesh.draw();
         //mesh2.draw(); // fast!!
         //polyline.draw();
+    //
+    //--------   Uniform grid
+    //
+        for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
+        {
+            ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
+            
+            ofVoxelB.setGlobalPosition(pos.x, pos.y, pos.z);
+            ofVoxelB.drawFaces();
+            
+            boidSphere.setGlobalPosition(pos.x, pos.y, pos.z);
+            boidSphere.draw();
+        }
     
     ofDisableDepthTest();
     cam.end();
     
-    
-    
-//    stringstream ss;
-//    ss << "Spatial partitioning: " << '\n' << '\n';
-//    ss << "FPS: " << ofToString(ofGetFrameRate(),0) << '\n' ;
-//    ss << "Voxel Grid Resolution: " << voxelGridResolution << '\n' ;
-//    ofDrawBitmapStringHighlight(ss.str().c_str(), 20, 20);
-    
     /*GUI*/
     guiFramesPerSecond.set(ofGetFrameRate());
     gui.draw();
+    
+    //
+    //--------   Uniform grid
+    //
+    
     
 }
 
