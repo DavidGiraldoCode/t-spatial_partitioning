@@ -96,7 +96,15 @@ UniformGrid::~UniformGrid()
     //std::cout << "Bye bye UniformGrid" << '\n';
 }
 
-void UniformGrid::getVoxelByWorldCoordinates(ofVec3f point)
+//Public
+bool UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery)
+{
+    bool result = true;
+    //std::cout << pointQuery << '\n';
+    return result;
+}
+
+void UniformGrid::getVoxelByWorldCoordinates(const ofVec3f & point)
 {
     
 }
@@ -115,3 +123,5 @@ const size_t UniformGrid::getGridSize()
 {
     return voxels.size();
 }
+
+

@@ -16,10 +16,11 @@ public:
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
     UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
     ~UniformGrid();
-    void            getVoxelByWorldCoordinates(ofVec3f point);
+    void            getVoxelByWorldCoordinates(const ofVec3f &point);
     void            getVoxelByIndex(size_t index);
     ofVec3f         getVoxelPositionByIndex(size_t index);
     const size_t    getGridSize();
+    bool            isPointInsideAVoxel(const ofVec3f &pointQuery);
 private:
     struct Voxel
     {

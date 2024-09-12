@@ -148,6 +148,8 @@ void ofApp::update(){
         boids[i].applyBoundingForce(ofVec3f(box.getPosition()), box.getWidth(), box.getHeight(), box.getDepth());
         boids[i].move();
         boidSpheres[i].setGlobalPosition(boids[i].getPosition().x, boids[i].getPosition().y, boids[i].getPosition().z);
+        
+        uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
     }
     
 }
