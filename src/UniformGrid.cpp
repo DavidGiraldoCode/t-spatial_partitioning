@@ -31,11 +31,11 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivo
 {
     std::cout << "Building the grid with pivot" << '\n';
     std::cout << width << height << depth << '\n';
-    m_nx = width == 0 ? 2 : width + 1;
-    m_ny = height == 0 ? 2 : height + 1;
-    m_nz = depth == 0 ? 2 : depth + 1;
+    m_nx = width <= 0 ? 2 : width + 1;
+    m_ny = height <= 0 ? 2 : height + 1;
+    m_nz = depth <= 0 ? 2 : depth + 1;
     
-    m_voxelSize = 10;
+    m_voxelSize = 100;
     
     unsigned voxelCount = width * height * depth;
     unsigned verticesCount = m_nx * m_ny * m_nz;
@@ -43,12 +43,23 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivo
     
     for(size_t i = 0; i < voxelCount; i++)
     {
-        float x = (i % m_nx + pivot.x) + (i * width);
-        float y = ((i / m_ny) % m_ny) + pivot.y + (i * height);
-        float z = (i / m_nx * m_ny) + pivot.z + (i * depth);
+        //Units
+//        float x = i % m_nx; //(i % m_nx + pivot.x) + (i * width);
+//        float y = (i / m_nx) % m_ny;//((i / m_ny) % m_ny) + pivot.y + (i * height);
+//        float z = i  / (m_nx * m_ny);// (i / m_nx * m_ny) + pivot.z + (i * depth);
+        float x = i % width; //(i % m_nx + pivot.x) + (i * width);
+        float y = (i / width) % height;//((i / m_ny) % m_ny) + pivot.y + (i * height);
+        float z = i  / (width * height);// (i / m_nx * m_ny) + pivot.z + (i * depth);
         
         std::cout << 'x' << x << 'y' << y << 'z' << z << '\n';
-        Voxel v = Voxel(i, ofVec3f(x, y, z));
+        
+        float worldX = (x * (int)m_voxelSize); //offset of the min
+        float worldY = (y * (int)m_voxelSize); //offset of the min
+        float worldZ = (z * (int)m_voxelSize) * -1; //offset of the min
+        
+        std::cout << "worldX: " << worldX << " worldY: " << worldY << " worldZ: " << worldZ << '\n';
+        
+        Voxel v = Voxel(i, ofVec3f(worldX, worldY, worldZ));
         voxels.push_back(v);
         std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
     }

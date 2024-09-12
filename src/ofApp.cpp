@@ -120,7 +120,9 @@ void ofApp::setup(){
     //--------   Uniform grid
     //
     voxelGridResolution = 1;
-    
+    gridWidth = 8;
+    gridHeight = 6;
+    gridDepth = 10;
     uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
     std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
 }
