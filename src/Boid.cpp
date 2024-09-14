@@ -129,3 +129,29 @@ void Boid::dampingVelocity()
  
  std::cout<<"isWithinBoundaries: "<<isWithinBoundaries<<'\n';
  */
+
+/*
+ Everything related to the grid
+ */
+
+void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
+{
+    int newPosition = uniformGrid.isPointInsideAVoxel(position);
+    if(currentPositionInGrid == newPosition)
+    {
+        previousPositionInGrid = currentPositionInGrid;
+        return;
+    }; //We have not moved to another voxel, do nothing
+    
+    //We have indeed change to another place
+    currentPositionInGrid = newPosition;
+    
+    if(currentPositionInGrid != -1) // We are still inside the grid, so notify the new voxel
+        uniformGrid.addObjectToVoxel(currentPositionInGrid);
+    
+    
+    if(previousPositionInGrid != -1); //The boid was not outside, notify previous voxel
+        uniformGrid.removeObjectFromVoxel(previousPositionInGrid);
+    
+    previousPositionInGrid = currentPositionInGrid; //Update position.
+}

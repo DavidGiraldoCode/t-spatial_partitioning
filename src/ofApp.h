@@ -76,4 +76,11 @@ class ofApp : public ofBaseApp{
         //UniformGrid uniformGrid; //= UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
         UniformGrid uniformGrid;// = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
         ofMaterial emptyVoxelMAT;
+    
+        //Sphere representing a 3D point moved by WASD and UP DOWN to query the space
+        ofSpherePrimitive spatialQueryCursor;
+        ofVec3f spatialQueryPosition;
+        int cursorCurrentPos = -1;
+        int cursorPreviousPos = -1;
+        const float CURSOR_SPEED = 50.0f;
 };

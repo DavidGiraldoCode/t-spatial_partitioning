@@ -15,11 +15,17 @@ public:
     UniformGrid(){};
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
     UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
+    /*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
+    UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
-    void            getVoxelByWorldCoordinates(ofVec3f point);
-    void            getVoxelByIndex(size_t index);
-    ofVec3f         getVoxelPositionByIndex(size_t index);
-    const size_t    getGridSize();
+           void          getVoxelByWorldCoordinates(const ofVec3f &point);
+           void          getVoxelByIndex(size_t index);
+           ofVec3f       getVoxelPositionByIndex(size_t index);
+    const  size_t        getGridSize();
+    const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
+           void          removeObjectFromVoxel(int i);
+           void          addObjectToVoxel(int i);
+    const  int           getVoxelState(int i) const;
 private:
     struct Voxel
     {
@@ -27,7 +33,7 @@ private:
         unsigned state = 0; // 0 empty, 1 is full
         ofVec3f position = ofVec3f(0,0,0);
         Voxel(){};
-        Voxel(size_t index, ofVec3f position)
+        Voxel(size_t index, const ofVec3f &position)
         {
             //When parameters shadow the class members, the this-> removes the ambiguity
             this->index = index;
@@ -44,8 +50,9 @@ private:
         }
     };
     std::vector<Voxel> voxels;
-    size_t  m_nx, m_ny, m_nz = 2; //number of vertices
-    size_t  m_nCols, m_nRows, m_nLayers = 1; // Columns X, Rows Y, and Layers Z
+    size_t  m_nx, m_ny, m_nz; //number of vertices
+    size_t  m_nCols, m_nRows, m_nLayers; // Columns X, Rows Y, and Layers Z
     size_t  width, height, depth = 1; // Columns X, Rows Y, and Layers Z
     float   m_voxelSize, m_dx, m_dy, m_dz; // voxel size
+    float   m_normalizeSizeFactor;
 };
