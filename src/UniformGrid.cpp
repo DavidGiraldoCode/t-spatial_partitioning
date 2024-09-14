@@ -106,6 +106,10 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
     m_ny = height <= 0 ? 2 : height + 1;
     m_nz = depth <= 0 ? 2 : depth + 1;
     
+    m_nCols = width;
+    m_nRows = height;
+    m_nLayers = depth; //Layer as in depth of layers
+    
     unsigned verticesCount = m_nx * m_ny * m_nz;
     
     for(size_t i = 0; i < voxelCount; i++)
@@ -141,8 +145,36 @@ UniformGrid::~UniformGrid()
 bool UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery)
 {
     bool result = true;
-    //std::cout << pointQuery << '\n';
-    return result;
+    std::cout << "Cursor Position: " << pointQuery << '\n';
+    //Casting values and de-scaling the world position to units and increments of 1
+    int pX = floor(pointQuery.x / m_voxelSize);
+    int pY = floor(pointQuery.y / m_voxelSize);
+    int pZ = (floor(pointQuery.z / m_voxelSize) * -1) -1; //Recall that we hace define the deepth of the grid to be far away from the camera
+    std::cout << "pX: " << pX << " pY: " << pY << " pZ: " << pZ << '\n';
+    
+    bool inColsBounds = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
+    
+    std::cout << "Boundings X Y Z: " << inColsBounds << inRowsBounds << inLayersBounds << '\n';
+    
+    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
+    {
+        std::cout << "Boid is outside the grid by Bounding checks" << '\n';
+        return false;
+    }
+
+    int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
+    std::cout << "indexInOneD: " << indexInOneD << '\n';
+    
+    if(indexInOneD < 0 || indexInOneD >= voxels.size())
+    {
+        std::cout << "Boid is outside the grid" << '\n';
+        return false;
+    }
+    
+    std::cout << "Boid is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
+    return true;
 }
 
 void UniformGrid::getVoxelByWorldCoordinates(const ofVec3f & point)

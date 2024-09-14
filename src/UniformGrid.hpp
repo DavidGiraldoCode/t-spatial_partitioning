@@ -47,8 +47,8 @@ private:
         }
     };
     std::vector<Voxel> voxels;
-    size_t  m_nx, m_ny, m_nz = 2; //number of vertices
-    size_t  m_nCols, m_nRows, m_nLayers = 1; // Columns X, Rows Y, and Layers Z
+    size_t  m_nx, m_ny, m_nz; //number of vertices
+    size_t  m_nCols, m_nRows, m_nLayers; // Columns X, Rows Y, and Layers Z
     size_t  width, height, depth = 1; // Columns X, Rows Y, and Layers Z
     float   m_voxelSize, m_dx, m_dy, m_dz; // voxel size
 };

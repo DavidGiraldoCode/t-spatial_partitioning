@@ -4,8 +4,8 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 1;
-float VOXEL_SIZE = 500;
+const int BOIDS_COUNT = 0;
+float VOXEL_SIZE = 250;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
@@ -119,9 +119,9 @@ void ofApp::setup(){
     //--------   Uniform grid
     //
     voxelGridResolution = 1;
-    gridWidth = 2;
-    gridHeight = 2;
-    gridDepth = 2;
+    gridWidth = 4;
+    gridHeight = 4;
+    gridDepth = 6;
     
     //I am removing the pivot argument to use the constructor that sets the grid at [0,0,0]
     uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, /*ofVec3f(0,0,0),*/ VOXEL_SIZE);
@@ -134,8 +134,13 @@ void ofApp::setup(){
     
     ofFloatColor emptyColor(1,1,1,0.1);
     emptyVoxelMAT.setDiffuseColor(emptyColor);
+    
+    spatialQueryCursor.set(10,8);
+    spatialQueryPosition = ofVec3f(0,0,0);
+    
+    spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
 }
-
+bool isInside = false;
 //--------------------------------------------------------------
 void ofApp::update(){
     /*Custom Voxel*/
@@ -151,8 +156,11 @@ void ofApp::update(){
         boids[i].move();
         boidSpheres[i].setGlobalPosition(boids[i].getPosition().x, boids[i].getPosition().y, boids[i].getPosition().z);
         
-        uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
+        //isInside = uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
     }
+    
+    spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
+    uniformGrid.isPointInsideAVoxel(spatialQueryPosition);
     
 }
 
@@ -176,6 +184,9 @@ void ofApp::draw(){
         {
             boidSpheres[i].draw();
         }
+        
+        spatialQueryCursor.draw(); // <------------------------------- 3D cursor draw call
+    
         roadMaterial.end();
     
         plane.drawAxes(500);
@@ -196,13 +207,19 @@ void ofApp::draw(){
     //--------   Uniform grid
     //
         //emptyVoxelMAT.begin();
-        ofSetColor(255, 255, 255, 10);
+        
         for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
         {
             ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
             
+            if(isInside)
+                ofSetColor(255, 0, 0, 10);
+            else
+                ofSetColor(255, 255, 255, 10);
+            
             ofVoxelB.setGlobalPosition(pos.x + (VOXEL_SIZE/2), pos.y + (VOXEL_SIZE/2), pos.z - (VOXEL_SIZE/2));
             ofVoxelB.drawFaces();
+            
             
             boidSphere.setGlobalPosition(pos.x, pos.y , pos.z);
             boidSphere.draw();
@@ -219,17 +236,58 @@ void ofApp::draw(){
     //
     //--------   Uniform grid
     //
-    
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
 
 }
+enum KeyCode // Printed 'key' inside keyPressed() to get the values
+{
+    W = 119,
+    A = 97,
+    S = 115,
+    D = 100,
+    SPACE = 32,
+    UP = 57357,
+    DOWN = 57359,
+};
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    //std::cout << key << '\n';
+    switch (key) {
+        case KeyCode::W:
+            //std::cout << "Front \n";
+            spatialQueryPosition.z -= CURSOR_SPEED;
+            break;
+        case KeyCode::S:
+            //std::cout << "Back \n";
+            spatialQueryPosition.z += CURSOR_SPEED;
+            break;
+        case KeyCode::A:
+            spatialQueryPosition.x -= CURSOR_SPEED;
+            //std::cout << "Left \n";
+            break;
+        case KeyCode::D:
+            spatialQueryPosition.x += CURSOR_SPEED;
+            //std::cout << "Right \n";
+            break;
+        case KeyCode::SPACE:
+            //std::cout << "Space \n";
+            break;
+        case KeyCode::UP:
+            spatialQueryPosition.y += CURSOR_SPEED;
+            //std::cout << "Up \n";
+            break;
+        case KeyCode::DOWN:
+            spatialQueryPosition.y -= CURSOR_SPEED;
+            //std::cout << "Down \n";
+            break;
+        default:
+            break;
+    }
+    std::cout << "cursor: "<<spatialQueryPosition << '\n';
     
 }
 
