@@ -91,12 +91,82 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivo
     }
     std::cout << "voxels.size(): " << voxels.size() << '\n';
 }
+/*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
+UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE)
+{
+    std::cout << "Building the grid with voxel origin at corner [0,0,0]" << '\n';
+    std::cout << width << height << depth << '\n';
+    
+    unsigned voxelCount = width * height * depth;
+    std::cout << "voxelCount: " << voxelCount << '\n';
+    
+    m_voxelSize = VOXEL_SIZE;
+    m_normalizeSizeFactor = 1/m_voxelSize;
+    
+    m_nx = width <= 0 ? 2 : width + 1;
+    m_ny = height <= 0 ? 2 : height + 1;
+    m_nz = depth <= 0 ? 2 : depth + 1;
+    
+    m_nCols = width;
+    m_nRows = height;
+    m_nLayers = depth; //Layer as in depth of layers
+    
+    unsigned verticesCount = m_nx * m_ny * m_nz;
+    
+    for(size_t i = 0; i < voxelCount; i++)
+    {
+        //These coordinates disregard the size of the voxel
+        float x = i % width;
+        float y = (i / width) % height;
+        float z = i  / (width * height);
+        
+        std::cout << 'x' << x << 'y' << y << 'z' << z << '\n';
+        
+        //These coordnate consider the size of the voxel //TODO and soon the offset position on the grid in world space
+        float worldX = (x * m_voxelSize); //offset of the min
+        float worldY = (y * m_voxelSize); //offset of the min
+        float worldZ = (z * m_voxelSize)* -1; //The z grow far from the camera
+        
+        std::cout << "worldX: " << worldX << " worldY: " << worldY << " worldZ: " << worldZ << '\n';
+        
+        Voxel v = Voxel(i, ofVec3f(worldX, worldY, worldZ));
+        voxels.push_back(v);
+        std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
+    }
+    std::cout << "voxels.size(): " << voxels.size() << '\n';
+    
+}
+
 UniformGrid::~UniformGrid()
 {
     //std::cout << "Bye bye UniformGrid" << '\n';
 }
 
-void UniformGrid::getVoxelByWorldCoordinates(ofVec3f point)
+//Public
+const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
+{
+    //Casting values and de-scaling the world position to units and increments of 1
+    int pX = floor(pointQuery.x * m_normalizeSizeFactor);
+    int pY = floor(pointQuery.y * m_normalizeSizeFactor);
+    int pZ = (floor(pointQuery.z * m_normalizeSizeFactor) * -1) -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+
+    bool inColsBounds = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
+    
+    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
+        return -1;
+
+    int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
+    
+    if(indexInOneD < 0 || indexInOneD >= voxels.size())
+        return -1;
+    
+    //std::cout << "Boid is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
+    return indexInOneD;
+}
+
+void UniformGrid::getVoxelByWorldCoordinates(const ofVec3f & point)
 {
     
 }
@@ -114,4 +184,25 @@ ofVec3f UniformGrid::getVoxelPositionByIndex(size_t index)
 const size_t UniformGrid::getGridSize()
 {
     return voxels.size();
+}
+
+void UniformGrid::removeObjectFromVoxel(int i)
+{
+    if(i < 0 || i >= voxels.size()) return;
+    
+    voxels[i].state = 0;
+    //std::cout << "Removing from voxel " << i << '\n';
+}
+
+void UniformGrid::addObjectToVoxel(int i)
+{
+    if(i < 0 || i >= voxels.size()) return;
+    
+    voxels[i].state = 1;
+    //std::cout << "Adding to voxel " << i << '\n';
+}
+
+const  int UniformGrid::getVoxelState(int i) const
+{
+    return voxels[i].state;
 }
