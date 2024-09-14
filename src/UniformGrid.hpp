@@ -15,6 +15,8 @@ public:
     UniformGrid(){};
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
     UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
+    /*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
+    UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
     void            getVoxelByWorldCoordinates(const ofVec3f &point);
     void            getVoxelByIndex(size_t index);
@@ -28,7 +30,7 @@ private:
         unsigned state = 0; // 0 empty, 1 is full
         ofVec3f position = ofVec3f(0,0,0);
         Voxel(){};
-        Voxel(size_t index, ofVec3f position)
+        Voxel(size_t index, const ofVec3f &position)
         {
             //When parameters shadow the class members, the this-> removes the ambiguity
             this->index = index;

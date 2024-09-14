@@ -5,6 +5,7 @@
  In OpenGL Y is Up
  */
 const int BOIDS_COUNT = 1;
+float VOXEL_SIZE = 500;
 //--------------------------------------------------------------
 void ofApp::setup(){
     std::cout << "Hello in setup" << '\n';
@@ -65,7 +66,7 @@ void ofApp::setup(){
     float width     = ofGetWidth() * .12;
     float height    = ofGetHeight() * .12;
     box.set( 1000/*width*1.25*/ );
-    box.setGlobalPosition(0, box.getHeight()/2, 0);
+    box.setGlobalPosition(box.getWidth()/2, box.getHeight()/2, box.getDepth()/2 * -1);
     box.setResolution(1);
     
 
@@ -81,7 +82,7 @@ void ofApp::setup(){
     //-965, 586, -1084
     //cam.setPosition(-965,2000,-1000);
     
-    cam.setGlobalPosition(0, 500, 1500);
+    cam.setGlobalPosition(500, 500, 1500);
     //cam.lookAt(truck.getNode(), {0.f, 1.f, 0.f});
     //cam.setNearClip(0);
     cam.setFarClip(10000);
@@ -121,8 +122,9 @@ void ofApp::setup(){
     gridWidth = 2;
     gridHeight = 2;
     gridDepth = 2;
-    float VOXEL_SIZE = 500;
-    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0), VOXEL_SIZE);
+    
+    //I am removing the pivot argument to use the constructor that sets the grid at [0,0,0]
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, /*ofVec3f(0,0,0),*/ VOXEL_SIZE);
     boidSphere.set(10, 16);
     std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
     
@@ -199,10 +201,10 @@ void ofApp::draw(){
         {
             ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
             
-            ofVoxelB.setGlobalPosition(pos.x, pos.y, pos.z);
+            ofVoxelB.setGlobalPosition(pos.x + (VOXEL_SIZE/2), pos.y + (VOXEL_SIZE/2), pos.z - (VOXEL_SIZE/2));
             ofVoxelB.drawFaces();
             
-            boidSphere.setGlobalPosition(pos.x, pos.y, pos.z);
+            boidSphere.setGlobalPosition(pos.x, pos.y , pos.z);
             boidSphere.draw();
         }
         //emptyVoxelMAT.end();
