@@ -137,7 +137,11 @@ void Boid::dampingVelocity()
 void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
 {
     int newPosition = uniformGrid.isPointInsideAVoxel(position);
-    if(currentPositionInGrid == newPosition) return; //We have not moved to another voxel, do nothing
+    if(currentPositionInGrid == newPosition)
+    {
+        previousPositionInGrid = currentPositionInGrid;
+        return;
+    }; //We have not moved to another voxel, do nothing
     
     //We have indeed change to another place
     currentPositionInGrid = newPosition;
@@ -146,7 +150,7 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
         uniformGrid.addObjectToVoxel(currentPositionInGrid);
     
     
-    if(previousPositionInGrid != -1) return; //The boid was not outside, notify previous voxel
+    if(previousPositionInGrid != -1); //The boid was not outside, notify previous voxel
         uniformGrid.removeObjectFromVoxel(previousPositionInGrid);
     
     previousPositionInGrid = currentPositionInGrid; //Update position.

@@ -4,7 +4,7 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 0;
+const int BOIDS_COUNT = 10;
 float VOXEL_SIZE = 250;
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -70,7 +70,7 @@ void ofApp::setup(){
     box.setResolution(1);
     
 
-    ofFloatColor roadColor(1,1,0,0.2);
+    ofFloatColor roadColor(1,1,0,0.1);
     roadMaterial.setDiffuseColor(roadColor);
     
     
@@ -156,6 +156,7 @@ void ofApp::update(){
         boids[i].move();
         boidSpheres[i].setGlobalPosition(boids[i].getPosition().x, boids[i].getPosition().y, boids[i].getPosition().z);
         
+        boids[i].updatePositionInWorldGrid(uniformGrid);
         //isInside = uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
     }
     
@@ -172,7 +173,6 @@ void ofApp::draw(){
     // draw a gradient in the background
     //ofBackgroundGradient(ofColor(10), ofColor(50));
     ofBackground(0, 0, 0);
-    
     
     ofEnableDepthTest();
     cam.begin();
@@ -196,7 +196,7 @@ void ofApp::draw(){
         box.drawWireframe();
     
         
-        ofSetColor(255, 100, 100, 50);
+        //ofSetColor(255, 100, 100, 50);
         //ofVoxel.drawFaces();
         
         //box.drawNormals(10);
@@ -209,7 +209,7 @@ void ofApp::draw(){
     //--------   Uniform grid
     //
         //emptyVoxelMAT.begin();
-        ofSetColor(255, 0, 0, 100);
+        ofSetColor(255, 0, 0, 50);
         for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
         {
             ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);

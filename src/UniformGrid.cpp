@@ -191,7 +191,7 @@ void UniformGrid::removeObjectFromVoxel(int i)
     if(i < 0 || i >= voxels.size()) return;
     
     voxels[i].state = 0;
-    std::cout << "Removing from voxel " << i << '\n';
+    //std::cout << "Removing from voxel " << i << '\n';
 }
 
 void UniformGrid::addObjectToVoxel(int i)
@@ -199,7 +199,7 @@ void UniformGrid::addObjectToVoxel(int i)
     if(i < 0 || i >= voxels.size()) return;
     
     voxels[i].state = 1;
-    std::cout << "Adding to voxel " << i << '\n';
+    //std::cout << "Adding to voxel " << i << '\n';
 }
 
 const  int UniformGrid::getVoxelState(int i) const
