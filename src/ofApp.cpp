@@ -70,7 +70,7 @@ void ofApp::setup(){
     box.setResolution(1);
     
 
-    ofFloatColor roadColor(1,0,0,0.2);
+    ofFloatColor roadColor(1,1,0,0.2);
     roadMaterial.setDiffuseColor(roadColor);
     
     
@@ -159,8 +159,10 @@ void ofApp::update(){
         //isInside = uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
     }
     
+    
+    
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
-    uniformGrid.isPointInsideAVoxel(spatialQueryPosition);
+    
     
 }
 
@@ -207,22 +209,21 @@ void ofApp::draw(){
     //--------   Uniform grid
     //
         //emptyVoxelMAT.begin();
-        
+        ofSetColor(255, 0, 0, 100);
         for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
         {
             ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
             
-            if(isInside)
-                ofSetColor(255, 0, 0, 10);
-            else
-                ofSetColor(255, 255, 255, 10);
-            
             ofVoxelB.setGlobalPosition(pos.x + (VOXEL_SIZE/2), pos.y + (VOXEL_SIZE/2), pos.z - (VOXEL_SIZE/2));
-            ofVoxelB.drawFaces();
             
-            
+            if(uniformGrid.getVoxelState(i) == 1)
+            {
+                ofVoxelB.drawFaces();
+            }
+                
             boidSphere.setGlobalPosition(pos.x, pos.y , pos.z);
-            boidSphere.draw();
+            
+            //boidSphere.draw();
         }
         //emptyVoxelMAT.end();
     
@@ -287,8 +288,30 @@ void ofApp::keyPressed(int key){
         default:
             break;
     }
-    std::cout << "cursor: "<<spatialQueryPosition << '\n';
+    //std::cout << "cursor: "<<spatialQueryPosition << '\n';
+    int cursorNewPos = uniformGrid.isPointInsideAVoxel(spatialQueryPosition);
     
+    //std::cout << "Cursor Position in Grid: " << cursorNewPos<< '\n';
+    /*TEMPORAL using Boid's updatePositionInWorldGrid*/
+    
+    if(cursorNewPos == cursorCurrentPos)
+    {
+        cursorPreviousPos = cursorCurrentPos;
+        return;
+    }; //We have not moved to another voxel, do nothing
+    
+    //We have indeed change to another place
+    cursorCurrentPos = cursorNewPos;
+    
+    if(cursorCurrentPos != -1) // We are still inside the grid, so notify the new voxel
+        uniformGrid.addObjectToVoxel(cursorCurrentPos);
+    
+    
+    if(cursorPreviousPos != -1) //The boid was not outside, notify previous voxel
+        uniformGrid.removeObjectFromVoxel(cursorPreviousPos);
+    
+     //Update position.
+    cursorPreviousPos = cursorCurrentPos;
 }
 
 //--------------------------------------------------------------

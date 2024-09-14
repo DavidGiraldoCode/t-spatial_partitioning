@@ -10,6 +10,7 @@
 #include "ofVec3f.h"
 #include "ofMath.h"
 #include "ofUtils.h"
+#include "UniformGrid.hpp"
 
 class Boid
 {
@@ -26,6 +27,7 @@ public:
     void move();
     void applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth);
     const ofVec3f getPosition();
+    void updatePositionInWorldGrid(UniformGrid & uniformGrid);
 private:
     ofVec3f position;
     ofVec3f velocity;
@@ -33,6 +35,8 @@ private:
     ofVec3f wanderDirection;
     ofVec3f boundingForce;
     ofVec3f speedConstrain;
+    int currentPositionInGrid = -1;
+    int previousPositionInGrid = -1;
     int wanderCounter = 0;
     int wanderChange = 0;
     float MAX_SPEED = 20.0f;

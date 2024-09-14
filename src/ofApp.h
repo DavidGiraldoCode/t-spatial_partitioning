@@ -80,5 +80,7 @@ class ofApp : public ofBaseApp{
         //Sphere representing a 3D point moved by WASD and UP DOWN to query the space
         ofSpherePrimitive spatialQueryCursor;
         ofVec3f spatialQueryPosition;
+        int cursorCurrentPos = -1;
+        int cursorPreviousPos = -1;
         const float CURSOR_SPEED = 50.0f;
 };

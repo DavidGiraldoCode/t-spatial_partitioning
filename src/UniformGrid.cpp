@@ -101,6 +101,7 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
     std::cout << "voxelCount: " << voxelCount << '\n';
     
     m_voxelSize = VOXEL_SIZE;
+    m_normalizeSizeFactor = 1/m_voxelSize;
     
     m_nx = width <= 0 ? 2 : width + 1;
     m_ny = height <= 0 ? 2 : height + 1;
@@ -142,39 +143,27 @@ UniformGrid::~UniformGrid()
 }
 
 //Public
-bool UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery)
+const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
 {
-    bool result = true;
-    std::cout << "Cursor Position: " << pointQuery << '\n';
     //Casting values and de-scaling the world position to units and increments of 1
-    int pX = floor(pointQuery.x / m_voxelSize);
-    int pY = floor(pointQuery.y / m_voxelSize);
-    int pZ = (floor(pointQuery.z / m_voxelSize) * -1) -1; //Recall that we hace define the deepth of the grid to be far away from the camera
-    std::cout << "pX: " << pX << " pY: " << pY << " pZ: " << pZ << '\n';
-    
+    int pX = floor(pointQuery.x * m_normalizeSizeFactor);
+    int pY = floor(pointQuery.y * m_normalizeSizeFactor);
+    int pZ = (floor(pointQuery.z * m_normalizeSizeFactor) * -1) -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+
     bool inColsBounds = pX >= 0 && pX < m_nCols;
     bool inRowsBounds = pY >= 0 && pY < m_nRows;
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
     
-    std::cout << "Boundings X Y Z: " << inColsBounds << inRowsBounds << inLayersBounds << '\n';
-    
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
-    {
-        std::cout << "Boid is outside the grid by Bounding checks" << '\n';
-        return false;
-    }
+        return -1;
 
     int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
-    std::cout << "indexInOneD: " << indexInOneD << '\n';
     
     if(indexInOneD < 0 || indexInOneD >= voxels.size())
-    {
-        std::cout << "Boid is outside the grid" << '\n';
-        return false;
-    }
+        return -1;
     
-    std::cout << "Boid is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
-    return true;
+    //std::cout << "Boid is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
+    return indexInOneD;
 }
 
 void UniformGrid::getVoxelByWorldCoordinates(const ofVec3f & point)
@@ -197,4 +186,23 @@ const size_t UniformGrid::getGridSize()
     return voxels.size();
 }
 
+void UniformGrid::removeObjectFromVoxel(int i)
+{
+    if(i < 0 || i >= voxels.size()) return;
+    
+    voxels[i].state = 0;
+    std::cout << "Removing from voxel " << i << '\n';
+}
 
+void UniformGrid::addObjectToVoxel(int i)
+{
+    if(i < 0 || i >= voxels.size()) return;
+    
+    voxels[i].state = 1;
+    std::cout << "Adding to voxel " << i << '\n';
+}
+
+const  int UniformGrid::getVoxelState(int i) const
+{
+    return voxels[i].state;
+}

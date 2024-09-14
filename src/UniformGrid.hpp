@@ -18,11 +18,14 @@ public:
     /*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
     UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
-    void            getVoxelByWorldCoordinates(const ofVec3f &point);
-    void            getVoxelByIndex(size_t index);
-    ofVec3f         getVoxelPositionByIndex(size_t index);
-    const size_t    getGridSize();
-    bool            isPointInsideAVoxel(const ofVec3f &pointQuery);
+           void          getVoxelByWorldCoordinates(const ofVec3f &point);
+           void          getVoxelByIndex(size_t index);
+           ofVec3f       getVoxelPositionByIndex(size_t index);
+    const  size_t        getGridSize();
+    const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
+           void          removeObjectFromVoxel(int i);
+           void          addObjectToVoxel(int i);
+    const  int           getVoxelState(int i) const;
 private:
     struct Voxel
     {
@@ -51,4 +54,5 @@ private:
     size_t  m_nCols, m_nRows, m_nLayers; // Columns X, Rows Y, and Layers Z
     size_t  width, height, depth = 1; // Columns X, Rows Y, and Layers Z
     float   m_voxelSize, m_dx, m_dy, m_dz; // voxel size
+    float   m_normalizeSizeFactor;
 };
