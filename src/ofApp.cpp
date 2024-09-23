@@ -187,6 +187,17 @@ void ofApp::update(){
 void ofApp::draw(){
     
     //voxelGridScene.draw();
+    //ofSetColor(255, 100, 100, 50);
+    //ofVoxel.drawFaces();
+    
+    //box.drawNormals(10);
+
+    /*Custom Voxel*/
+    //mesh.draw();
+    //mesh2.draw(); // fast!!
+    //polyline.draw();
+    //ofVoxel.draw();
+    //boidSphere.draw();
     
     ofBackground(255,255,255,255); // draw a gradient in the background with ofBackgroundGradient(ofColor(10), ofColor(50));
     
@@ -195,9 +206,7 @@ void ofApp::draw(){
         
         roadMaterial.begin();
         plane.draw();
-        //ofVoxel.draw();
         
-        //boidSphere.draw();
         for(size_t i = 0; i < BOIDS_COUNT; i++)
         {
             boidSpheres[i].draw();
@@ -210,17 +219,7 @@ void ofApp::draw(){
         plane.drawAxes(500);
         ofSetColor(100, 100, 100);
         box.drawWireframe();
-    
-        
-        //ofSetColor(255, 100, 100, 50);
-        //ofVoxel.drawFaces();
-        
-        //box.drawNormals(10);
-    
-        /*Custom Voxel*/
-        //mesh.draw();
-        //mesh2.draw(); // fast!!
-        //polyline.draw();
+
     //
     //--------   Uniform grid
     //
@@ -232,27 +231,27 @@ void ofApp::draw(){
             
             ofVoxelB.setGlobalPosition(pos.x + (VOXEL_SIZE/2), pos.y + (VOXEL_SIZE/2), pos.z - (VOXEL_SIZE/2));
             
-            if(uniformGrid.getVoxelState(i) == 1)
+//            if(uniformGrid.getVoxelState(i) == 1)
+//            {
+//                ofVoxelB.drawFaces();
+//            }
+            if(uniformGrid.getVoxelObstacle(i) == 1)
             {
                 ofVoxelB.drawFaces();
             }
                 
             boidSphere.setGlobalPosition(pos.x, pos.y , pos.z);
-            
-            //boidSphere.draw();
         }
         //emptyVoxelMAT.end();
     
     ofDisableDepthTest();
     cam.end();
     
-    /*GUI*/
+    //
+    // GUI
+    //
     guiFramesPerSecond.set(ofGetFrameRate());
     gui.draw();
-    
-    //
-    //--------   Uniform grid
-    //
 }
 
 //--------------------------------------------------------------
