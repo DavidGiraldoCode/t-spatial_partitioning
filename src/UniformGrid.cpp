@@ -135,7 +135,8 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         // RANDOM assignation of the Voxel as obstacle
         float randomObstacleState = ofRandom(0, 1);
         std::cout << "randomObstacleState: " << randomObstacleState << '\n';
-        setVoxelAsObstacle(i, (randomObstacleState > 0.999)); // Gives more chances of voxels being emty spaces
+        float OBSTACLES_POBALITIY = 0.995;
+        setVoxelAsObstacle(i, (randomObstacleState > OBSTACLES_POBALITIY)); // Gives more chances of voxels being emty spaces
         
         //std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
     }

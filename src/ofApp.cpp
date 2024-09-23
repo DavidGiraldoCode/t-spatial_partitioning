@@ -4,8 +4,8 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 10;
-float VOXEL_SIZE = 50;
+const int BOIDS_COUNT = 100;
+float VOXEL_SIZE = 200;
 //--------------------------------------------------------------
 void ofApp::setup(){
     //voxelGridScene.setup();
@@ -103,9 +103,9 @@ void ofApp::setup(){
     //--------   Uniform grid
     //
     voxelGridResolution = 1;
-    gridWidth = 40;
-    gridHeight = 40;
-    gridDepth = 60;
+    gridWidth = 10;
+    gridHeight = 10;
+    gridDepth = 15;
     
     
     //ofBox mesh that represets the bounding volume of the environmental obstacles
@@ -224,23 +224,32 @@ void ofApp::draw(){
     //--------   Uniform grid
     //
         //emptyVoxelMAT.begin();
-        ofSetColor(255, 0, 0, 50);
+        
         for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
         {
             ofVec3f pos = uniformGrid.getVoxelPositionByIndex(i);
             
             ofVoxelB.setGlobalPosition(pos.x + (VOXEL_SIZE/2), pos.y + (VOXEL_SIZE/2), pos.z - (VOXEL_SIZE/2));
             
-//            if(uniformGrid.getVoxelState(i) == 1)
-//            {
-//                ofVoxelB.drawFaces();
-//            }
-            if(uniformGrid.getVoxelObstacle(i) == 1)
+            if(uniformGrid.getVoxelObstacle(i) == 1 && uniformGrid.getVoxelState(i) == 0) // The voxel is an obstacle
             {
+                ofSetColor(0, 0, 255, 80);
                 ofVoxelB.drawFaces();
             }
-                
-            boidSphere.setGlobalPosition(pos.x, pos.y , pos.z);
+            else if(uniformGrid.getVoxelObstacle(i) == 1 && uniformGrid.getVoxelState(i) == 1) //Boid flys inside of an obstacle
+            {
+                ofSetColor(255, 0, 0, 50);
+                ofVoxelB.drawFaces();
+            }
+            else if(uniformGrid.getVoxelObstacle(i) == 0 && uniformGrid.getVoxelState(i) == 1)//Boid flys inside
+            {
+//                ofSetColor(0, 255, 0, 5);
+//                ofVoxelB.drawFaces();
+            }
+            
+            
+            //This was supposed to visualize the vertices.
+            //boidSphere.setGlobalPosition(pos.x, pos.y , pos.z);
         }
         //emptyVoxelMAT.end();
     
