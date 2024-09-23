@@ -5,100 +5,84 @@
  In OpenGL Y is Up
  */
 const int BOIDS_COUNT = 10;
-float VOXEL_SIZE = 250;
+float VOXEL_SIZE = 50;
 //--------------------------------------------------------------
 void ofApp::setup(){
+    //voxelGridScene.setup();
+    
     std::cout << "Hello in setup" << '\n';
     
-    Messenger myMessenger = Messenger();
+    //Messenger myMessenger = Messenger();
     
     /* Custom Voxel*/
-    mesh.addVertex(ofVec3f(0,0,0));
-    mesh.addColor(ofColor::red);
-    mesh.addVertex(ofVec3f(100,0,0));
-    mesh.addColor(ofColor::red);
-    mesh.setMode(OF_PRIMITIVE_LINES);
-    mesh2 = mesh;
+//    mesh.addVertex(ofVec3f(0,0,0));
+//    mesh.addColor(ofColor::red);
+//    mesh.addVertex(ofVec3f(100,0,0));
+//    mesh.addColor(ofColor::red);
+//    mesh.setMode(OF_PRIMITIVE_LINES);
+//    mesh2 = mesh;
     
-    ofVec3f pointA = ofVec3f(0,0,0);
-    ofVec3f pointB = ofVec3f(100,0,0);
-    ofVec3f pointC = ofVec3f(0,100,0);
-    ofVec3f pointD = ofVec3f(100,100,0);
-    
-    ofVec3f pointE = ofVec3f(0,0,100);
-    ofVec3f pointF = ofVec3f(100,0,100);
-    ofVec3f pointG = ofVec3f(0,100,100);
-    ofVec3f pointI = ofVec3f(100,100,100);
-    
-    polyline.lineTo(pointA.x,pointA.y,pointA.z);
-    polyline.lineTo(pointB.x,pointB.y,pointB.z);
-    polyline.lineTo(pointD.x,pointD.y,pointD.z);
-    polyline.lineTo(pointC.x,pointC.y,pointC.z);
-    polyline.lineTo(pointA.x,pointA.y,pointA.z);
-    
-    polyline.lineTo(pointE.x,pointE.y,pointE.z);
-    polyline.lineTo(pointF.x,pointF.y,pointF.z);
-    polyline.lineTo(pointI.x,pointI.y,pointI.z);
-    polyline.lineTo(pointG.x,pointG.y,pointG.z);
-    polyline.lineTo(pointE.x,pointE.y,pointE.z);
-    
-    polyline.close();
+//    ofVec3f pointA = ofVec3f(0,0,0);
+//    ofVec3f pointB = ofVec3f(100,0,0);
+//    ofVec3f pointC = ofVec3f(0,100,0);
+//    ofVec3f pointD = ofVec3f(100,100,0);
+//    
+//    ofVec3f pointE = ofVec3f(0,0,100);
+//    ofVec3f pointF = ofVec3f(100,0,100);
+//    ofVec3f pointG = ofVec3f(0,100,100);
+//    ofVec3f pointI = ofVec3f(100,100,100);
+//    
+//    polyline.lineTo(pointA.x,pointA.y,pointA.z);
+//    polyline.lineTo(pointB.x,pointB.y,pointB.z);
+//    polyline.lineTo(pointD.x,pointD.y,pointD.z);
+//    polyline.lineTo(pointC.x,pointC.y,pointC.z);
+//    polyline.lineTo(pointA.x,pointA.y,pointA.z);
+//    
+//    polyline.lineTo(pointE.x,pointE.y,pointE.z);
+//    polyline.lineTo(pointF.x,pointF.y,pointF.z);
+//    polyline.lineTo(pointI.x,pointI.y,pointI.z);
+//    polyline.lineTo(pointG.x,pointG.y,pointG.z);
+//    polyline.lineTo(pointE.x,pointE.y,pointE.z);
+//    
+//    polyline.close();
     //ofVoxel
-    ofVoxel.set(100);
-    ofVoxel.setGlobalPosition(ofVoxel.getHeight()/2, ofVoxel.getHeight()/2, -ofVoxel.getHeight()/2);
-    ofVoxel.setResolution(1);
+//    ofVoxel.set(100);
+//    ofVoxel.setGlobalPosition(ofVoxel.getHeight()/2, ofVoxel.getHeight()/2, -ofVoxel.getHeight()/2);
+//    ofVoxel.setResolution(1);
     
-    
-
-    
-    ofEnableSmoothing();
-    
-    light.setup();
-    light.setPosition(0, 500, 0);
-    light.setAmbientColor(ofFloatColor(0.4, 1.0));
-    // we set up a plane on which the truck will move
-    plane.set(1000, 1000);
-    //plane.rotateDeg(270, 1, 0 , 0);
-    plane.rotateDeg(-90, glm::vec3{1,0,0});
-    //plane.move(0, -49, 0);
-    plane.setGlobalPosition(0, 0, 0);
-    
-    float width     = ofGetWidth() * .12;
-    float height    = ofGetHeight() * .12;
-    box.set( 1000/*width*1.25*/ );
-    box.setGlobalPosition(box.getWidth()/2, box.getHeight()/2, box.getDepth()/2 * -1);
-    box.setResolution(1);
-    
-
-    ofFloatColor roadColor(1,1,0,0.1);
-    roadMaterial.setDiffuseColor(roadColor);
-    
-    
-    //roadColor.a = 1.0;
-    //roadMaterial.setDiffuseColor(roadColor);
-    //roadMaterial.setShininess(0.01);
-
     //Set our camera up in a nice location to view our awesome car
     //-965, 586, -1084
     //cam.setPosition(-965,2000,-1000);
     
-    cam.setGlobalPosition(500, 500, 1500);
+    
+    
+    /*Boid*/
+    //boid = Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z);
+    //boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
+    
+    ofEnableSmoothing();
+    
+    //
+    //CAMERA SETTINGS
+    //
+    cam.setGlobalPosition(1000, 1000, 2000);
     //cam.lookAt(truck.getNode(), {0.f, 1.f, 0.f});
     //cam.setNearClip(0);
     cam.setFarClip(10000);
     
-    /*Boid*/
-    //boid = Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z);
-   // boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
     
-    for(size_t i = 0; i < BOIDS_COUNT; i++)
-    {
-        boids.push_back(Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z));
-        boidSpheres.push_back(ofSpherePrimitive());
-        boidSpheres[i].set(10, 16);
-    }
+    float width     = ofGetWidth() * .12;
+    float height    = ofGetHeight() * .12;
+
+    ofFloatColor roadColor(0.9,0.9,0.9,1);
+    roadMaterial.setDiffuseColor(roadColor);
+    //roadColor.a = 1.0;
+    //roadMaterial.setDiffuseColor(roadColor);
+    //roadMaterial.setShininess(0.01);
     
-    /*GUI*/
+    //
+    // GUI
+    //
 
     gui.setup("Test settings"); // most of the time you don't need a name but don't forget to call setup
     gui.add(guiFramesPerSecond.set( "FPS", 1));
@@ -119,15 +103,28 @@ void ofApp::setup(){
     //--------   Uniform grid
     //
     voxelGridResolution = 1;
-    gridWidth = 4;
-    gridHeight = 4;
-    gridDepth = 6;
+    gridWidth = 40;
+    gridHeight = 40;
+    gridDepth = 60;
+    
+    
+    //ofBox mesh that represets the bounding volume of the environmental obstacles
+    box.set( gridWidth * VOXEL_SIZE, gridHeight * VOXEL_SIZE, gridDepth * VOXEL_SIZE);
+    box.setGlobalPosition(box.getWidth()/2, box.getHeight()/2, box.getDepth()/2 * -1);
+    box.setResolution(1);
+    
+    //ofQuad that represents the floor of the scene
+    plane.set(gridWidth * VOXEL_SIZE, gridDepth * VOXEL_SIZE ,gridWidth, gridDepth);
+    plane.rotateDeg(-90, glm::vec3{1,0,0});
+    //plane.move(0, -49, 0);
+    plane.setGlobalPosition(plane.getWidth()/2, 0, box.getDepth()/2 * -1);
     
     //I am removing the pivot argument to use the constructor that sets the grid at [0,0,0]
     uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, /*ofVec3f(0,0,0),*/ VOXEL_SIZE);
     boidSphere.set(10, 16);
     std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
     
+    //ofPrimivite Sphere Mesh to represent the Boid
     ofVoxelB.set(VOXEL_SIZE);
     ofVoxelB.setGlobalPosition(ofVoxelB.getHeight()/2 + ofVoxel.getHeight(), ofVoxelB.getHeight()/2, -ofVoxelB.getHeight()/2);
     ofVoxelB.setResolution(1);
@@ -139,6 +136,23 @@ void ofApp::setup(){
     spatialQueryPosition = ofVec3f(0,0,0);
     
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
+    
+    //Instantiating the Boids in the center of the bounding volume
+    for(size_t i = 0; i < BOIDS_COUNT; i++)
+    {
+        boids.push_back(Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z));
+        boidSpheres.push_back(ofSpherePrimitive());
+        boidSpheres[i].set(10, 16); //radius and resolution
+    }
+    
+    //
+    // LIGHT SETTINGS
+    //
+    
+    light.setup();
+    light.setPosition(box.getWidth()/2, box.getHeight(), box.getDepth()/2 * -1);
+    light.setAmbientColor(ofFloatColor(0.4, 1.0));
+    
 }
 bool isInside = false;
 //--------------------------------------------------------------
@@ -149,6 +163,8 @@ void ofApp::update(){
     //boid.move();
     //boid.applyBoundingForce(ofVec3f(box.getPosition()), box.getWidth(), box.getHeight(), box.getDepth());
     //boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
+    
+    //voxelGridScene.update();
     
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
@@ -170,15 +186,15 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    // draw a gradient in the background
-    //ofBackgroundGradient(ofColor(10), ofColor(50));
-    ofBackground(0, 0, 0);
+    //voxelGridScene.draw();
+    
+    ofBackground(255,255,255,255); // draw a gradient in the background with ofBackgroundGradient(ofColor(10), ofColor(50));
     
     ofEnableDepthTest();
     cam.begin();
         
         roadMaterial.begin();
-        //plane.draw();
+        plane.draw();
         //ofVoxel.draw();
         
         //boidSphere.draw();
@@ -192,7 +208,7 @@ void ofApp::draw(){
         roadMaterial.end();
     
         plane.drawAxes(500);
-        ofSetColor(50, 50, 50);
+        ofSetColor(100, 100, 100);
         box.drawWireframe();
     
         
@@ -256,6 +272,9 @@ enum KeyCode // Printed 'key' inside keyPressed() to get the values
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    
+    //voxelGridScene.pressedEvents();
+    
     //std::cout << key << '\n';
     switch (key) {
         case KeyCode::W:
