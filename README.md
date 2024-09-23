@@ -6,10 +6,21 @@ cd openframeworks_version_####/apps/myApps/
 git clone [URL]
 ```
 
-# Backlog
-- [ ] Oranize objects into scenes
-- [ ] Create volume representing the domain of the environment
-- [ ] subdivide the volume into a uniform grid of voxels, visualize them  
+## Main Backlog
+- [ ] Add a member variable to store the boids count of a voxel and update it
+- [ ] Enable boids to detect when a voxel in the field of view is FULL (is an obstacle)
+- [ ] Implement voxelization of a mesh
+- [ ] Implement Octree for mesh voxelization
+- [x] Create a volume representing the domain of the environment
+- [x] subdivide the volume into a uniform grid of voxels, visualize them
+## Utilities Backlog
+- [ ] Enable the grid to start at any point
+- [ ] Enabled GUI to update the size of the width, height, and depth of the grid. Add update button
+- [ ] Organize objects into scenes
+- [ ] Add a vector displaying the direction of the boid
+- [ ] Add point on MAX visibility distance in the head of the direction vector
+- [ ] Implement Boids behaviours
+
 
 
 ## Useful snipets

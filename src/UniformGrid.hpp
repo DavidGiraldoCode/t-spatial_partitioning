@@ -27,7 +27,7 @@ public:
            void          addObjectToVoxel(int i);
     const  int           getVoxelState(int i) const;
 private:
-    struct Voxel
+    struct Voxel // Bucket in Rynolds PS3 approach
     {
         size_t index = 0;
         unsigned state = 0; // 0 empty, 1 is full
