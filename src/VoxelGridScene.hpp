@@ -20,61 +20,71 @@ public:
     void setup() override;
     void update() override;
     void draw() override;
+    void keyPressed(int key) override;
     
-    //new stuff
-    ofLight light;// = ofLight();
-    ofEasyCam cam;
-
-    ofBoxPrimitive box;
-    ofPlanePrimitive plane;
+    enum KeyCode // Printed 'key' inside keyPressed() to get the values
+    {
+        W = 119,
+        A = 97,
+        S = 115,
+        D = 100,
+        SPACE = 32,
+        UP = 57357,
+        DOWN = 57359,
+    };
     
-    ofMaterial roadMaterial;
-
-    /* Custom Voxel*/
-    ofVboMesh mesh;
-    ofVboMesh mesh2;
-    ofPolyline polyline;
-
-    ofBoxPrimitive ofVoxel;
-    ofBoxPrimitive ofVoxelB;
-
-    /*Boid behaviour*/
-    std::vector<Boid> boids = {};
-    std::vector<ofSpherePrimitive> boidSpheres = {};
-    //Boid boid;
-    ofSpherePrimitive boidSphere;
+    //==================================== Game settings
+    const int           BOIDS_COUNT = 100;
+    const float         VOXEL_SIZE = 200;
+    const unsigned      gridWidth = 10;
+    const unsigned      gridHeight = 10;
+    const unsigned      gridDepth = 15;
+    const float         CURSOR_SPEED = 50.0f;
     
-    /*GUI*/
-
-    ofParameter<float> guiFramesPerSecond;
-    ofParameter<int> guiVoxelResolution;
-
-    ofParameter<unsigned> guiGridWidth;
-    ofParameter<unsigned> guiGridHeight;
-    ofParameter<unsigned> guiGridDepth;
-
-    ofParameter<ofColor> color;
-    ofParameter<glm::vec2> center;
-    ofParameter<int> circleResolution;
-    ofParameter<bool> guiVoxelVisibility;
-    ofxButton twoCircles;
-    ofxButton ringButton;
-    ofParameter<string> screenSize;
-
-    ofxPanel gui;
-
-    // Uniform spatial partitioning
-    //configurations for the test
-    int voxelGridResolution;
-    unsigned gridWidth, gridHeight, gridDepth;
-    //UniformGrid uniformGrid; //= UniformGrid(2,2,2, ofVec3f(0,0,0),ofVec3f(10,10,10));
-    UniformGrid uniformGrid;// = UniformGrid(gridWidth, gridHeight, gridDepth, ofVec3f(0,0,0));
-    ofMaterial emptyVoxelMAT;
-
+    //==================================== Game state
+    bool                isInside = false;
+    int                 cursorCurrentPos = -1;
+    int                 cursorPreviousPos = -1;
+    
+    //==================================== Camera
+    ofEasyCam           cam;
+    
+    //==================================== Ligths
+    ofLight             light;// = ofLight();
+    
+    //==================================== Materials
+    ofMaterial          roadMaterial;
+    ofMaterial          emptyVoxelMAT;
+    
+    //==================================== Actors
+    ofBoxPrimitive                  obstaclesBoundingVolume;
+    ofPlanePrimitive                environmentGround;
+    ofBoxPrimitive                  voxelMesh;
+    std::vector<Boid>               boids = {};
+    std::vector<ofSpherePrimitive>  boidMeshes = {};
+    ofSpherePrimitive               boidSphere;
+    UniformGrid                     uniformGrid;
+    
     //Sphere representing a 3D point moved by WASD and UP DOWN to query the space
-    ofSpherePrimitive spatialQueryCursor;
-    ofVec3f spatialQueryPosition;
-    int cursorCurrentPos = -1;
-    int cursorPreviousPos = -1;
-    const float CURSOR_SPEED = 50.0f;
+    ofSpherePrimitive               spatialQueryCursor;
+    ofVec3f                         spatialQueryPosition;
+    
+    //==================================== GUI
+    ofParameter<float>      guiFramesPerSecond;
+    ofParameter<int>        guiVoxelResolution;
+
+    ofParameter<unsigned>   guiGridWidth;
+    ofParameter<unsigned>   guiGridHeight;
+    ofParameter<unsigned>   guiGridDepth;
+
+    ofParameter<ofColor>    color;
+    ofParameter<glm::vec2>  center;
+    ofParameter<int>        circleResolution;
+    ofParameter<bool>       guiVoxelVisibility;
+    ofxButton               twoCircles;
+    ofxButton               ringButton;
+    ofParameter<string>     screenSize;
+
+    ofxPanel                gui;
+    
 };
