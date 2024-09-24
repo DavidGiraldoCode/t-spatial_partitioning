@@ -12,10 +12,18 @@
 #include "UniformGrid.hpp"
 #include "ofxGui.h"
 
+/**
+ Recall: A vtable (virtual table) is a table of function pointers that is used to implement dynamic (runtime) polymorphism in C++. It allows objects of derived classes to invoke overridden functions based on their actual type, even when accessed via a pointer to a base class.
+ **/
+
 class Scene: public ofBaseApp
 {
 public:
-    virtual ~Scene();
+    virtual ~Scene() {};
+    void setup() override;
+    void update() override;
+    void draw() override;
+    //void keyPressed(int key) override;
     
     enum KeyCode // Printed 'key' inside keyPressed() to get the values
     {

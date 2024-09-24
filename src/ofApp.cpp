@@ -2,23 +2,51 @@
 /*
  In OpenGL Y is Up
  */
+int currentScene = 0;
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-    voxelGridScene = new VoxelGridScene();
+    voxelGridScene      = new VoxelGridScene();
+    testDerivedScene    = new TestDerivedScene();
+    
     voxelGridScene->setup();
+    testDerivedScene->setup();
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    voxelGridScene->update();
+    switch(currentScene)
+    {
+    case 49:
+        voxelGridScene->update();
+        break;
+    case 50:
+        testDerivedScene->update();
+        break;
+    default:
+        voxelGridScene->update();
+        break;
+    };
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    voxelGridScene->draw();
+    switch(currentScene)
+    {
+    case 49:
+        voxelGridScene->draw();
+        break;
+    case 50:
+        testDerivedScene->draw();
+        break;
+    default:
+        voxelGridScene->draw();
+        break;
+    };
 
 }
 
@@ -26,13 +54,29 @@ void ofApp::draw()
 void ofApp::exit()
 {
     delete voxelGridScene;
+    delete testDerivedScene;
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-    voxelGridScene->keyPressed(key);
+    //voxelGridScene->keyPressed(key);
+    switch(currentScene)
+    {
+    case 49: //1
+        voxelGridScene->keyPressed(key);
+        break;
+    case 50: //2
+        testDerivedScene->keyPressed(key);
+        break;
+    default:
+        voxelGridScene->keyPressed(key);
+        break;
+    };
+    currentScene = key;
+    //std::cout<< key<<" Change to default Scene\n";
 }
 
 //--------------------------------------------------------------
