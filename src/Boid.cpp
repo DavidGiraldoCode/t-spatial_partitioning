@@ -149,7 +149,7 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
     if(currentPositionInGrid != -1) // We are still inside the grid, so notify the new voxel
         uniformGrid.addObjectToVoxel(currentPositionInGrid);
     
-    
+    //TODO review this empty if
     if(previousPositionInGrid != -1); //The boid was not outside, notify previous voxel
         uniformGrid.removeObjectFromVoxel(previousPositionInGrid);
     

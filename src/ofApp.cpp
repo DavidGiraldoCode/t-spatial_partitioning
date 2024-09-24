@@ -4,11 +4,12 @@
 /*
  In OpenGL Y is Up
  */
-const int BOIDS_COUNT = 100;
-float VOXEL_SIZE = 200;
+//const int BOIDS_COUNT = 100;
+//float VOXEL_SIZE = 200;
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //voxelGridScene.setup();
+    voxelGridScene = new VoxelGridScene();
+    voxelGridScene->setup();
     
     std::cout << "Hello in setup" << '\n';
     
@@ -60,6 +61,7 @@ void ofApp::setup(){
     //boid = Boid(ofVec3f(box.getPosition()).x, ofVec3f(box.getPosition()).y, ofVec3f(box.getPosition()).z);
     //boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
     
+    /*
     ofEnableSmoothing();
     
     //
@@ -120,7 +122,7 @@ void ofApp::setup(){
     plane.setGlobalPosition(plane.getWidth()/2, 0, box.getDepth()/2 * -1);
     
     //I am removing the pivot argument to use the constructor that sets the grid at [0,0,0]
-    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, /*ofVec3f(0,0,0),*/ VOXEL_SIZE);
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, /ofVec3f(0,0,0),/ VOXEL_SIZE);
     boidSphere.set(10, 16);
     std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
     
@@ -152,11 +154,13 @@ void ofApp::setup(){
     light.setup();
     light.setPosition(box.getWidth()/2, box.getHeight(), box.getDepth()/2 * -1);
     light.setAmbientColor(ofFloatColor(0.4, 1.0));
+    */
     
 }
-bool isInside = false;
+//bool isInside = false;
 //--------------------------------------------------------------
 void ofApp::update(){
+    voxelGridScene->update();
     /*Custom Voxel*/
     //mesh.getVertices()[1].x+=0.1;
     //mesh2.getVertices()[1].x=mesh.getVertices()[1].x + 0.1;
@@ -165,7 +169,7 @@ void ofApp::update(){
     //boidSphere.setGlobalPosition(boid.getPosition().x, boid.getPosition().y, boid.getPosition().z);
     
     //voxelGridScene.update();
-    
+    /*
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
         boids[i].applyBoundingForce(ofVec3f(box.getPosition()), box.getWidth(), box.getHeight(), box.getDepth());
@@ -179,14 +183,14 @@ void ofApp::update(){
     
     
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
-    
+    */
     
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    //voxelGridScene.draw();
+    voxelGridScene->draw();
     //ofSetColor(255, 100, 100, 50);
     //ofVoxel.drawFaces();
     
@@ -198,7 +202,7 @@ void ofApp::draw(){
     //polyline.draw();
     //ofVoxel.draw();
     //boidSphere.draw();
-    
+    /*
     ofBackground(255,255,255,255); // draw a gradient in the background with ofBackgroundGradient(ofColor(10), ofColor(50));
     
     ofEnableDepthTest();
@@ -261,12 +265,14 @@ void ofApp::draw(){
     //
     guiFramesPerSecond.set(ofGetFrameRate());
     gui.draw();
+    */
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-
+    delete voxelGridScene;
 }
+/*
 enum KeyCode // Printed 'key' inside keyPressed() to get the values
 {
     W = 119,
@@ -276,13 +282,13 @@ enum KeyCode // Printed 'key' inside keyPressed() to get the values
     SPACE = 32,
     UP = 57357,
     DOWN = 57359,
-};
+};*/
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
     //voxelGridScene.pressedEvents();
-    
+    /*
     //std::cout << key << '\n';
     switch (key) {
         case KeyCode::W:
@@ -319,7 +325,7 @@ void ofApp::keyPressed(int key){
     int cursorNewPos = uniformGrid.isPointInsideAVoxel(spatialQueryPosition);
     
     //std::cout << "Cursor Position in Grid: " << cursorNewPos<< '\n';
-    /*TEMPORAL using Boid's updatePositionInWorldGrid*/
+    //TEMPORAL using Boid's updatePositionInWorldGrid
     
     if(cursorNewPos == cursorCurrentPos)
     {
@@ -339,6 +345,7 @@ void ofApp::keyPressed(int key){
     
      //Update position.
     cursorPreviousPos = cursorCurrentPos;
+    */
 }
 
 //--------------------------------------------------------------

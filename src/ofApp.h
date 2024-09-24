@@ -1,10 +1,11 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Messenger.hpp"
-#include "UniformGrid.hpp"
-#include "ofxGui.h"
-#include "Boid.hpp"
+//#include "Messenger.hpp"
+//#include "UniformGrid.hpp"
+//#include "ofxGui.h"
+//#include "Boid.hpp"
+#include "VoxelGridScene.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -26,7 +27,11 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h) override;
 		void dragEvent(ofDragInfo dragInfo) override;
 		void gotMessage(ofMessage msg) override;
+    
+        //Working with Scenes
+        VoxelGridScene * voxelGridScene;
 		
+    /*
         //new stuff
         ofLight light;// = ofLight();
         ofEasyCam cam;
@@ -36,7 +41,7 @@ class ofApp : public ofBaseApp{
         
         ofMaterial roadMaterial;
     
-        /* Custom Voxel*/
+        //Custom Voxel/
         ofVboMesh mesh;
         ofVboMesh mesh2;
         ofPolyline polyline;
@@ -44,13 +49,13 @@ class ofApp : public ofBaseApp{
         ofBoxPrimitive ofVoxel;
         ofBoxPrimitive ofVoxelB;
     
-        /*Boid behaviour*/
+        //Boid behaviour
         std::vector<Boid> boids = {};
         std::vector<ofSpherePrimitive> boidSpheres = {};
         //Boid boid;
         ofSpherePrimitive boidSphere;
         
-        /*GUI*/
+        //GUI
     
         ofParameter<float> guiFramesPerSecond;
         ofParameter<int> guiVoxelResolution;
@@ -83,4 +88,5 @@ class ofApp : public ofBaseApp{
         int cursorCurrentPos = -1;
         int cursorPreviousPos = -1;
         const float CURSOR_SPEED = 50.0f;
+    */
 };

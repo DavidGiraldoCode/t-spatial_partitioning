@@ -8,7 +8,7 @@
 
 #include "Scene.hpp"
 
-class Scene
-{
-    
-};
+//class Scene
+//{
+//    
+//};

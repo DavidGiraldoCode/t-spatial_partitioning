@@ -2,12 +2,20 @@
 //  Scene.hpp
 //  s-spatial_partitioning
 //
-//  Created by David MacBook on 2024-09-11.
+//  Created by David MacBook on 2024-09-24.
 //
 
-#ifndef Scene_hpp
-#define Scene_hpp
-
+#pragma once
 #include <stdio.h>
+#include <string>
 
-#endif /* Scene_hpp */
+class Scene
+{
+public:
+    Scene();
+    ~Scene();
+    void setup();
+    void update();
+    void draw();
+    void pressedEvents();
+};
