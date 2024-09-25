@@ -24,6 +24,7 @@ public:
     const   float       getReach();
     const   ofVec3f&    getDirection() const;
     const   ofVec3f&    getOrigin() const;
+    const   ofVec3f&    getFristIntersection() const;
     const   bool        intersectPlane(const ofVec3f &planeNormal,
                                        const ofVec3f &planePosition,
                                        const ofVec3f &rayOrigin,

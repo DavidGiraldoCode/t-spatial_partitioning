@@ -166,7 +166,7 @@ void VoxelGridScene::update()
     
     //upadate the ray vector
     manualTestRay.setOrigin(spatialQueryPosition);
-    manualTestRay.setDirection(ofVec3f(0,0,1));
+    manualTestRay.setDirection(ofVec3f(0,0,-1)); // The forward vector in this scene is -1
     
     ofVec3f planeNormal = manualTestRay.getDirection() * -1;
     ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
@@ -178,7 +178,13 @@ void VoxelGridScene::update()
                                                          manualTestRay.getDirection(),
                                                          lambaT);
     
-    std::cout << "intersectionTest: " << intersectionTest << '\n';
+    std::cout << "intersectionTest: " << intersectionTest
+                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(manualTestRay.getFristIntersection())
+                << "\n | is spatialQueryPosition in Grid: " << uniformGrid.isPointInsideAVoxel(spatialQueryPosition)
+                << "\n | spatialQueryPosition: " << spatialQueryPosition
+                << "\n | Ray FristIntersection: " << manualTestRay.getFristIntersection()
+                <<'\n';
+    
     
 }
 

@@ -53,6 +53,14 @@ const ofVec3f&  Ray::getOrigin() const
     return m_origin;
 }
 
+const ofVec3f&  Ray::getFristIntersection() const
+{
+    return m_firstIntersection;
+}
+
+
+
+
 const float Ray::getReach()
 {
     return m_reach;
@@ -67,18 +75,21 @@ const bool Ray::intersectPlane(const ofVec3f &planeNormal,
     float parallelCheck = planeNormal.dot(rayDirection);
     float PARALLEL_THRESHOLD = 0.00000009; // To avoid multiplying by 0;
     std::cout << planeNormal << " planeNormal \n";
+    std::cout << planePosition << " planePosition \n";
     std::cout << rayDirection << " rayDirection \n";
     std::cout << parallelCheck << " parallelCheck \n";
     
     if(parallelCheck > PARALLEL_THRESHOLD || parallelCheck < PARALLEL_THRESHOLD * -1)
     {
         
-        lambaT = -1 * (planeNormal.dot(planePosition + rayOrigin)) / parallelCheck;
-        ofVec3f intersectionPoint = rayOrigin + rayDirection * lambaT;
-        std::cout << intersectionPoint << " intersectionPoint \n";
+        lambaT = (planeNormal.dot(planePosition - rayOrigin)) / parallelCheck;
+        std::cout << lambaT << " lambaT \n";
+        m_firstIntersection = rayOrigin + rayDirection * lambaT;
+        std::cout << m_firstIntersection << " intersectionPoint \n";
         
         return (lambaT >= 0);
     }
     
     return false;
 }
+
