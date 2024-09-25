@@ -130,8 +130,9 @@ void VoxelGridScene::setup()
     //rayPathRenderer.close();
     
     manualTestRay = Ray();
+    manualTestRay.setDirection(ofVec3f(0,0,-1));
     primitive.getMesh().addVertex(ofVec3f(-5,0,0));
-    primitive.getMesh().addVertex(ofVec3f(0,0, manualTestRay.getReach()));
+    primitive.getMesh().addVertex(manualTestRay.getDirection() * manualTestRay.getReach());
     primitive.getMesh().addVertex(ofVec3f(5,0,0));
     primitive.getMesh().setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 }
@@ -160,13 +161,16 @@ void VoxelGridScene::update()
     
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
     primitive.setPosition(spatialQueryPosition);
-    //The Ray starts at the spatialQuery sampler to a forward direction * the range of the ray.
-    manualTestRay.getFirstIntersectionPoint(spatialQueryPosition, spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
-    primitive.lookAt(spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
     
+    //The Ray starts at the spatialQuery sampler to a forward direction * the range of the ray.
     //upadate the ray vector
     manualTestRay.setOrigin(spatialQueryPosition);
     manualTestRay.setDirection(ofVec3f(0,0,-1)); // The forward vector in this scene is -1
+    
+    manualTestRay.getFirstIntersectionPoint(spatialQueryPosition, spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
+    primitive.lookAt(spatialQueryPosition + manualTestRay.getDirection() * manualTestRay.getReach());
+    
+    
     
     ofVec3f planeNormal = manualTestRay.getDirection() * -1;
     ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
