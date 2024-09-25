@@ -19,11 +19,13 @@ public:
     ~Ray();
             void        setOrigin(const ofVec3f & origin);
             void        setDirection(const ofVec3f & direction);
-    const   ofVec3f&     getIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
-    const   ofVec3f&     getFirstIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
+    const   ofVec3f&    getIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
+    const   ofVec3f&    getFirstIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
+    const   float       getReach();
 private:
     ofVec3f      m_origin;
     ofVec3f      m_direction;
     ofVec3f      m_firstIntersection;
     ofVec3f      m_newIntersection;
+    float        reach = 400;
 };

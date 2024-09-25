@@ -73,7 +73,7 @@ public:
     //Sphere representing a 3D point moved by WASD and UP DOWN to query the space
     ofSpherePrimitive               spatialQueryCursor;
     ofVec3f                         spatialQueryPosition;
-    
+    Ray                             manualTestRay;
     //==================================== GUI
     ofParameter<float>      guiFramesPerSecond;
     ofParameter<int>        guiVoxelResolution;

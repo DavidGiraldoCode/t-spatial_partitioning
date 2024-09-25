@@ -128,8 +128,10 @@ void VoxelGridScene::setup()
     rayWireMesh.addColor(ofColor::red);
     rayWireMesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
     //rayPathRenderer.close();
+    
+    manualTestRay = Ray();
     primitive.getMesh().addVertex(ofVec3f(-5,0,0));
-    primitive.getMesh().addVertex(ofVec3f(0,0,-400));
+    primitive.getMesh().addVertex(ofVec3f(0,0, manualTestRay.getReach()));
     primitive.getMesh().addVertex(ofVec3f(5,0,0));
     primitive.getMesh().setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 }
@@ -144,20 +146,23 @@ void VoxelGridScene::update()
         
         boids[i].updatePositionInWorldGrid(uniformGrid);
         //isInside = uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
-        forwardRays[i].getFirstIntersectionPoint(boids[i].getPosition(), boids[i].getDirection());
+        //forwardRays[i].getFirstIntersectionPoint(boids[i].getPosition(), boids[i].getDirection());
         
         rayPathRenderer.moveTo(boids[i].getPosition());
         rayPathRenderer.lineTo(boids[i].getPosition() + boids[i].getDirection() * 100);
         
-        primitive.setPosition(boids[i].getPosition());
-        primitive.lookAt(boids[i].getPosition() + boids[i].getDirection() * 100);
+        //primitive.setPosition(boids[i].getPosition());
+        //primitive.lookAt(boids[i].getPosition() + boids[i].getDirection() * 100);
         //rayWireMesh
     }
     
     
     
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
-    
+    primitive.setPosition(spatialQueryPosition);
+    //The Ray starts at the spatialQuery sampler to a forward direction * the range of the ray.
+    manualTestRay.getFirstIntersectionPoint(spatialQueryPosition, spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
+    primitive.lookAt(spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
     
 }
 

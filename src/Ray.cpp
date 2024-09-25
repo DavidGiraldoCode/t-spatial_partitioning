@@ -38,5 +38,12 @@ const ofVec3f& Ray::getFirstIntersectionPoint(const ofVec3f & origin, const ofVe
 {
     m_newIntersection = ofVec3f(0,0,0);
     
+    std::cout << "Ray starts at: [" << origin << "] - extends until: [" << direction <<"]" << '\n';
+    
     return m_newIntersection;
+}
+
+const float Ray::getReach()
+{
+    return reach;
 }
