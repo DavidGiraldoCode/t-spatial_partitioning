@@ -22,10 +22,17 @@ public:
     const   ofVec3f&    getIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
     const   ofVec3f&    getFirstIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
     const   float       getReach();
+    const   ofVec3f&    getDirection() const;
+    const   ofVec3f&    getOrigin() const;
+    const   bool        intersectPlane(const ofVec3f &planeNormal,
+                                       const ofVec3f &planePosition,
+                                       const ofVec3f &rayOrigin,
+                                       const ofVec3f &rayDirection,
+                                       float &lambaT);
 private:
     ofVec3f      m_origin;
     ofVec3f      m_direction;
     ofVec3f      m_firstIntersection;
     ofVec3f      m_newIntersection;
-    float        reach = 400;
+    float        m_reach = 400;
 };

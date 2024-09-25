@@ -164,6 +164,22 @@ void VoxelGridScene::update()
     manualTestRay.getFirstIntersectionPoint(spatialQueryPosition, spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
     primitive.lookAt(spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
     
+    //upadate the ray vector
+    manualTestRay.setOrigin(spatialQueryPosition);
+    manualTestRay.setDirection(ofVec3f(0,0,1));
+    
+    ofVec3f planeNormal = manualTestRay.getDirection() * -1;
+    ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
+    float lambaT;
+    
+    bool intersectionTest = manualTestRay.intersectPlane(planeNormal,
+                                                         planePosition,
+                                                         manualTestRay.getOrigin(),
+                                                         manualTestRay.getDirection(),
+                                                         lambaT);
+    
+    std::cout << "intersectionTest: " << intersectionTest << '\n';
+    
 }
 
 void VoxelGridScene::draw()

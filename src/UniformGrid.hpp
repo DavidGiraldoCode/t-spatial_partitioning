@@ -19,6 +19,7 @@ public:
     UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
            void          getVoxelByWorldCoordinates(const ofVec3f &point);
+    // TODO add a method that allow for unit increment (i,j,k)
            void          getVoxelByIndex(size_t index);
            ofVec3f       getVoxelPositionByIndex(size_t index);
     const  size_t        getGridSize();
