@@ -11,6 +11,7 @@
 #include "UniformGrid.hpp"
 #include "ofxGui.h"
 #include "Boid.hpp"
+#include "Ray.hpp"
 
 class VoxelGridScene : public ofBaseApp
 {
@@ -34,7 +35,7 @@ public:
     };
     
     //==================================== Game settings
-    const int           BOIDS_COUNT = 100;
+    const int           BOIDS_COUNT = 1;
     const float         VOXEL_SIZE = 200;
     const unsigned      gridWidth = 10;
     const unsigned      gridHeight = 10;
@@ -61,9 +62,13 @@ public:
     ofPlanePrimitive                environmentGround;
     ofBoxPrimitive                  voxelMesh;
     std::vector<Boid>               boids = {};
+    std::vector<Ray>                forwardRays = {};
     std::vector<ofSpherePrimitive>  boidMeshes = {};
     ofSpherePrimitive               boidSphere;
     UniformGrid                     uniformGrid;
+    
+    ofPath                          rayPathRenderer;
+    ofMesh                          rayWireMesh;
     
     //Sphere representing a 3D point moved by WASD and UP DOWN to query the space
     ofSpherePrimitive               spatialQueryCursor;

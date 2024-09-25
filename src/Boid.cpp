@@ -60,11 +60,15 @@ void Boid::move()
 //    << ", z: " << position.z << "] \n";
 }
 
-const ofVec3f Boid::getPosition()
+const ofVec3f& Boid::getPosition()
 {
     return position;
 }
 
+const ofVec3f Boid::getDirection() //Check is this could be memory leak
+{
+    return velocity.getNormalized();
+}
 
 void Boid::applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth)
 {
