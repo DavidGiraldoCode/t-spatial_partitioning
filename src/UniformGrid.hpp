@@ -35,6 +35,15 @@ private:
         unsigned state = 0; // 0 empty, 1 is full
         unsigned obstacle = 0;
         ofVec3f position = ofVec3f(0,0,0);
+        // ADD the Normals of each face, 6 normals
+        /**
+         [1,0,0]
+         [0,1,0]
+         [0,0,1]
+         [-1,0,0]
+         [0,-1,0]
+         [0,0,-1]
+         **/
         Voxel(){};
         Voxel(size_t index, const ofVec3f &position)
         {

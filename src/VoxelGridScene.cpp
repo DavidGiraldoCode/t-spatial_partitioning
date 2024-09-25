@@ -189,7 +189,12 @@ void VoxelGridScene::update()
                 << "\n | Ray FristIntersection: " << manualTestRay.getFristIntersection()
                 <<'\n';
     
-    
+    //TODO
+    /**
+     Visualize the voxels being intersertec by the ray
+        Create the method for moving forward on the grid by units [i,j,k]
+        Parametrize the Ray so it can be attached to the boid and compute the intersection.
+     **/
 }
 
 void VoxelGridScene::draw()
