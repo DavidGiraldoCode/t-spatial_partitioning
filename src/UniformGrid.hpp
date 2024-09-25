@@ -19,6 +19,7 @@ public:
     UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
            void          getVoxelByWorldCoordinates(const ofVec3f &point);
+    // TODO add a method that allow for unit increment (i,j,k)
            void          getVoxelByIndex(size_t index);
            ofVec3f       getVoxelPositionByIndex(size_t index);
     const  size_t        getGridSize();
@@ -34,6 +35,15 @@ private:
         unsigned state = 0; // 0 empty, 1 is full
         unsigned obstacle = 0;
         ofVec3f position = ofVec3f(0,0,0);
+        // ADD the Normals of each face, 6 normals
+        /**
+         [1,0,0]
+         [0,1,0]
+         [0,0,1]
+         [-1,0,0]
+         [0,-1,0]
+         [0,0,-1]
+         **/
         Voxel(){};
         Voxel(size_t index, const ofVec3f &position)
         {

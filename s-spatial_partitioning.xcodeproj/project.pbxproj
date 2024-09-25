@@ -14,6 +14,7 @@
 		"73B5AE2F-9B73-4DB3-91A5-37DD17E439C4" /* ofxLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "D3A71A76-C0DB-49E7-A9B5-EA5BC6B80C3F" /* ofxLabel.cpp */; };
 		"8EC6C7A3-A284-44A1-8AA9-737DA356ACD8" /* ofxColorPicker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "7323A453-4E06-4BCD-8557-75484D5F3095" /* ofxColorPicker.cpp */; };
 		"8F2B853E-618F-4508-BADA-CB4E3FDDAB61" /* ofxInputField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "9DE345E9-FC0B-4372-B320-0691343B7367" /* ofxInputField.cpp */; };
+		9607A2542CA443AE005702B7 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9607A2532CA443AD005702B7 /* Ray.cpp */; };
 		9616BD362C88EEE1006DC1FC /* UniformGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9616BD342C88EEE1006DC1FC /* UniformGrid.cpp */; };
 		9628417C2C8DE325000FE64C /* Boid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9628417A2C8DE325000FE64C /* Boid.cpp */; };
 		9646CA9F2CA304F8007608B9 /* VoxelGridScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9646CA9E2CA304F5007608B9 /* VoxelGridScene.cpp */; };
@@ -71,6 +72,8 @@
 		"859EF162-9DF5-489C-B657-226C7701DAAC" /* ofxGuiGroup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxGuiGroup.h; path = ../../../addons/ofxGui/src/ofxGuiGroup.h; sourceTree = SOURCE_ROOT; };
 		"9513BE81-344E-474C-8C80-9896B9032491" /* ofxColorPicker.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxColorPicker.h; path = ../../../addons/ofxGui/src/ofxColorPicker.h; sourceTree = SOURCE_ROOT; };
 		"9552997C-1511-43A1-B81E-2EE7B0D6CC8D" /* Messenger.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = Messenger.cpp; path = src/Messenger.cpp; sourceTree = SOURCE_ROOT; };
+		9607A2522CA44231005702B7 /* Ray.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ray.hpp; sourceTree = "<group>"; };
+		9607A2532CA443AD005702B7 /* Ray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ray.cpp; sourceTree = "<group>"; };
 		9616BD342C88EEE1006DC1FC /* UniformGrid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UniformGrid.cpp; sourceTree = "<group>"; };
 		9616BD352C88EEE1006DC1FC /* UniformGrid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UniformGrid.hpp; sourceTree = "<group>"; };
 		9628417A2C8DE325000FE64C /* Boid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Boid.cpp; sourceTree = "<group>"; };
@@ -170,6 +173,8 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				9607A2522CA44231005702B7 /* Ray.hpp */,
+				9607A2532CA443AD005702B7 /* Ray.cpp */,
 				9646CAA02CA31422007608B9 /* TestDerivedScene.hpp */,
 				9646CAA12CA31581007608B9 /* TestDerivedScene.cpp */,
 				9646CA9D2CA30329007608B9 /* VoxelGridScene.hpp */,
@@ -294,6 +299,7 @@
 				9628417C2C8DE325000FE64C /* Boid.cpp in Sources */,
 				"8EC6C7A3-A284-44A1-8AA9-737DA356ACD8" /* ofxColorPicker.cpp in Sources */,
 				"9ECDADA9-0166-4BF9-B228-F78F820B4B9D" /* ofxGuiGroup.cpp in Sources */,
+				9607A2542CA443AE005702B7 /* Ray.cpp in Sources */,
 				9646CAA22CA31585007608B9 /* TestDerivedScene.cpp in Sources */,
 				"8F2B853E-618F-4508-BADA-CB4E3FDDAB61" /* ofxInputField.cpp in Sources */,
 				"73B5AE2F-9B73-4DB3-91A5-37DD17E439C4" /* ofxLabel.cpp in Sources */,

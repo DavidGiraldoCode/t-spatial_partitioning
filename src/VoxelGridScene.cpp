@@ -18,7 +18,7 @@ VoxelGridScene::~VoxelGridScene()
 }
 
 
-
+of3dPrimitive primitive;
 void VoxelGridScene::setup()
 {
     std::cout << "VoxelGridScene setup \n";
@@ -96,13 +96,6 @@ void VoxelGridScene::setup()
     
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
     
-    //Instantiating the Boids in the center of the bounding volume
-    for(size_t i = 0; i < BOIDS_COUNT; i++)
-    {
-        boids.push_back(Boid(ofVec3f(obstaclesBoundingVolume.getPosition()).x, ofVec3f(obstaclesBoundingVolume.getPosition()).y, ofVec3f(obstaclesBoundingVolume.getPosition()).z));
-        boidMeshes.push_back(ofSpherePrimitive());
-        boidMeshes[i].set(10, 16); //radius and resolution
-    }
     
     //
     // LIGHT SETTINGS
@@ -111,6 +104,37 @@ void VoxelGridScene::setup()
     light.setup();
     light.setPosition(obstaclesBoundingVolume.getWidth()/2, obstaclesBoundingVolume.getHeight(), obstaclesBoundingVolume.getDepth()/2 * -1);
     light.setAmbientColor(ofFloatColor(0.4, 1.0));
+    
+    //==================================== Actors
+    
+    for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
+    {
+        boids.push_back(Boid(ofVec3f(obstaclesBoundingVolume.getPosition()).x,
+                             ofVec3f(obstaclesBoundingVolume.getPosition()).y,
+                             ofVec3f(obstaclesBoundingVolume.getPosition()).z));
+        boidMeshes.push_back(ofSpherePrimitive());
+        boidMeshes[i].set(10, 16); //radius and resolution
+        forwardRays.push_back(Ray(boids[i].getPosition(),
+                                 boids[i].getDirection()));
+    }
+    
+   
+    rayPathRenderer.setStrokeColor(ofColor::blue);
+    rayPathRenderer.setStrokeWidth(2);
+    
+    rayWireMesh.addVertex(ofVec3f(0,0,0));
+    rayWireMesh.addColor(ofColor::red);
+    rayWireMesh.addVertex(ofVec3f(200,200,0));
+    rayWireMesh.addColor(ofColor::red);
+    rayWireMesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+    //rayPathRenderer.close();
+    
+    manualTestRay = Ray();
+    manualTestRay.setDirection(ofVec3f(0,0,-1));
+    primitive.getMesh().addVertex(ofVec3f(-5,0,0));
+    primitive.getMesh().addVertex(manualTestRay.getDirection() * manualTestRay.getReach());
+    primitive.getMesh().addVertex(ofVec3f(5,0,0));
+    primitive.getMesh().setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 }
 
 void VoxelGridScene::update()
@@ -123,13 +147,54 @@ void VoxelGridScene::update()
         
         boids[i].updatePositionInWorldGrid(uniformGrid);
         //isInside = uniformGrid.isPointInsideAVoxel(boids[i].getPosition());
+        //forwardRays[i].getFirstIntersectionPoint(boids[i].getPosition(), boids[i].getDirection());
+        
+        rayPathRenderer.moveTo(boids[i].getPosition());
+        rayPathRenderer.lineTo(boids[i].getPosition() + boids[i].getDirection() * 100);
+        
+        //primitive.setPosition(boids[i].getPosition());
+        //primitive.lookAt(boids[i].getPosition() + boids[i].getDirection() * 100);
+        //rayWireMesh
     }
     
     
     
     spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
+    primitive.setPosition(spatialQueryPosition);
+    
+    //The Ray starts at the spatialQuery sampler to a forward direction * the range of the ray.
+    //upadate the ray vector
+    manualTestRay.setOrigin(spatialQueryPosition);
+    manualTestRay.setDirection(ofVec3f(0,0,-1)); // The forward vector in this scene is -1
+    
+    manualTestRay.getFirstIntersectionPoint(spatialQueryPosition, spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
+    primitive.lookAt(spatialQueryPosition + manualTestRay.getDirection() * manualTestRay.getReach());
     
     
+    
+    ofVec3f planeNormal = manualTestRay.getDirection() * -1;
+    ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
+    float lambaT;
+    
+    bool intersectionTest = manualTestRay.intersectPlane(planeNormal,
+                                                         planePosition,
+                                                         manualTestRay.getOrigin(),
+                                                         manualTestRay.getDirection(),
+                                                         lambaT);
+    
+    std::cout << "intersectionTest: " << intersectionTest
+                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(manualTestRay.getFristIntersection())
+                << "\n | is spatialQueryPosition in Grid: " << uniformGrid.isPointInsideAVoxel(spatialQueryPosition)
+                << "\n | spatialQueryPosition: " << spatialQueryPosition
+                << "\n | Ray FristIntersection: " << manualTestRay.getFristIntersection()
+                <<'\n';
+    
+    //TODO
+    /**
+     Visualize the voxels being intersertec by the ray
+        Create the method for moving forward on the grid by units [i,j,k]
+        Parametrize the Ray so it can be attached to the boid and compute the intersection.
+     **/
 }
 
 void VoxelGridScene::draw()
@@ -145,8 +210,14 @@ void VoxelGridScene::draw()
         for(size_t i = 0; i < BOIDS_COUNT; i++)
         {
             boidMeshes[i].draw();
+            
         }
-        
+       
+    
+        //rayPathRenderer.draw();
+        //rayWireMesh.drawWireframe();
+        primitive.drawWireframe();
+    
         spatialQueryCursor.draw(); // <------------------------------- 3D cursor draw call
     
         roadMaterial.end();
@@ -154,6 +225,9 @@ void VoxelGridScene::draw()
         environmentGround.drawAxes(500);
         ofSetColor(100, 100, 100);
         obstaclesBoundingVolume.drawWireframe();
+        
+        ofSetColor(100, 100, 255);
+        primitive.drawWireframe(); //the dir vector of the bois an also the Ray
 
     //
     //--------   Uniform grid
