@@ -23,7 +23,7 @@ public:
     void setup() override;
     void update() override;
     void draw() override;
-    //void keyPressed(int key) override;
+    void keyPressed(int key) override;
     
     enum KeyCode // Printed 'key' inside keyPressed() to get the values
     {
@@ -33,8 +33,10 @@ public:
         D = 100,
         SPACE = 32,
         UP = 57357,
-        DOWN = 57359,
+        DOWN = 57359
     };
+    //==================================== Meta data
+    std::string sceneName = "";
     
     //==================================== Game settings
     const int           BOIDS_COUNT = 100;
@@ -62,6 +64,8 @@ public:
     //==================================== Actors
     ofBoxPrimitive                  obstaclesBoundingVolume;
     ofPlanePrimitive                environmentGround;
+    ofBoxPrimitive                  voxelMesh;
+    UniformGrid                     uniformGrid;
     
     //==================================== GUI
     ofParameter<float>      guiFramesPerSecond;

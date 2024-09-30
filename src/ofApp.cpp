@@ -2,15 +2,17 @@
 /*
  In OpenGL Y is Up
  */
-int currentScene = 0;
+int currentScene = 50;
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-    voxelGridScene      = new VoxelGridScene();
-    testDerivedScene    = new TestDerivedScene();
+    voxelGridScene          = new VoxelGridScene();
+    //testDerivedScene        = new TestDerivedScene();
+    rayIntersectionScene    = new RayIntersectionScene();
     
     voxelGridScene->setup();
-    testDerivedScene->setup();
+    //testDerivedScene->setup();
+    rayIntersectionScene->setup();
     
 }
 
@@ -23,10 +25,7 @@ void ofApp::update()
         voxelGridScene->update();
         break;
     case 50:
-        testDerivedScene->update();
-        break;
-    default:
-        voxelGridScene->update();
+        rayIntersectionScene->update();
         break;
     };
     
@@ -41,10 +40,7 @@ void ofApp::draw()
         voxelGridScene->draw();
         break;
     case 50:
-        testDerivedScene->draw();
-        break;
-    default:
-        voxelGridScene->draw();
+        rayIntersectionScene->draw();
         break;
     };
 
@@ -54,7 +50,7 @@ void ofApp::draw()
 void ofApp::exit()
 {
     delete voxelGridScene;
-    delete testDerivedScene;
+    delete rayIntersectionScene;
 
 }
 
@@ -62,21 +58,30 @@ void ofApp::exit()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
+    std::cout<< key<<"\n";
     //voxelGridScene->keyPressed(key);
+    
+    switch(key)
+    {
+    case 49: //1
+        currentScene = key;
+        break;
+    case 50: //2
+        currentScene = key;
+        break;
+    };
+    
     switch(currentScene)
     {
     case 49: //1
         voxelGridScene->keyPressed(key);
         break;
     case 50: //2
-        testDerivedScene->keyPressed(key);
-        break;
-    default:
-        voxelGridScene->keyPressed(key);
+        rayIntersectionScene->keyPressed(key);
         break;
     };
-    currentScene = key;
-    //std::cout<< key<<" Change to default Scene\n";
+    //currentScene = key == 49 || key == 50 ? 49 :;
+    
 }
 
 //--------------------------------------------------------------

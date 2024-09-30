@@ -35,20 +35,20 @@ void Scene::setup()
     // GUI
     //
 
-    gui.setup("Test settings"); // most of the time you don't need a name but don't forget to call setup
+    gui.setup(sceneName); // most of the time you don't need a name but don't forget to call setup
     gui.add(guiFramesPerSecond.set( "FPS", 1));
-    gui.add(guiVoxelResolution.set( "Voxels", 1, 1, 100));
+    //gui.add(guiVoxelResolution.set( "Voxels", 1, 1, 100));
     
-    gui.add(guiVoxelVisibility.set("Voxel visibility", true));
+    //gui.add(guiVoxelVisibility.set("Voxel visibility", true));
     //gui.add(center.set("center",glm::vec2(ofGetWidth()*.5,ofGetHeight()*.5),glm::vec2(0,0),glm::vec2(ofGetWidth(),ofGetHeight())));
     //gui.add(color.set("color",ofColor(100,100,140),ofColor(0,0),ofColor(255,255)));
     //gui.add(circleResolution.set("circleRes", 5, 3, 90));
     //gui.add(twoCircles.setup("twoCircles"));
     //gui.add(ringButton.setup("ring"));
     //gui.add(screenSize.set("screenSize", ""));
-    gui.add(guiGridWidth.set( "Grid Width", 1, 1, 100));
-    gui.add(guiGridHeight.set( "Grid Height", 1, 1, 100));
-    gui.add(guiGridDepth.set( "Grid Depth", 1, 1, 100));
+    //gui.add(guiGridWidth.set( "Grid Width", 1, 1, 100));
+    //gui.add(guiGridHeight.set( "Grid Height", 1, 1, 100));
+    //gui.add(guiGridDepth.set( "Grid Depth", 1, 1, 100));
 
     //
     //--------   Uniform grid
@@ -66,7 +66,18 @@ void Scene::setup()
     environmentGround.rotateDeg(-90, glm::vec3{1,0,0});
     //environmentGround.move(0, -49, 0);
     environmentGround.setGlobalPosition(environmentGround.getWidth()/2, 0, obstaclesBoundingVolume.getDepth()/2 * -1);
+        
+    //
+    // Voxel GRID
+    //
     
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, VOXEL_SIZE);
+    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    
+    //ofPrimivite Sphere Mesh to represent the Boid
+    voxelMesh.set(VOXEL_SIZE);
+    voxelMesh.setGlobalPosition(voxelMesh.getHeight()/2 + voxelMesh.getHeight(), voxelMesh.getHeight()/2, -voxelMesh.getHeight()/2);
+    voxelMesh.setResolution(1);
     
     ofFloatColor emptyColor(1,1,1,0.1);
     emptyVoxelMAT.setDiffuseColor(emptyColor);
@@ -88,27 +99,32 @@ void Scene::update()
 
 void Scene::draw()
 {
-    ofBackground(255,255,255,255); // draw a gradient in the background with ofBackgroundGradient(ofColor(10), ofColor(50));
+//    ofBackground(255,255,255,255); // draw a gradient in the background with ofBackgroundGradient(ofColor(10), ofColor(50));
+//    
+//    ofEnableDepthTest();
+//    cam.begin();
+//        
+//        roadMaterial.begin();
+//        environmentGround.draw();
+//        
+//        roadMaterial.end();
+//    
+//        environmentGround.drawAxes(500);
+//        ofSetColor(100, 100, 100);
+//        obstaclesBoundingVolume.drawWireframe();
+//  
+//    
+//    ofDisableDepthTest();
+//    cam.end();
+//    
+//    //
+//    // GUI
+//    //
+//    guiFramesPerSecond.set(ofGetFrameRate());
+//    gui.draw();
+}
+
+void Scene::keyPressed(int key)
+{
     
-    ofEnableDepthTest();
-    cam.begin();
-        
-        roadMaterial.begin();
-        environmentGround.draw();
-        
-        roadMaterial.end();
-    
-        environmentGround.drawAxes(500);
-        ofSetColor(100, 100, 100);
-        obstaclesBoundingVolume.drawWireframe();
-  
-    
-    ofDisableDepthTest();
-    cam.end();
-    
-    //
-    // GUI
-    //
-    guiFramesPerSecond.set(ofGetFrameRate());
-    gui.draw();
 }
