@@ -4,6 +4,13 @@
 //
 //  Created by David MacBook on 2024-09-30.
 //
+/**
+ TODO:
+ Use the position of the RayOrigin in the Grid to define from where the steps of the intersection test will start. Avoinding O(w * h * d)
+ Use the Ray reach to define how many steps to compute, intead of doing it by checking the "lamba t"
+ Use the inidividual X Y Z components of the Ray direction to determine if the test will move forward or backward in the grid.
+ Evaluate if it usueful to get the (i, j, k) 3D indices from the Grid.
+ **/
 #include "RayIntersectionScene.hpp"
 
 RayIntersectionScene::RayIntersectionScene()
