@@ -127,11 +127,18 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         float worldY = (y * m_voxelSize); //offset of the min
         float worldZ = (z * m_voxelSize)* -1; //The z grow far from the camera
         
-        std::cout << "worldX: " << worldX << " worldY: " << worldY << " worldZ: " << worldZ << '\n';
+        //std::cout << "worldX: " << worldX << " worldY: " << worldY << " worldZ: " << worldZ << '\n';
         
         Voxel v = Voxel(i, ofVec3f(worldX, worldY, worldZ));
         voxels.push_back(v);
-        std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
+        
+        // RANDOM assignation of the Voxel as obstacle
+        float randomObstacleState = ofRandom(0, 1);
+        std::cout << "randomObstacleState: " << randomObstacleState << '\n';
+        float OBSTACLES_POBALITIY = 0.99;
+        setVoxelAsObstacle(i, (randomObstacleState > OBSTACLES_POBALITIY)); // Gives more chances of voxels being emty spaces
+        
+        //std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
     }
     std::cout << "voxels.size(): " << voxels.size() << '\n';
     
@@ -205,4 +212,36 @@ void UniformGrid::addObjectToVoxel(int i)
 const  int UniformGrid::getVoxelState(int i) const
 {
     return voxels[i].state;
+}
+
+const  int UniformGrid::getVoxelObstacle(int i) const
+{
+    return voxels[i].obstacle;
+}
+
+//
+void UniformGrid::clearIntersections()
+{
+    for(size_t i = 0; i < voxels.size(); i++)
+    {
+        voxels[i].intersected = false;
+    }
+}
+
+void UniformGrid::setIntersection(int i)
+{
+    if(i < 0 || i >= voxels.size()) return;
+    
+    voxels[i].intersected = true;
+}
+
+const bool UniformGrid::getVoxelIntersectionState(int i) const
+{
+    return voxels[i].intersected;
+}
+// PRIVATE
+
+void UniformGrid::setVoxelAsObstacle(int i, unsigned type)
+{
+    voxels[i].obstacle = type;
 }

@@ -26,7 +26,8 @@ public:
     ~Boid();
     void move();
     void applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth);
-    const ofVec3f getPosition();
+    const ofVec3f& getPosition();
+    const ofVec3f getDirection();
     void updatePositionInWorldGrid(UniformGrid & uniformGrid);
 private:
     ofVec3f position;

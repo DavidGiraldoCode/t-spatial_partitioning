@@ -60,11 +60,15 @@ void Boid::move()
 //    << ", z: " << position.z << "] \n";
 }
 
-const ofVec3f Boid::getPosition()
+const ofVec3f& Boid::getPosition()
 {
     return position;
 }
 
+const ofVec3f Boid::getDirection() //Check is this could be memory leak
+{
+    return velocity.getNormalized();
+}
 
 void Boid::applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth)
 {
@@ -143,14 +147,12 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
         return;
     }; //We have not moved to another voxel, do nothing
     
-    //We have indeed change to another place
-    currentPositionInGrid = newPosition;
+    currentPositionInGrid = newPosition; //We have indeed change to another place
     
     if(currentPositionInGrid != -1) // We are still inside the grid, so notify the new voxel
         uniformGrid.addObjectToVoxel(currentPositionInGrid);
     
-    
-    if(previousPositionInGrid != -1); //The boid was not outside, notify previous voxel
+    if(previousPositionInGrid != -1) //The boid was not outside, notify previous voxel
         uniformGrid.removeObjectFromVoxel(previousPositionInGrid);
     
     previousPositionInGrid = currentPositionInGrid; //Update position.
