@@ -28,6 +28,10 @@ public:
            void          addObjectToVoxel(int i);
     const  int           getVoxelState(int i) const;
     const  int           getVoxelObstacle(int i) const; //TODO this should be state instead
+    //For Debugging
+           void          clearIntersections();
+           void          setIntersection(int i);
+    const  bool           getVoxelIntersectionState(int i) const;
 private:
     struct Voxel // Bucket in Rynolds PS3 approach
     {
@@ -35,6 +39,7 @@ private:
         unsigned state = 0; // 0 empty, 1 is full
         unsigned obstacle = 0;
         ofVec3f position = ofVec3f(0,0,0);
+        bool intersected = false;
         // ADD the Normals of each face, 6 normals
         /**
          [1,0,0]
@@ -57,6 +62,7 @@ private:
             position = other.position;
             state = other.state; // Passing this in the copy constructor, otherwise the vector<> won't copy them
             obstacle = other.obstacle;
+            intersected = other.intersected;
         }
         ~Voxel()
         {

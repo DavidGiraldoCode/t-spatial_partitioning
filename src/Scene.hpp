@@ -23,7 +23,7 @@ public:
     void setup() override;
     void update() override;
     void draw() override;
-    //void keyPressed(int key) override;
+    void keyPressed(int key) override;
     
     enum KeyCode // Printed 'key' inside keyPressed() to get the values
     {
@@ -31,17 +31,23 @@ public:
         A = 97,
         S = 115,
         D = 100,
+        Q = 113,
+        E = 101,
         SPACE = 32,
         UP = 57357,
         DOWN = 57359,
+        RIGHT = 57356,
+        LEFT = 57358
     };
+    //==================================== Meta data
+    std::string sceneName = "";
     
     //==================================== Game settings
     const int           BOIDS_COUNT = 100;
-    const float         VOXEL_SIZE = 200;
-    const unsigned      gridWidth = 10;
-    const unsigned      gridHeight = 10;
-    const unsigned      gridDepth = 15;
+    const float         VOXEL_SIZE = 100;
+    const unsigned      gridWidth = 20;
+    const unsigned      gridHeight = 20;
+    const unsigned      gridDepth = 30;
     const float         CURSOR_SPEED = 50.0f;
     
     //==================================== Game state
@@ -62,6 +68,8 @@ public:
     //==================================== Actors
     ofBoxPrimitive                  obstaclesBoundingVolume;
     ofPlanePrimitive                environmentGround;
+    ofBoxPrimitive                  voxelMesh;
+    UniformGrid                     uniformGrid;
     
     //==================================== GUI
     ofParameter<float>      guiFramesPerSecond;
