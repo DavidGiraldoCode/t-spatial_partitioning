@@ -35,5 +35,5 @@ private:
     ofVec3f      m_direction;
     ofVec3f      m_firstIntersection;
     ofVec3f      m_newIntersection;
-    float        m_reach = 400;
+    float        m_reach = 800;
 };

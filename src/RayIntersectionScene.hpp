@@ -20,8 +20,10 @@ public:
     
     //==================================== Actors
     //Sphere representing a 3D point moved by WASD and UP DOWN to query the space
-    ofSpherePrimitive               spatialQueryCursor;
-    ofVec3f                         spatialQueryPosition;
+    ofSpherePrimitive               rayOriginMesh;
+    ofSpherePrimitive               rayTargetMesh;
+    ofVec3f                         rayOriginPosition;
+    ofVec3f                         rayTargetPosition;
     of3dPrimitive                   rayMesh;
-    Ray                             manualTestRay;
+    Ray                             ray;
 };

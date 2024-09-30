@@ -22,44 +22,60 @@ void RayIntersectionScene::setup()
     Scene::setup();
     
     
+    ray = Ray();
+    rayOriginPosition = ofVec3f(0,0,0);
+    rayTargetPosition = ofVec3f(400,400,-400);
+    ray.setDirection((rayTargetPosition-rayOriginPosition).normalize());//ofVec3f(0,0,-1)); // Forward Z (-1)
     
-    spatialQueryCursor.set(10,8);
-    spatialQueryPosition = ofVec3f(0,0,0);
-    spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
+    //Create the meshes to visualize the ray origin, target and reach
+    rayOriginMesh.set(20,8);
+    rayTargetMesh.set(10,8);
+    
+    //The ray mesh needs to be define in local space.
+    rayMesh.getMesh().addVertex(ofVec3f(-5,0,0));
+    rayMesh.getMesh().addVertex(ofVec3f(0,0,ray.getReach() * -1));//ray.getDirection() * ray.getReach());
+    rayMesh.getMesh().addVertex(ofVec3f(5,0,0));
+    rayMesh.getMesh().setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+    
+    rayOriginMesh.setGlobalPosition(rayOriginPosition.x, rayOriginPosition.y, rayOriginPosition.z);
+    rayTargetMesh.setGlobalPosition(rayTargetPosition.x, rayTargetPosition.y, rayTargetPosition.z);
     
 };
 
 void RayIntersectionScene::update()
 {
-    spatialQueryCursor.setGlobalPosition(spatialQueryPosition.x, spatialQueryPosition.y, spatialQueryPosition.z);
-    rayMesh.setPosition(spatialQueryPosition);
-    
-    //The Ray starts at the spatialQuery sampler to a forward direction * the range of the ray.
     //upadate the ray vector
-    manualTestRay.setOrigin(spatialQueryPosition);
-    manualTestRay.setDirection(ofVec3f(0,0,-1)); // The forward vector in this scene is -1
+    ray.setOrigin(rayOriginPosition);
+    ray.setDirection((rayTargetPosition - rayOriginPosition).normalize()); // The forward vector in this scene is -1
     
-    manualTestRay.getFirstIntersectionPoint(spatialQueryPosition, spatialQueryPosition + ofVec3f(0,0,1) * manualTestRay.getReach());
-    rayMesh.lookAt(spatialQueryPosition + manualTestRay.getDirection() * manualTestRay.getReach());
+    //ray.getFirstIntersectionPoint(rayOriginPosition, rayOriginPosition + ray.getDirection() * ray.getReach());
+
     
-    
-    
-    ofVec3f planeNormal = manualTestRay.getDirection() * -1;
+    ofVec3f planeNormal = ray.getDirection() * -1;
     ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
     float lambaT;
     
-    bool intersectionTest = manualTestRay.intersectPlane(planeNormal,
+    bool intersectionTest = ray.intersectPlane(planeNormal,
                                                          planePosition,
-                                                         manualTestRay.getOrigin(),
-                                                         manualTestRay.getDirection(),
+                                                         ray.getOrigin(),
+                                                         ray.getDirection(),
                                                          lambaT);
     
-//    std::cout << "intersectionTest: " << intersectionTest
-//                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(manualTestRay.getFristIntersection())
-//                << "\n | is spatialQueryPosition in Grid: " << uniformGrid.isPointInsideAVoxel(spatialQueryPosition)
-//                << "\n | spatialQueryPosition: " << spatialQueryPosition
-//                << "\n | Ray FristIntersection: " << manualTestRay.getFristIntersection()
-//                <<'\n';
+    std::cout << "intersectionTest: " << intersectionTest
+                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(ray.getFristIntersection())
+                << "\n | is rayOriginPosition in Grid: " << uniformGrid.isPointInsideAVoxel(rayOriginPosition)
+                << "\n | rayOriginPosition: " << rayOriginPosition
+                << "\n | Ray FristIntersection: " << ray.getFristIntersection()
+                <<'\n';
+    
+    
+    
+    //Update visulizer
+    rayOriginMesh.setGlobalPosition(rayOriginPosition.x, rayOriginPosition.y, rayOriginPosition.z);
+    rayTargetMesh.setGlobalPosition(rayTargetPosition.x, rayTargetPosition.y, rayTargetPosition.z);
+    rayMesh.setPosition(rayOriginPosition);
+    
+    rayMesh.lookAt(rayTargetPosition);
     
     //TODO
     /**
@@ -84,14 +100,15 @@ void RayIntersectionScene::draw()
         ofSetColor(100, 100, 100);
         obstaclesBoundingVolume.drawWireframe();
         
-        spatialQueryCursor.draw(); // <------------------------------- 3D cursor draw call
-        ofSetColor(100, 100, 255);
+        rayOriginMesh.draw(); // <------------------------------- 3D cursor draw call
+        
+        ofSetColor(255, 100, 100);
+        rayTargetMesh.draw();
         rayMesh.drawWireframe(); //the dir vector of the bois an also the Ray
 
     //
     //--------   Uniform grid
     //
-        //emptyVoxelMAT.begin();
         
         for(size_t i = 0; i < uniformGrid.getGridSize(); i++)
         {
@@ -115,7 +132,6 @@ void RayIntersectionScene::draw()
 //                voxelMesh.drawFaces();
             }
         }
-        //emptyVoxelMAT.end();
     
     ofDisableDepthTest();
     cam.end();
@@ -134,29 +150,29 @@ void RayIntersectionScene::keyPressed(int key)
     switch (key) {
         case KeyCode::W:
             //std::cout << "Front \n";
-            spatialQueryPosition.z -= CURSOR_SPEED;
+            rayOriginPosition.z -= CURSOR_SPEED;
             break;
         case KeyCode::S:
             //std::cout << "Back \n";
-            spatialQueryPosition.z += CURSOR_SPEED;
+            rayOriginPosition.z += CURSOR_SPEED;
             break;
         case KeyCode::A:
-            spatialQueryPosition.x -= CURSOR_SPEED;
+            rayOriginPosition.x -= CURSOR_SPEED;
             //std::cout << "Left \n";
             break;
         case KeyCode::D:
-            spatialQueryPosition.x += CURSOR_SPEED;
+            rayOriginPosition.x += CURSOR_SPEED;
             //std::cout << "Right \n";
             break;
         case KeyCode::SPACE:
             //std::cout << "Space \n";
             break;
         case KeyCode::UP:
-            spatialQueryPosition.y += CURSOR_SPEED;
+            rayOriginPosition.y += CURSOR_SPEED;
             //std::cout << "Up \n";
             break;
         case KeyCode::DOWN:
-            spatialQueryPosition.y -= CURSOR_SPEED;
+            rayOriginPosition.y -= CURSOR_SPEED;
             //std::cout << "Down \n";
             break;
         default:
@@ -164,8 +180,8 @@ void RayIntersectionScene::keyPressed(int key)
     }
     
     //Updating position of cursor in Voxel Grid
-    //std::cout << "cursor: "<<spatialQueryPosition << '\n';
-    int cursorNewPos = uniformGrid.isPointInsideAVoxel(spatialQueryPosition);
+    //std::cout << "cursor: "<<rayOriginPosition << '\n';
+    int cursorNewPos = uniformGrid.isPointInsideAVoxel(rayOriginPosition);
     
     //std::cout << "Cursor Position in Grid: " << cursorNewPos<< '\n';
     //TEMPORAL using Boid's updatePositionInWorldGrid
