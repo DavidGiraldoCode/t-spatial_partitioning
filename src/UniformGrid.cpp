@@ -219,6 +219,26 @@ const  int UniformGrid::getVoxelObstacle(int i) const
     return voxels[i].obstacle;
 }
 
+//
+void UniformGrid::clearIntersections()
+{
+    for(size_t i = 0; i < voxels.size(); i++)
+    {
+        voxels[i].intersected = false;
+    }
+}
+
+void UniformGrid::setIntersection(int i)
+{
+    if(i < 0 || i >= voxels.size()) return;
+    
+    voxels[i].intersected = true;
+}
+
+const bool UniformGrid::getVoxelIntersectionState(int i) const
+{
+    return voxels[i].intersected;
+}
 // PRIVATE
 
 void UniformGrid::setVoxelAsObstacle(int i, unsigned type)

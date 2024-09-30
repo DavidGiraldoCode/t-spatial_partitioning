@@ -24,7 +24,9 @@ void RayIntersectionScene::setup()
     
     ray = Ray();
     rayOriginPosition = ofVec3f(0,0,0);
-    rayTargetPosition = ofVec3f(400,400,-400);
+    rayTargetPosition = ofVec3f(gridWidth * VOXEL_SIZE / 2,
+                                gridHeight * VOXEL_SIZE / 2,
+                                gridDepth * VOXEL_SIZE / -2);
     ray.setDirection((rayTargetPosition-rayOriginPosition).normalize());//ofVec3f(0,0,-1)); // Forward Z (-1)
     
     //Create the meshes to visualize the ray origin, target and reach
@@ -48,22 +50,32 @@ void RayIntersectionScene::update()
     ray.setOrigin(rayOriginPosition);
     ray.setDirection((rayTargetPosition - rayOriginPosition).normalize()); // The forward vector in this scene is -1
     
-    ofVec3f planeNormal = ray.getDirection() * -1;
-    ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
+    ofVec3f planeNormal = ofVec3f(0,0,1);//ray.getDirection() * -1;
+    
     float lambaT;
     
-    bool intersectionTest = ray.intersectPlane(  planeNormal,
-                                                 planePosition,
-                                                 ray.getOrigin(),
-                                                 ray.getDirection(),
-                                                 lambaT);
+    for(size_t i = 0; i <= gridDepth; i++)
+    {
+        ofVec3f planePosition = ofVec3f(0, 0, i * VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
+        bool intersectionTest = ray.intersectPlane(  planeNormal,
+                                                     planePosition,
+                                                     ray.getOrigin(),
+                                                     ray.getDirection(),
+                                                     lambaT);
+        
+        int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
+        uniformGrid.setIntersection(voxelIndex);
+        
+        std::cout << "intersectionTest: " << intersectionTest
+                << "\n | Ray Origin Position: " << rayOriginPosition
+                << "\n | Ray ["<< i <<"] Intersection Point: " << ray.getIntersectionPoint()
+                << "\n | Intersection ["<< i <<"] Point Index in Grid: " << voxelIndex
+                << "\n | Ray Origin Position in Grid: " << uniformGrid.isPointInsideAVoxel(rayOriginPosition)
+                <<'\n';
+    }
     
-//    std::cout << "intersectionTest: " << intersectionTest
-//                << "\n | Ray Origin Position: " << rayOriginPosition
-//                << "\n | Ray Intersection Point: " << ray.getIntersectionPoint()
-//                << "\n | Intersection Point Index in Grid: " << uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint())
-//                << "\n | Ray Origin Position in Grid: " << uniformGrid.isPointInsideAVoxel(rayOriginPosition)
-//                <<'\n';
+    
+
     
     
     
@@ -129,7 +141,16 @@ void RayIntersectionScene::draw()
 //                voxelMesh.drawFaces();
             }
             //voxelMesh.drawWireframe();
+            
+            // VISUALIZING INTERSECTIONS
+            
+            if(uniformGrid.getVoxelIntersectionState(i) == true) //Boid flys inside of an obstacle
+            {
+                ofSetColor(255, 0, 0, 50);
+                voxelMesh.drawFaces();
+            }
         }
+    uniformGrid.clearIntersections();
     
     ofDisableDepthTest();
     cam.end();
