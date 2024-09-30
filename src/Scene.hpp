@@ -31,9 +31,13 @@ public:
         A = 97,
         S = 115,
         D = 100,
+        Q = 113,
+        E = 101,
         SPACE = 32,
         UP = 57357,
-        DOWN = 57359
+        DOWN = 57359,
+        RIGHT = 57356,
+        LEFT = 57358
     };
     //==================================== Meta data
     std::string sceneName = "";

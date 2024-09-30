@@ -48,25 +48,22 @@ void RayIntersectionScene::update()
     ray.setOrigin(rayOriginPosition);
     ray.setDirection((rayTargetPosition - rayOriginPosition).normalize()); // The forward vector in this scene is -1
     
-    //ray.getFirstIntersectionPoint(rayOriginPosition, rayOriginPosition + ray.getDirection() * ray.getReach());
-
-    
     ofVec3f planeNormal = ray.getDirection() * -1;
     ofVec3f planePosition = ofVec3f(0, 0, VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
     float lambaT;
     
-    bool intersectionTest = ray.intersectPlane(planeNormal,
-                                                         planePosition,
-                                                         ray.getOrigin(),
-                                                         ray.getDirection(),
-                                                         lambaT);
+    bool intersectionTest = ray.intersectPlane(  planeNormal,
+                                                 planePosition,
+                                                 ray.getOrigin(),
+                                                 ray.getDirection(),
+                                                 lambaT);
     
-    std::cout << "intersectionTest: " << intersectionTest
-                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(ray.getFristIntersection())
-                << "\n | is rayOriginPosition in Grid: " << uniformGrid.isPointInsideAVoxel(rayOriginPosition)
-                << "\n | rayOriginPosition: " << rayOriginPosition
-                << "\n | Ray FristIntersection: " << ray.getFristIntersection()
-                <<'\n';
+//    std::cout << "intersectionTest: " << intersectionTest
+//                << "\n | Ray Origin Position: " << rayOriginPosition
+//                << "\n | Ray Intersection Point: " << ray.getIntersectionPoint()
+//                << "\n | Intersection Point Index in Grid: " << uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint())
+//                << "\n | Ray Origin Position in Grid: " << uniformGrid.isPointInsideAVoxel(rayOriginPosition)
+//                <<'\n';
     
     
     
@@ -131,6 +128,7 @@ void RayIntersectionScene::draw()
 //                ofSetColor(0, 255, 0, 5);
 //                voxelMesh.drawFaces();
             }
+            //voxelMesh.drawWireframe();
         }
     
     ofDisableDepthTest();
@@ -145,8 +143,7 @@ void RayIntersectionScene::draw()
 
 void RayIntersectionScene::keyPressed(int key)
 {
-    
-    std::cout << key << '\n';
+
     switch (key) {
         case KeyCode::W:
             //std::cout << "Front \n";
@@ -164,15 +161,29 @@ void RayIntersectionScene::keyPressed(int key)
             rayOriginPosition.x += CURSOR_SPEED;
             //std::cout << "Right \n";
             break;
+        case KeyCode::Q: // DOWN
+            rayOriginPosition.y -= CURSOR_SPEED;
+            break;
+        case KeyCode::E: // UP
+            rayOriginPosition.y += CURSOR_SPEED;
+            break;
         case KeyCode::SPACE:
             //std::cout << "Space \n";
             break;
         case KeyCode::UP:
-            rayOriginPosition.y += CURSOR_SPEED;
+            rayTargetPosition.y += CURSOR_SPEED;
             //std::cout << "Up \n";
             break;
         case KeyCode::DOWN:
-            rayOriginPosition.y -= CURSOR_SPEED;
+            rayTargetPosition.y -= CURSOR_SPEED;
+            //std::cout << "Down \n";
+            break;
+        case KeyCode::RIGHT:
+            rayTargetPosition.x -= CURSOR_SPEED;
+            //std::cout << "Down \n";
+            break;
+        case KeyCode::LEFT:
+            rayTargetPosition.x += CURSOR_SPEED;
             //std::cout << "Down \n";
             break;
         default:

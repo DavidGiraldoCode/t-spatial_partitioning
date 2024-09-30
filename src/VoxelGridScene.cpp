@@ -183,10 +183,10 @@ void VoxelGridScene::update()
                                                          lambaT);
     
     std::cout << "intersectionTest: " << intersectionTest
-                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(manualTestRay.getFristIntersection())
+                << " | is intersection in Grid: " << uniformGrid.isPointInsideAVoxel(manualTestRay.getIntersectionPoint())
                 << "\n | is spatialQueryPosition in Grid: " << uniformGrid.isPointInsideAVoxel(spatialQueryPosition)
                 << "\n | spatialQueryPosition: " << spatialQueryPosition
-                << "\n | Ray FristIntersection: " << manualTestRay.getFristIntersection()
+                << "\n | Ray Intersection Point: " << manualTestRay.getIntersectionPoint()
                 <<'\n';
     
     //TODO
