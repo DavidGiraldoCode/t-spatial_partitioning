@@ -58,7 +58,7 @@ void ofApp::exit()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-    std::cout << key << '\n';
+    //std::cout << key << '\n';
     //voxelGridScene->keyPressed(key);
     
     switch(key)
