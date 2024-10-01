@@ -10,14 +10,24 @@
 Boid::Boid(float x, float y, float z)
 {
     position = ofVec3f(x, y, z);
-    velocity = ofVec3f(0.0f, 1.0f, 0.0f);
+    forward = ofVec3f(0,0,1);
+    velocity = forward * 10.0f;//ofVec3f(0.0f, 1.0f, 0.0f);
     acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
     boundingForce = ofVec3f(0.0f,0.0f,0.0f);
     
     speedConstrain = (ofVec3f(MAX_SPEED,MAX_SPEED,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
-    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
     
-    wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
+    //TODO commented for the Naive Boids Scene
+    //wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+    //wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
+    
+   
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+    velocity += wanderDirection;
+    velocity = velocity.normalize() * 2.0f;
+    
+    //NEW
+    worldCenter = ofVec3f(x, y, z);
 }
 
 Boid::~Boid()
@@ -58,6 +68,30 @@ void Boid::move()
 //    << "x: " << position.x
 //    << ", y: " << position.y
 //    << ", z: " << position.z << "] \n";
+}
+
+void Boid::updateSteeringForces()
+{
+    //reset the acceleration at the begging of the simulation step
+    acceleration.x = 0.0f;
+    acceleration.y = 0.0f;
+    acceleration.z = 0.0f;
+    
+    // Center of the world
+    if(worldCenter.distance(position) > 1000)
+    {
+        velocity *= -1;
+        wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+        velocity += wanderDirection;
+        velocity = velocity.normalize() * 2.0f;
+    }
+    else
+    {
+        
+    }
+    
+    velocity += acceleration;
+    position += velocity;
 }
 
 const ofVec3f& Boid::getPosition()

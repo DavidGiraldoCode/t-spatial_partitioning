@@ -37,11 +37,11 @@ void BoidsNaiveScene::update()
 {
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
-        boids[i].applyBoundingForce(ofVec3f(obstaclesBoundingVolume.getPosition()),
-                                    obstaclesBoundingVolume.getWidth(),
-                                    obstaclesBoundingVolume.getHeight(),
-                                    obstaclesBoundingVolume.getDepth());
-        boids[i].move();
+//        boids[i].applyBoundingForce(ofVec3f(obstaclesBoundingVolume.getPosition()),
+//                                    obstaclesBoundingVolume.getWidth(),
+//                                    obstaclesBoundingVolume.getHeight(),
+//                                    obstaclesBoundingVolume.getDepth());
+        boids[i].updateSteeringForces();
         boidMeshes[i].setGlobalPosition(boids[i].getPosition().x,
                                         boids[i].getPosition().y,
                                         boids[i].getPosition().z);

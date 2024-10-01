@@ -24,13 +24,16 @@ public:
     
     //copy and move construc
     ~Boid();
-    void move();
-    void applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth);
-    const ofVec3f& getPosition();
-    const ofVec3f getDirection();
-    void updatePositionInWorldGrid(UniformGrid & uniformGrid);
+            void        move();
+            void        applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth);
+    const   ofVec3f&    getPosition();
+    const   ofVec3f     getDirection();
+            void        updatePositionInWorldGrid(UniformGrid & uniformGrid);
+    //NEW
+            void        updateSteeringForces();
 private:
     ofVec3f position;
+    ofVec3f forward;
     ofVec3f velocity;
     ofVec3f acceleration;
     ofVec3f wanderDirection;
@@ -42,5 +45,8 @@ private:
     int wanderChange = 0;
     float MAX_SPEED = 20.0f;
     void dampingVelocity();
+    
+    //NEW
+    ofVec3f worldCenter;
 };
 
