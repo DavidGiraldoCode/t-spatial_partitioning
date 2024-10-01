@@ -86,7 +86,7 @@ void BoidsManager::updateSteeringForces()
         //boids[i].separationForce = boids[i].flockAverageSeparation * SEPARATION_FACTOR ;
         
         boids[i].updateSteeringForces();
-        //boids[i].updatePositionInWorldGrid(*uniformGridRef);
+        boids[i].updatePositionInWorldGrid(*uniformGridRef);
     }
 }
 const std::vector<Boid> BoidsManager::getBoids() const

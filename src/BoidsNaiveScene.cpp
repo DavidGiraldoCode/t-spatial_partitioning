@@ -21,7 +21,7 @@ void BoidsNaiveScene::setup()
     Scene::setup();
 
     //==================================== Actors
-    BOIDS_COUNT = 100;
+    BOIDS_COUNT = 500;
     boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     
     for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
