@@ -43,7 +43,7 @@ public:
     std::string sceneName = "";
     
     //==================================== Game settings
-    const int           BOIDS_COUNT = 100;
+          int           BOIDS_COUNT = 100;
     const float         VOXEL_SIZE = 100;
     const unsigned      gridWidth = 20;
     const unsigned      gridHeight = 20;

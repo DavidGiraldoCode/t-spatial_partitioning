@@ -22,6 +22,7 @@ public:
     // TODO add a method that allow for unit increment (i,j,k)
            void          getVoxelByIndex(size_t index);
            ofVec3f       getVoxelPositionByIndex(size_t index);
+    const  ofVec3f&      getObstaclePositionByIndex(size_t index) const;
     const  size_t        getGridSize();
     const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
            void          removeObjectFromVoxel(int i);
@@ -32,6 +33,8 @@ public:
            void          clearIntersections();
            void          setIntersection(int i);
     const  bool           getVoxelIntersectionState(int i) const;
+    //NEW for obstacle avoidance
+    std::vector<int> obstaclesIndexs;
 private:
     struct Voxel // Bucket in Rynolds PS3 approach
     {

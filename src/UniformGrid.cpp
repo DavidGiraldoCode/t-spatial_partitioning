@@ -120,7 +120,7 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         float y = (i / width) % height;
         float z = i  / (width * height);
         
-        std::cout << 'x' << x << 'y' << y << 'z' << z << '\n';
+        //std::cout << 'x' << x << 'y' << y << 'z' << z << '\n';
         
         //These coordnate consider the size of the voxel //TODO and soon the offset position on the grid in world space
         float worldX = (x * m_voxelSize); //offset of the min
@@ -134,14 +134,21 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         
         // RANDOM assignation of the Voxel as obstacle
         float randomObstacleState = ofRandom(0, 1);
-        std::cout << "randomObstacleState: " << randomObstacleState << '\n';
-        float OBSTACLES_POBALITIY = 0.99;
-        setVoxelAsObstacle(i, (randomObstacleState > OBSTACLES_POBALITIY)); // Gives more chances of voxels being emty spaces
+        //std::cout << "randomObstacleState: " << randomObstacleState << '\n';
+        float OBSTACLES_POBALITIY = 0.99; // Gives more chances of voxels being emty spaces
+        bool isEmpty = (randomObstacleState > OBSTACLES_POBALITIY);
+        setVoxelAsObstacle(i, isEmpty);
+        
+        if(y == 0)
+            setVoxelAsObstacle(i, true);
+        
+        if(isEmpty)// if it an obstacle, save the index
+            obstaclesIndexs.push_back(i);
         
         //std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
     }
     std::cout << "voxels.size(): " << voxels.size() << '\n';
-    
+    std::cout << "obstaclesIndexs.size(): " << obstaclesIndexs.size() << '\n';
 }
 
 UniformGrid::~UniformGrid()
@@ -186,6 +193,11 @@ void UniformGrid::getVoxelByIndex(size_t index)
 ofVec3f UniformGrid::getVoxelPositionByIndex(size_t index)
 {
     return voxels[index].position;
+}
+
+const ofVec3f& UniformGrid::getObstaclePositionByIndex(size_t index) const
+{
+    return voxels[obstaclesIndexs[index]].position;
 }
 
 const size_t UniformGrid::getGridSize()

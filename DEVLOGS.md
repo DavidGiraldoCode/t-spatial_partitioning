@@ -1,4 +1,6 @@
 # Devlogs
+- 2024-10-01 Implemented boids algorithm in naïve form in $O(n^2)$ with obstacle avoidance as a steering force
+![boids_obstacles_floor_GIF](https://github.com/user-attachments/assets/ba46988c-e8d3-4a20-8dcd-78e4a7d64d3f)
 - 2024-09-30 Implemented a Ray-AxisAlignPlane Intersection Test, and fill intersected voxels with red
 ![intersection_test_xyz_axis_GIF](https://github.com/user-attachments/assets/3c6cbbee-2706-4c11-a69f-5b1927b4bdb6)
 - 2024-09-24 Organize scene for better visualization. Added visual feedback when detecting collisions with random allocated obstacles

@@ -10,14 +10,70 @@
 Boid::Boid(float x, float y, float z)
 {
     position = ofVec3f(x, y, z);
-    velocity = ofVec3f(0.0f, 1.0f, 0.0f);
+    forward = ofVec3f(0,0,1);
+    velocity = forward * 10.0f;//ofVec3f(0.0f, 1.0f, 0.0f);
     acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
     boundingForce = ofVec3f(0.0f,0.0f,0.0f);
     
     speedConstrain = (ofVec3f(MAX_SPEED,MAX_SPEED,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
-    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
     
-    wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
+    //TODO commented for the Naive Boids Scene
+    //wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+    //wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
+    
+   
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+    velocity += wanderDirection;
+    velocity = velocity.normalize() * 2.0f;
+    
+    //NEW
+    worldCenter = ofVec3f(x, y, z);
+    
+    cohesionForce       =   ofVec3f(0.0f, 0.0f, 0.0f);
+    separationForce     =   ofVec3f(0.0f, 0.0f, 0.0f);
+    alignmentForce      =   ofVec3f(0.0f, 0.0f, 0.0f);
+    avoidanceForce      =   ofVec3f(0.0f, 0.0f, 0.0f);
+}
+
+Boid::Boid(const ofVec3f &spawnPosition)
+{
+    
+    position = spawnPosition;
+    forward = ofVec3f(0,0,1);
+    acceleration = ofVec3f(0,0,0);
+    
+    //velocity = forward * MAX_SPEED;
+    
+    //std::cout << velocity << " velocity\n";
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+    velocity = wanderDirection * MAX_SPEED;
+    //std::cout << velocity << " velocity\n";
+    //velocity = velocity.normalize() * MAX_SPEED;
+    
+    //NEW
+    worldCenter = spawnPosition;
+}
+
+Boid::Boid(const Boid& other)
+{
+    position = other.position;
+    velocity = other.velocity;
+    forward = other.forward;
+    worldCenter = other.worldCenter;
+    
+    SEPARATION_FACTOR = other.SEPARATION_FACTOR;
+    COHESION_FACTOR = other.COHESION_FACTOR;
+    ALIGNMENT_FACTOR = other.ALIGNMENT_FACTOR;
+    AVOIDANCE_FACTOR = other.AVOIDANCE_FACTOR;
+    
+    cohesionForce = other.cohesionForce;
+    separationForce = other.separationForce;
+    alignmentForce = other.alignmentForce;
+    
+    numPerceivedNCohesion = other.numPerceivedNCohesion;
+    numPerceivedNAlignment = other.numPerceivedNAlignment;
+    numPerceivedNSeparation = other.numPerceivedNAlignment;
+    
 }
 
 Boid::~Boid()
@@ -27,7 +83,7 @@ Boid::~Boid()
 
 void Boid::move()
 {
-    dampingVelocity();
+   // dampingVelocity();
     //std::cout <<  ofGetElapsedTimef() << '\n';
     //std::cout <<  ofGetElapsedTimeMillis() << '\n';
     //acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
@@ -35,12 +91,12 @@ void Boid::move()
     
     if(wanderCounter >= wanderChange)
     {
-        wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
-        wanderDirection = wanderDirection.normalize() * velocity.length();
-        wanderCounter = 0;
+        //wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+        //wanderDirection = wanderDirection.normalize() * velocity.length();
+       // wanderCounter = 0;
     }
     
-    wanderCounter++;
+    //wanderCounter++;
     
     //std::cout << wanderCounter <<"wanderCounter updated\n";
     //std::cout << wanderDirection <<"wanderDirection updated\n";
@@ -48,9 +104,9 @@ void Boid::move()
     //acceleration = acceleration + wanderDirection + speedConstrain + boundingForce;//.normalize();
     
     //velocity = velocity + acceleration * 0.01f;
-    velocity = velocity + wanderDirection + boundingForce;// * 0.001f;
+    //velocity = velocity + wanderDirection + boundingForce;// * 0.001f;
     
-    position = position + velocity;
+    //position = position + velocity;
     
 //    std::cout << "acceleration magnitud [ "<< acceleration.length() << "] \n";
 //    std::cout << "velocity [ "<< velocity << "] \n";
@@ -60,9 +116,64 @@ void Boid::move()
 //    << ", z: " << position.z << "] \n";
 }
 
-const ofVec3f& Boid::getPosition()
+void Boid::updateSteeringForces()
+{
+    //reset the acceleration at the begging of the simulation step
+    acceleration.x = 0.0f;
+    acceleration.y = 0.0f;
+    acceleration.z = 0.0f;
+    
+    velocity = sphericalBoundaryForce(); //GOOD enough solution for now
+     
+    
+    if(numPerceivedNCohesion > 0)
+        cohesionForce =  (flockCentroid - position).normalize() * COHESION_FACTOR;
+    
+    if(numPerceivedNAlignment > 0)
+        alignmentForce =  (flockAverageAlignment - velocity).normalize() * ALIGNMENT_FACTOR;
+
+    if(numPerceivedNSeparation > 0)
+        separationForce = flockAverageSeparation * SEPARATION_FACTOR;
+    
+    
+    avoidanceForce = obstaclesAverageAvoidance.normalize() * AVOIDANCE_FACTOR;
+    
+    acceleration += cohesionForce;
+    acceleration += alignmentForce;
+    acceleration += separationForce;
+    
+    acceleration += avoidanceForce;
+    
+    velocity += acceleration;
+    position += velocity * ofGetLastFrameTime();
+    
+    //Reset N count
+    numPerceivedNCohesion = 0;
+    numPerceivedNAlignment = 0;
+    numPerceivedNSeparation = 0;
+}
+
+ofVec3f& Boid::sphericalBoundaryForce()
+{
+    float boundaryRadius = 1000.0f;
+    if(worldCenter.distance(position) < boundaryRadius) return velocity;
+    
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize() * (boundaryRadius * 0.5f); //Compute random direction, then scale it by half of the boundary
+    ofVec3f randomPointInsideSphere = worldCenter + wanderDirection; // Added to the position of the world so it is now a point inside the sphere
+    ofVec3f newDirection = (randomPointInsideSphere - position).normalize() * MAX_SPEED; // Calculate a new direction towards the random point inside the sphere
+    
+    velocity = newDirection;
+    
+    return velocity;
+}
+
+const ofVec3f& Boid::getPosition() const
 {
     return position;
+}
+const ofVec3f& Boid::getVelocity() const
+{
+    return velocity;
 }
 
 const ofVec3f Boid::getDirection() //Check is this could be memory leak
@@ -105,7 +216,7 @@ void Boid::applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, f
 
 void Boid::dampingVelocity()
 {
-    speedConstrain = (ofVec3f(0.0f,0.0f,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
+    //speedConstrain = (ofVec3f(0.0f,0.0f,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
 }
 /*
  std::cout
