@@ -5,7 +5,8 @@
 //  Created by David MacBook on 2024-10-01.
 //
 #include "Scene.hpp"
-#include "Boid.hpp"
+//#include "Boid.hpp"
+#include "BoidsManager.hpp"
 
 class BoidsNaiveScene : public Scene
 {
@@ -18,6 +19,7 @@ public:
     void keyPressed(int key) override;
     
     //==================================== Actors
-    std::vector<Boid>               boids = {};
+    BoidsManager                    boidsManager;
+    //std::vector<Boid>               boids = {};
     std::vector<ofSpherePrimitive>  boidMeshes = {};
 };

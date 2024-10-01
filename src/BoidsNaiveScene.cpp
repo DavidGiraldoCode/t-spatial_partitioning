@@ -19,14 +19,14 @@ BoidsNaiveScene::~BoidsNaiveScene()
 void BoidsNaiveScene::setup()
 {
     Scene::setup();
-    
+    boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     //==================================== Actors
     
     for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
     {
-        boids.push_back(Boid(ofVec3f(obstaclesBoundingVolume.getPosition()).x,
-                             ofVec3f(obstaclesBoundingVolume.getPosition()).y,
-                             ofVec3f(obstaclesBoundingVolume.getPosition()).z));
+//        boids.push_back(Boid(ofVec3f(obstaclesBoundingVolume.getPosition()).x,
+//                             ofVec3f(obstaclesBoundingVolume.getPosition()).y,
+//                             ofVec3f(obstaclesBoundingVolume.getPosition()).z));
         boidMeshes.push_back(ofSpherePrimitive());
         boidMeshes[i].set(10, 16); //radius and resolution
     }
@@ -35,18 +35,18 @@ void BoidsNaiveScene::setup()
 }
 void BoidsNaiveScene::update()
 {
+    boidsManager.updateSteeringForces();
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
 //        boids[i].applyBoundingForce(ofVec3f(obstaclesBoundingVolume.getPosition()),
 //                                    obstaclesBoundingVolume.getWidth(),
 //                                    obstaclesBoundingVolume.getHeight(),
 //                                    obstaclesBoundingVolume.getDepth());
-        boids[i].updateSteeringForces();
-        boidMeshes[i].setGlobalPosition(boids[i].getPosition().x,
-                                        boids[i].getPosition().y,
-                                        boids[i].getPosition().z);
+        //boids[i].updateSteeringForces();
+        ofVec3f pos = boidsManager.getBoids()[i].getPosition();
+        boidMeshes[i].setGlobalPosition(pos.x, pos.y, pos.z);
         
-        boids[i].updatePositionInWorldGrid(uniformGrid);
+        //boids[i].updatePositionInWorldGrid(uniformGrid);
     }
     
 }

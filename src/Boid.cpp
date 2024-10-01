@@ -30,6 +30,29 @@ Boid::Boid(float x, float y, float z)
     worldCenter = ofVec3f(x, y, z);
 }
 
+Boid::Boid(const ofVec3f &spawnPosition)
+{
+    position = spawnPosition;
+    forward = ofVec3f(0,0,1);
+    velocity = forward * 10.0f;//ofVec3f(0.0f, 1.0f, 0.0f);
+    acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
+    boundingForce = ofVec3f(0.0f,0.0f,0.0f);
+    
+    speedConstrain = (ofVec3f(MAX_SPEED,MAX_SPEED,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
+    
+    //TODO commented for the Naive Boids Scene
+    //wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+    //wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
+    
+   
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+    velocity += wanderDirection;
+    velocity = velocity.normalize() * 2.0f;
+    
+    //NEW
+    worldCenter = spawnPosition;
+}
+
 Boid::~Boid()
 {
     //std::cout << "Good by Boid \n";
@@ -77,24 +100,53 @@ void Boid::updateSteeringForces()
     acceleration.y = 0.0f;
     acceleration.z = 0.0f;
     
-    // Center of the world
-    if(worldCenter.distance(position) > 1000)
+    velocity = sphericalBoundaryForce(); //GOOD enough solution for now
+    ofVec3f alignmentForce = ofVec3f(0,0,0);
+    ofVec3f cohesionForce = ofVec3f(0,0,0);
+    ofVec3f separationForce = ofVec3f(0,0,0);
+    
+    if(numPerceivedNCohesion > 0)
     {
-        velocity *= -1;
-        wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
-        velocity += wanderDirection;
-        velocity = velocity.normalize() * 2.0f;
+        flockCentroid *= perceivedNCohesionFactor;
+        ofVec3f offSetFromCentroid = (flockCentroid - position).normalize() * MAX_SPEED;
+        //cohesionForce = COHESION_FACTOR * offSetFromCentroid - velocity;
+        cohesionForce = COHESION_FACTOR * flockCentroid - position;
     }
-    else
+    if(numPerceivedNAlignment > 0)
     {
-        
+        flockAverageAlignment *= perceivedNAlignmentFactor;
+        alignmentForce = ALIGNMENT_FACTOR * flockAverageAlignment - velocity;
     }
+    if(numPerceivedNSeparation > 0)
+    {
+        //flockAverageAvoidance *= perceivedNSeparationFactor;
+        separationForce = SEPARATION_FACTOR * flockAverageAvoidance - velocity;
+    }
+    
+    
+    
+    
+    acceleration += cohesionForce;
+    acceleration += alignmentForce;
+    acceleration += separationForce;
     
     velocity += acceleration;
     position += velocity;
 }
 
-const ofVec3f& Boid::getPosition()
+ofVec3f& Boid::sphericalBoundaryForce()
+{
+    if(worldCenter.distance(position) < 1000) return velocity;
+    
+    velocity *= -1;
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+    velocity += wanderDirection;
+    velocity = velocity.normalize() * 2.0f;
+    
+    return velocity;
+}
+
+const ofVec3f& Boid::getPosition() const
 {
     return position;
 }
