@@ -11,6 +11,7 @@
 #include "ofMath.h"
 #include "ofUtils.h"
 #include "UniformGrid.hpp"
+#include "ofAppRunner.h"
 
 class Boid
 {
@@ -29,6 +30,7 @@ public:
             void        applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, float height, float depth);
     const   ofVec3f&    getPosition() const;
     const   ofVec3f     getDirection();
+    const   ofVec3f&    getVelocity() const;
             void        updatePositionInWorldGrid(UniformGrid & uniformGrid);
     //NEW
             void        updateSteeringForces();
@@ -38,6 +40,10 @@ public:
             ofVec3f     flockCentroid;
             ofVec3f     flockAverageAlignment;
             ofVec3f     flockAverageSeparation;
+    
+            ofVec3f     cohesionForce;
+            ofVec3f     alignmentForce;
+            ofVec3f     separationForce;
     
             float       numPerceivedNCohesion = 0;
             float       numPerceivedNAlignment = 0;
@@ -49,6 +55,11 @@ public:
     
             ofVec3f     velocity;
             ofVec3f     position;
+    
+
+            float   COHESION_FACTOR     ;//=   2.0f;
+            float   ALIGNMENT_FACTOR    ;//=   2.0f;
+            float   SEPARATION_FACTOR   ;//=   10.0f;
 private:
     
     ofVec3f forward;
@@ -65,10 +76,8 @@ private:
     int wanderChange = 0;
     //Steering forces
     float   MAX_SPEED           =     200.0f;
-    
-    float   COHESION_FACTOR     =   2.0f;
-    float   ALIGNMENT_FACTOR    =   2.0f;
-    float   SEPARATION_FACTOR   =   10.0f;
+//    
+
     
     
     //

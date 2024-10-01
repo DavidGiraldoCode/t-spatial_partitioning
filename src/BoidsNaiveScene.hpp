@@ -20,6 +20,14 @@ public:
     
     //==================================== Actors
     BoidsManager                    boidsManager;
-    //std::vector<Boid>               boids = {};
     std::vector<ofSpherePrimitive>  boidMeshes = {};
+    
+    //==================================== GUI
+    
+    ofParameter<float>   guiSeparationF;
+    ofParameter<float>   guiCohesionF;
+    ofParameter<float>   guiAlignmentF;
+    ofParameter<float>   guiSeparationDistance;
+    ofParameter<float>   guiCohesionDistance;
+    ofParameter<float>   guiAlignmentDistance;
 };

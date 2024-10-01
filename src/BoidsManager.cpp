@@ -13,6 +13,9 @@ BoidsManager::BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGr
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
         boids.push_back(Boid(spawnPoint));
+        boids[i].SEPARATION_FACTOR = SEPARATION_FACTOR;
+        boids[i].COHESION_FACTOR = COHESION_FACTOR;
+        boids[i].ALIGNMENT_FACTOR = ALIGNMENT_FACTOR;
     }
     std::cout<<neighborCohesionDistance << ' '
     <<neighborSeparationDistance << ' '
@@ -26,8 +29,13 @@ BoidsManager::~BoidsManager()
                         
 void BoidsManager::updateSteeringForces()
 {
+    
     for(size_t i = 0; i < boids.size(); i++)
     {
+        boids[i].SEPARATION_FACTOR = SEPARATION_FACTOR;
+        boids[i].COHESION_FACTOR = COHESION_FACTOR;
+        boids[i].ALIGNMENT_FACTOR = ALIGNMENT_FACTOR;
+        
         for(size_t j = 0; j < boids.size(); j++)
         {
             if(i != j)
@@ -65,13 +73,17 @@ void BoidsManager::updateSteeringForces()
         {
             boids[i].perceivedNCohesionFactor = 1 / boids[i].numPerceivedNCohesion;
             boids[i].flockCentroid *= boids[i].perceivedNCohesionFactor;
+            //boids[i].cohesionForce = (boids[i].flockCentroid - boids[i].getPosition()).normalize() * COHESION_FACTOR;
         }
             
         if(boids[i].numPerceivedNAlignment > 0)
         {
             boids[i].perceivedNAlignmentFactor = 1 / boids[i].numPerceivedNAlignment;
             boids[i].flockAverageSeparation *= boids[i].perceivedNCohesionFactor;
+            //boids[i].alignmentForce =  (boids[i].flockAverageAlignment - boids[i].getVelocity()).normalize() * ALIGNMENT_FACTOR;
         }
+        
+        //boids[i].separationForce = boids[i].flockAverageSeparation * SEPARATION_FACTOR ;
         
         boids[i].updateSteeringForces();
         //boids[i].updatePositionInWorldGrid(*uniformGridRef);

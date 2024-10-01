@@ -19,19 +19,26 @@ BoidsNaiveScene::~BoidsNaiveScene()
 void BoidsNaiveScene::setup()
 {
     Scene::setup();
+
+    //==================================== Actors
     BOIDS_COUNT = 100;
     boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
-    //==================================== Actors
     
     for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
     {
-//        boids.push_back(Boid(ofVec3f(obstaclesBoundingVolume.getPosition()).x,
-//                             ofVec3f(obstaclesBoundingVolume.getPosition()).y,
-//                             ofVec3f(obstaclesBoundingVolume.getPosition()).z));
         boidMeshes.push_back(ofSpherePrimitive());
         boidMeshes[i].set(10, 16); //radius and resolution
     }
     
+    //==================================== GUI
+    
+    gui.add(guiSeparationF.set( "Separation F", boidsManager.SEPARATION_FACTOR, 0, 10));
+    gui.add(guiCohesionF.set( "Cohesion F", boidsManager.COHESION_FACTOR, 0, 10));
+    gui.add(guiAlignmentF.set( "Alignment F", boidsManager.ALIGNMENT_FACTOR, 0, 10));
+    
+    gui.add(guiSeparationDistance.set( "Separation Dist", boidsManager.neighborSeparationDistance, 0, 500));
+    gui.add(guiCohesionDistance.set( "Cohesion Dist", boidsManager.neighborCohesionDistance, 0, 500));
+    gui.add(guiAlignmentDistance.set( "Alignment Dist", boidsManager.neighborAlignmentDistance, 0, 500));
    
 }
 void BoidsNaiveScene::update()
@@ -103,9 +110,16 @@ void BoidsNaiveScene::draw()
     ofDisableDepthTest();
     cam.end();
     
-    //
-    // GUI
-    //
+    //==================================== GUI
+    
+    boidsManager.SEPARATION_FACTOR = guiSeparationF;
+    boidsManager.COHESION_FACTOR = guiCohesionF;
+    boidsManager.ALIGNMENT_FACTOR = guiAlignmentF;
+    
+    boidsManager.neighborCohesionDistance = guiCohesionDistance;
+    boidsManager.neighborSeparationDistance = guiSeparationDistance;
+    boidsManager.neighborAlignmentDistance = guiAlignmentDistance;
+    
     guiFramesPerSecond.set(ofGetFrameRate());
     gui.draw();
 }

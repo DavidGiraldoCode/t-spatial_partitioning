@@ -19,11 +19,18 @@ public:
             void                updateSteeringForces();
     const   std::vector<Boid>   getBoids() const; //For passing the values to the mesh
             UniformGrid*        uniformGridRef = nullptr;
+    // Steering forces settings
+            float               neighborCohesionDistance    =   200;
+            float               neighborSeparationDistance  =   100;
+            float               neighborAlignmentDistance   =   100;
+    
+            float               MAX_SPEED                   =   200.0f;
+            
+            float               COHESION_FACTOR             =   2.0f;
+            float               ALIGNMENT_FACTOR            =   2.0f;
+            float               SEPARATION_FACTOR           =   5.0f;
+    
 private:
     std::vector<Boid>  boids = {};
-    
-    // Steering forces settings
-    float neighborCohesionDistance = 400;
-    float neighborSeparationDistance = 100;
-    float neighborAlignmentDistance = 200;
+
 };

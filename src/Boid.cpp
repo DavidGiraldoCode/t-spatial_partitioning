@@ -6,7 +6,6 @@
 //
 
 #include "Boid.hpp"
-#include "ofAppRunner.h"
 
 Boid::Boid(float x, float y, float z)
 {
@@ -29,6 +28,10 @@ Boid::Boid(float x, float y, float z)
     
     //NEW
     worldCenter = ofVec3f(x, y, z);
+    
+    cohesionForce       =   ofVec3f(0.0f, 0.0f, 0.0f);
+    separationForce     =   ofVec3f(0.0f, 0.0f, 0.0f);
+    alignmentForce      =   ofVec3f(0.0f, 0.0f, 0.0f);
 }
 
 Boid::Boid(const ofVec3f &spawnPosition)
@@ -56,6 +59,14 @@ Boid::Boid(const Boid& other)
     velocity = other.velocity;
     forward = other.forward;
     worldCenter = other.worldCenter;
+    
+    SEPARATION_FACTOR = other.SEPARATION_FACTOR;
+    COHESION_FACTOR = other.COHESION_FACTOR;
+    ALIGNMENT_FACTOR = other.ALIGNMENT_FACTOR;
+    
+    cohesionForce = other.cohesionForce;
+    separationForce = other.separationForce;
+    alignmentForce = other.alignmentForce;
     
     numPerceivedNCohesion = other.numPerceivedNCohesion;
     numPerceivedNAlignment = other.numPerceivedNAlignment;
@@ -111,32 +122,16 @@ void Boid::updateSteeringForces()
     acceleration.z = 0.0f;
     
     velocity = sphericalBoundaryForce(); //GOOD enough solution for now
-    ofVec3f alignmentForce = ofVec3f(0,0,0);
-    ofVec3f cohesionForce = ofVec3f(0,0,0);
-    ofVec3f separationForce = ofVec3f(0,0,0);
-    
-    /*
-     Vector3 SteerTowards (Vector3 vector) {
-            Vector3 v = vector.normalized * settings.maxSpeed - velocity;
-            return Vector3.ClampMagnitude (v, settings.maxSteerForce);
-    }*/
      
     
     if(numPerceivedNCohesion > 0)
-    {
         cohesionForce =  (flockCentroid - position).normalize() * COHESION_FACTOR;
-    }
+    
     if(numPerceivedNAlignment > 0)
-    {
         alignmentForce =  (flockAverageAlignment - velocity).normalize() * ALIGNMENT_FACTOR;
-    }
+
     if(numPerceivedNSeparation > 0)
-    {
-        //Sebs Legue
-        separationForce = flockAverageSeparation * SEPARATION_FACTOR ;
-    }
-    
-    
+        separationForce = flockAverageSeparation * SEPARATION_FACTOR;
     
     acceleration += cohesionForce;
     acceleration += alignmentForce;
@@ -168,6 +163,10 @@ ofVec3f& Boid::sphericalBoundaryForce()
 const ofVec3f& Boid::getPosition() const
 {
     return position;
+}
+const ofVec3f& Boid::getVelocity() const
+{
+    return velocity;
 }
 
 const ofVec3f Boid::getDirection() //Check is this could be memory leak
@@ -210,7 +209,7 @@ void Boid::applyBoundingForce(const ofVec3f & boundingAreaCenter, float width, f
 
 void Boid::dampingVelocity()
 {
-    speedConstrain = (ofVec3f(0.0f,0.0f,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
+    //speedConstrain = (ofVec3f(0.0f,0.0f,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
 }
 /*
  std::cout
