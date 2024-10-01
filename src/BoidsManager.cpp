@@ -47,11 +47,14 @@ void BoidsManager::updateSteeringForces()
 //                    boids[i].numPerceivedNAlignment++;
 //                    boids[i].flockAverageAlignment += boids[j].velocity;
 //                }
-//                if(sqrDistance < (neighborSeparationDistance*neighborSeparationDistance))
-//                {
-//                    boids[i].numPerceivedNSeparation++;
-//                    boids[i].flockAverageSeparation -= distVec / sqrDistance;
-//                }
+                if(sqrDistance < (neighborSeparationDistance*neighborSeparationDistance))
+                {
+                    //boids[i].numPerceivedNSeparation++;
+                    float rSquare = neighborSeparationDistance*neighborSeparationDistance;
+                    float ratio = (rSquare - sqrDistance) / sqrDistance;
+                    
+                    boids[i].flockAverageSeparation += ratio * distVec.normalize();
+                }
             }
         }
         

@@ -130,7 +130,6 @@ void Boid::updateSteeringForces()
         //cohesionForce = COHESION_FACTOR * offSetFromCentroid.normalize() * MAX_SPEED - velocity;
         
         //KTH
-        //flockCentroid *= perceivedNCohesionFactor;
         cohesionForce =  (flockCentroid - position).normalize() * COHESION_FACTOR;
         
     }
@@ -140,13 +139,12 @@ void Boid::updateSteeringForces()
         
         flockAverageAlignment *= perceivedNAlignmentFactor;
         //alignmentForce = ALIGNMENT_FACTOR * flockAverageAlignment - velocity;
-    }
+    }*/
     if(numPerceivedNSeparation > 0)
     {
         //Sebs Legue
-        separationForce = SEPARATION_FACTOR * flockAverageSeparation.normalize() * MAX_SPEED - velocity ;
+        separationForce = flockAverageSeparation * SEPARATION_FACTOR ;
     }
-     */
     
     
     

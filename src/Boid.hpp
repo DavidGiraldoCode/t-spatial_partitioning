@@ -67,8 +67,8 @@ private:
     float   MAX_SPEED           =     200.0f;
     
     float   COHESION_FACTOR     =   2.0f;
-    float   ALIGNMENT_FACTOR    =   0.0001f;
-    float   SEPARATION_FACTOR   =   0.1f;
+    float   ALIGNMENT_FACTOR    =   1.0f;
+    float   SEPARATION_FACTOR   =   8.0f;
     
     
     //
