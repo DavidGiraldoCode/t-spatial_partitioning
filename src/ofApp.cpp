@@ -2,17 +2,19 @@
 /*
  In OpenGL Y is Up
  */
-int currentScene = 50;
+int currentScene = 51;
 //--------------------------------------------------------------
 void ofApp::setup()
 {
     voxelGridScene          = new VoxelGridScene();
     //testDerivedScene        = new TestDerivedScene();
     rayIntersectionScene    = new RayIntersectionScene();
+    boidsNaiveScene         = new BoidsNaiveScene();
     
     voxelGridScene->setup();
     //testDerivedScene->setup();
     rayIntersectionScene->setup();
+    boidsNaiveScene->setup();
     
 }
 
@@ -26,6 +28,9 @@ void ofApp::update()
         break;
     case 50:
         rayIntersectionScene->update();
+        break;
+    case 51:
+        boidsNaiveScene->update();
         break;
     };
     
@@ -42,6 +47,9 @@ void ofApp::draw()
     case 50:
         rayIntersectionScene->draw();
         break;
+    case 51:
+        boidsNaiveScene->draw();
+        break;
     };
 
 }
@@ -51,6 +59,7 @@ void ofApp::exit()
 {
     delete voxelGridScene;
     delete rayIntersectionScene;
+    delete boidsNaiveScene;
 
 }
 
@@ -69,6 +78,9 @@ void ofApp::keyPressed(int key)
     case 50: //2
         currentScene = key;
         break;
+    case 51: //3
+            currentScene = key;
+        break;
     };
     
     switch(currentScene)
@@ -78,6 +90,9 @@ void ofApp::keyPressed(int key)
         break;
     case 50: //2
         rayIntersectionScene->keyPressed(key);
+        break;
+    case 51:
+        boidsNaiveScene->keyPressed(key);
         break;
     };
     //currentScene = key == 49 || key == 50 ? 49 :;

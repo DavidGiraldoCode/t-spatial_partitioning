@@ -18,6 +18,8 @@
 		9616BD362C88EEE1006DC1FC /* UniformGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9616BD342C88EEE1006DC1FC /* UniformGrid.cpp */; };
 		9628417C2C8DE325000FE64C /* Boid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9628417A2C8DE325000FE64C /* Boid.cpp */; };
 		96356A142CAA819500657B2F /* RayIntersectionScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96356A132CAA819200657B2F /* RayIntersectionScene.cpp */; };
+		964320F32CABD5FF00EA11CF /* BoidsNaiveScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964320F22CABD5FE00EA11CF /* BoidsNaiveScene.cpp */; };
+		964320F72CABF1AF00EA11CF /* BoidsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964320F62CABF1A900EA11CF /* BoidsManager.cpp */; };
 		9646CA9F2CA304F8007608B9 /* VoxelGridScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9646CA9E2CA304F5007608B9 /* VoxelGridScene.cpp */; };
 		9646CAA22CA31585007608B9 /* TestDerivedScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9646CAA12CA31581007608B9 /* TestDerivedScene.cpp */; };
 		969204B32C916EDD000BC71D /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969204B12C916EDD000BC71D /* Scene.cpp */; };
@@ -81,6 +83,10 @@
 		9628417B2C8DE325000FE64C /* Boid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Boid.hpp; sourceTree = "<group>"; };
 		96356A122CAA80D900657B2F /* RayIntersectionScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RayIntersectionScene.hpp; sourceTree = "<group>"; };
 		96356A132CAA819200657B2F /* RayIntersectionScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RayIntersectionScene.cpp; sourceTree = "<group>"; };
+		964320F12CABD5B900EA11CF /* BoidsNaiveScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BoidsNaiveScene.hpp; sourceTree = "<group>"; };
+		964320F22CABD5FE00EA11CF /* BoidsNaiveScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsNaiveScene.cpp; sourceTree = "<group>"; };
+		964320F42CABE76C00EA11CF /* BoidsManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BoidsManager.hpp; sourceTree = "<group>"; };
+		964320F62CABF1A900EA11CF /* BoidsManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsManager.cpp; sourceTree = "<group>"; };
 		9646CA9D2CA30329007608B9 /* VoxelGridScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VoxelGridScene.hpp; sourceTree = "<group>"; };
 		9646CA9E2CA304F5007608B9 /* VoxelGridScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VoxelGridScene.cpp; sourceTree = "<group>"; };
 		9646CAA02CA31422007608B9 /* TestDerivedScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TestDerivedScene.hpp; sourceTree = "<group>"; };
@@ -176,6 +182,10 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				964320F42CABE76C00EA11CF /* BoidsManager.hpp */,
+				964320F62CABF1A900EA11CF /* BoidsManager.cpp */,
+				964320F12CABD5B900EA11CF /* BoidsNaiveScene.hpp */,
+				964320F22CABD5FE00EA11CF /* BoidsNaiveScene.cpp */,
 				96356A122CAA80D900657B2F /* RayIntersectionScene.hpp */,
 				96356A132CAA819200657B2F /* RayIntersectionScene.cpp */,
 				9607A2522CA44231005702B7 /* Ray.hpp */,
@@ -293,9 +303,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				96356A142CAA819500657B2F /* RayIntersectionScene.cpp in Sources */,
+				964320F72CABF1AF00EA11CF /* BoidsManager.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				"5569DE7A-82D8-4688-AFC7-1521A999B206" /* Messenger.cpp in Sources */,
+				964320F32CABD5FF00EA11CF /* BoidsNaiveScene.cpp in Sources */,
 				9646CA9F2CA304F8007608B9 /* VoxelGridScene.cpp in Sources */,
 				969204B32C916EDD000BC71D /* Scene.cpp in Sources */,
 				"03B26CDE-09A5-4E49-93A2-6A973234DB9C" /* myClass.cpp in Sources */,
