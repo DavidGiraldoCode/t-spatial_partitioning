@@ -23,7 +23,7 @@ private:
     std::vector<Boid>  boids = {};
     
     // Steering forces settings
-    float neighborCohesionDistance = 100;
-    float neighborSeparationDistance = 10;
-    float neighborAlignmentDistance = 50;
+    float neighborCohesionDistance = 400;
+    float neighborSeparationDistance = 100;
+    float neighborAlignmentDistance = 200;
 };

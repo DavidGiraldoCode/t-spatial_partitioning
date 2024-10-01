@@ -124,22 +124,12 @@ void Boid::updateSteeringForces()
     
     if(numPerceivedNCohesion > 0)
     {
-        //Sebs Legue
-        //flockCentroid *= perceivedNCohesionFactor;
-        //ofVec3f offSetFromCentroid = (flockCentroid - position);//.normalize() * MAX_SPEED;
-        //cohesionForce = COHESION_FACTOR * offSetFromCentroid.normalize() * MAX_SPEED - velocity;
-        
-        //KTH
         cohesionForce =  (flockCentroid - position).normalize() * COHESION_FACTOR;
-        
     }
-    /*
     if(numPerceivedNAlignment > 0)
     {
-        
-        flockAverageAlignment *= perceivedNAlignmentFactor;
-        //alignmentForce = ALIGNMENT_FACTOR * flockAverageAlignment - velocity;
-    }*/
+        alignmentForce =  (flockAverageAlignment - velocity).normalize() * ALIGNMENT_FACTOR;
+    }
     if(numPerceivedNSeparation > 0)
     {
         //Sebs Legue

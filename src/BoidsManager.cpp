@@ -36,24 +36,26 @@ void BoidsManager::updateSteeringForces()
                 ofVec3f distVec = boids[j].getPosition() - boids[i].getPosition();
                 float sqrDistance = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
                 
+                //COHESION
                 if(sqrDistance < (neighborCohesionDistance*neighborCohesionDistance))
                 {
                     boids[i].numPerceivedNCohesion++;
                     boids[i].flockCentroid += boids[j].getPosition();
                 }
-                
-//                if(sqrDistance < (neighborAlignmentDistance*neighborAlignmentDistance))
-//                {
-//                    boids[i].numPerceivedNAlignment++;
-//                    boids[i].flockAverageAlignment += boids[j].velocity;
-//                }
+                //ALIGNMENT
+                if(sqrDistance < (neighborAlignmentDistance*neighborAlignmentDistance))
+                {
+                    boids[i].numPerceivedNAlignment++;
+                    boids[i].flockAverageAlignment += boids[j].velocity;
+                }
+                //SEPARETION
                 if(sqrDistance < (neighborSeparationDistance*neighborSeparationDistance))
                 {
                     //boids[i].numPerceivedNSeparation++;
                     float rSquare = neighborSeparationDistance*neighborSeparationDistance;
-                    float ratio = (rSquare - sqrDistance) / sqrDistance;
+                    float ratio = (rSquare - sqrDistance) / sqrDistance; //This ratio can help scale the separation force inversely
                     
-                    boids[i].flockAverageSeparation += ratio * distVec.normalize();
+                    boids[i].flockAverageSeparation += ratio * distVec.normalize(); //We want the direction but not the magnitude of the distance between boids
                 }
             }
         }
@@ -61,13 +63,15 @@ void BoidsManager::updateSteeringForces()
         // by computing this scalar factor we avoid dividing each component of flockCentroid vector
         if(boids[i].numPerceivedNCohesion > 0)
         {
-            //boids[i].flockCentroid = boids[i].flockCentroid / boids[i].numPerceivedNCohesion;
             boids[i].perceivedNCohesionFactor = 1 / boids[i].numPerceivedNCohesion;
             boids[i].flockCentroid *= boids[i].perceivedNCohesionFactor;
         }
             
-//        if(boids[i].numPerceivedNAlignment > 0)
-//            boids[i].perceivedNAlignmentFactor = 1 / boids[i].numPerceivedNAlignment;
+        if(boids[i].numPerceivedNAlignment > 0)
+        {
+            boids[i].perceivedNAlignmentFactor = 1 / boids[i].numPerceivedNAlignment;
+            boids[i].flockAverageSeparation *= boids[i].perceivedNCohesionFactor;
+        }
         
         boids[i].updateSteeringForces();
         //boids[i].updatePositionInWorldGrid(*uniformGridRef);
