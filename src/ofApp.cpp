@@ -80,7 +80,7 @@ void ofApp::keyPressed(int key)
         break;
     case 51: //3
             currentScene = key;
-            break;
+        break;
     };
     
     switch(currentScene)

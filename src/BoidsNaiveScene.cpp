@@ -19,6 +19,7 @@ BoidsNaiveScene::~BoidsNaiveScene()
 void BoidsNaiveScene::setup()
 {
     Scene::setup();
+    BOIDS_COUNT = 100;
     boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     //==================================== Actors
     

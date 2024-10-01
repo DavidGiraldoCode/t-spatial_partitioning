@@ -21,6 +21,7 @@ public:
         velocity(0.0f, 0.0f, 0.0f),
         acceleration(0.0f, 0.0f, 0.0f){};
     Boid(float x, float y, float z);
+    Boid(const Boid& other);
     Boid(const ofVec3f &spawnPosition);
     //copy and move construc
     ~Boid();
@@ -36,7 +37,7 @@ public:
     //Steering forces
             ofVec3f     flockCentroid;
             ofVec3f     flockAverageAlignment;
-            ofVec3f     flockAverageAvoidance;
+            ofVec3f     flockAverageSeparation;
     
             float       numPerceivedNCohesion = 0;
             float       numPerceivedNAlignment = 0;
@@ -47,8 +48,9 @@ public:
             float       perceivedNSeparationFactor = 0;
     
             ofVec3f     velocity;
+            ofVec3f     position;
 private:
-    ofVec3f position;
+    
     ofVec3f forward;
     
     ofVec3f acceleration;
@@ -62,11 +64,12 @@ private:
     int wanderCounter = 0;
     int wanderChange = 0;
     //Steering forces
-    float MAX_SPEED = 5.0f;
-    float COHESION_FACTOR = 0.001f;
-    float ALIGNMENT_FACTOR = 0.001f;
-    float SEPARATION_FACTOR = 0.001f;
-
+    float   MAX_SPEED           =     200.0f;
+    
+    float   COHESION_FACTOR     =   0.01f;
+    float   ALIGNMENT_FACTOR    =   0.0001f;
+    float   SEPARATION_FACTOR   =   0.1f;
+    
     
     //
     void dampingVelocity();

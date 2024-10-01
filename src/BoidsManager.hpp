@@ -24,6 +24,6 @@ private:
     
     // Steering forces settings
     float neighborCohesionDistance = 100;
-    float neighborSeparationDistance = 10;
+    float neighborSeparationDistance = 50;
     float neighborAlignmentDistance = 50;
 };

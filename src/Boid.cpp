@@ -6,6 +6,7 @@
 //
 
 #include "Boid.hpp"
+#include "ofAppRunner.h"
 
 Boid::Boid(float x, float y, float z)
 {
@@ -32,25 +33,30 @@ Boid::Boid(float x, float y, float z)
 
 Boid::Boid(const ofVec3f &spawnPosition)
 {
+    
     position = spawnPosition;
     forward = ofVec3f(0,0,1);
-    velocity = forward * 10.0f;//ofVec3f(0.0f, 1.0f, 0.0f);
-    acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
-    boundingForce = ofVec3f(0.0f,0.0f,0.0f);
+    acceleration = ofVec3f(0,0,0);
     
-    speedConstrain = (ofVec3f(MAX_SPEED,MAX_SPEED,MAX_SPEED).length() - velocity.length()) * velocity.normalize();
+    //velocity = forward * MAX_SPEED;
     
-    //TODO commented for the Naive Boids Scene
-    //wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
-    //wanderChange = (int)(200 * ofRandom(1.0f,10.0f));
-    
-   
+    std::cout << velocity << " velocity\n";
     wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
-    velocity += wanderDirection;
-    velocity = velocity.normalize() * 2.0f;
+    velocity = wanderDirection * MAX_SPEED;
+    std::cout << velocity << " velocity\n";
+    //velocity = velocity.normalize() * MAX_SPEED;
     
     //NEW
     worldCenter = spawnPosition;
+}
+
+Boid::Boid(const Boid& other)
+{
+    position = other.position;
+    velocity = other.velocity;
+    forward = other.forward;
+    worldCenter = other.worldCenter;
+    
 }
 
 Boid::~Boid()
@@ -60,7 +66,7 @@ Boid::~Boid()
 
 void Boid::move()
 {
-    dampingVelocity();
+   // dampingVelocity();
     //std::cout <<  ofGetElapsedTimef() << '\n';
     //std::cout <<  ofGetElapsedTimeMillis() << '\n';
     //acceleration = ofVec3f(0.0f, 0.0f, 0.0f);
@@ -68,12 +74,12 @@ void Boid::move()
     
     if(wanderCounter >= wanderChange)
     {
-        wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
-        wanderDirection = wanderDirection.normalize() * velocity.length();
-        wanderCounter = 0;
+        //wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf());
+        //wanderDirection = wanderDirection.normalize() * velocity.length();
+       // wanderCounter = 0;
     }
     
-    wanderCounter++;
+    //wanderCounter++;
     
     //std::cout << wanderCounter <<"wanderCounter updated\n";
     //std::cout << wanderDirection <<"wanderDirection updated\n";
@@ -81,9 +87,9 @@ void Boid::move()
     //acceleration = acceleration + wanderDirection + speedConstrain + boundingForce;//.normalize();
     
     //velocity = velocity + acceleration * 0.01f;
-    velocity = velocity + wanderDirection + boundingForce;// * 0.001f;
+    //velocity = velocity + wanderDirection + boundingForce;// * 0.001f;
     
-    position = position + velocity;
+    //position = position + velocity;
     
 //    std::cout << "acceleration magnitud [ "<< acceleration.length() << "] \n";
 //    std::cout << "velocity [ "<< velocity << "] \n";
@@ -101,47 +107,74 @@ void Boid::updateSteeringForces()
     acceleration.z = 0.0f;
     
     velocity = sphericalBoundaryForce(); //GOOD enough solution for now
-    ofVec3f alignmentForce = ofVec3f(0,0,0);
-    ofVec3f cohesionForce = ofVec3f(0,0,0);
-    ofVec3f separationForce = ofVec3f(0,0,0);
+//    ofVec3f alignmentForce = ofVec3f(0,0,0);
+//    ofVec3f cohesionForce = ofVec3f(0,0,0);
+//    ofVec3f separationForce = ofVec3f(0,0,0);
+    
+    /*
+     Vector3 SteerTowards (Vector3 vector) {
+            Vector3 v = vector.normalized * settings.maxSpeed - velocity;
+            return Vector3.ClampMagnitude (v, settings.maxSteerForce);
+    }
+     
     
     if(numPerceivedNCohesion > 0)
     {
+        //Sebs Legue
         flockCentroid *= perceivedNCohesionFactor;
-        ofVec3f offSetFromCentroid = (flockCentroid - position).normalize() * MAX_SPEED;
-        //cohesionForce = COHESION_FACTOR * offSetFromCentroid - velocity;
+        ofVec3f offSetFromCentroid = (flockCentroid - position);//.normalize() * MAX_SPEED;
+        //cohesionForce = COHESION_FACTOR * offSetFromCentroid.normalize() * MAX_SPEED - velocity;
+        
+        //KTH
+        flockCentroid *= perceivedNCohesionFactor;
         cohesionForce = COHESION_FACTOR * flockCentroid - position;
+        
     }
     if(numPerceivedNAlignment > 0)
     {
+        
         flockAverageAlignment *= perceivedNAlignmentFactor;
-        alignmentForce = ALIGNMENT_FACTOR * flockAverageAlignment - velocity;
+        //alignmentForce = ALIGNMENT_FACTOR * flockAverageAlignment - velocity;
     }
     if(numPerceivedNSeparation > 0)
     {
-        //flockAverageAvoidance *= perceivedNSeparationFactor;
-        separationForce = SEPARATION_FACTOR * flockAverageAvoidance - velocity;
+        //Sebs Legue
+        separationForce = SEPARATION_FACTOR * flockAverageSeparation.normalize() * MAX_SPEED - velocity ;
     }
+     */
     
     
     
-    
-    acceleration += cohesionForce;
-    acceleration += alignmentForce;
-    acceleration += separationForce;
+//    acceleration += cohesionForce;
+//    acceleration += alignmentForce;
+//    acceleration += separationForce;
     
     velocity += acceleration;
-    position += velocity;
+    position += velocity * ofGetLastFrameTime();
+    
+    //Reset N count
+//    numPerceivedNCohesion = 0;
+//    numPerceivedNAlignment = 0;
+//    numPerceivedNSeparation = 0;
 }
 
 ofVec3f& Boid::sphericalBoundaryForce()
 {
-    if(worldCenter.distance(position) < 1000) return velocity;
+//    std::cout << worldCenter << " worldCenter |"
+//    << position << " position |"
+//    << worldCenter.distance(position)  << " worldCenter.distance(position) \n";
+    float boundaryRadius = 1000.0f;
+    if(worldCenter.distance(position) < boundaryRadius) return velocity;
     
-    velocity *= -1;
-    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
-    velocity += wanderDirection;
-    velocity = velocity.normalize() * 2.0f;
+    //velocity *= -1;
+    
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize() * (boundaryRadius * 0.5f);
+    ofVec3f randomPointInsideSphere = worldCenter + wanderDirection;
+    
+    // Calculate a new direction towards the random point inside the sphere
+    ofVec3f newDirection = (randomPointInsideSphere - position).normalize() * MAX_SPEED;
+    
+    velocity = newDirection;
     
     return velocity;
 }

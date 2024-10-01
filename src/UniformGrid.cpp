@@ -120,7 +120,7 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         float y = (i / width) % height;
         float z = i  / (width * height);
         
-        std::cout << 'x' << x << 'y' << y << 'z' << z << '\n';
+        //std::cout << 'x' << x << 'y' << y << 'z' << z << '\n';
         
         //These coordnate consider the size of the voxel //TODO and soon the offset position on the grid in world space
         float worldX = (x * m_voxelSize); //offset of the min
@@ -134,7 +134,7 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         
         // RANDOM assignation of the Voxel as obstacle
         float randomObstacleState = ofRandom(0, 1);
-        std::cout << "randomObstacleState: " << randomObstacleState << '\n';
+        //std::cout << "randomObstacleState: " << randomObstacleState << '\n';
         float OBSTACLES_POBALITIY = 0.99;
         setVoxelAsObstacle(i, (randomObstacleState > OBSTACLES_POBALITIY)); // Gives more chances of voxels being emty spaces
         
