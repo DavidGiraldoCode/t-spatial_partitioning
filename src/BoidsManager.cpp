@@ -28,19 +28,20 @@ void BoidsManager::updateSteeringForces()
 {
     for(size_t i = 0; i < boids.size(); i++)
     {
-//        for(size_t j = 0; j < boids.size(); j++)
-//        {
-//            if(i != j)
-//            {
-//                
-//                ofVec3f distVec = boids[j].getPosition() - boids[i].getPosition();
-//                float sqrDistance = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
-//                
-//                if(sqrDistance < (neighborCohesionDistance*neighborCohesionDistance))
-//                {
-//                    boids[i].numPerceivedNCohesion++;
-//                    boids[i].flockCentroid += boids[j].getPosition();
-//                }
+        for(size_t j = 0; j < boids.size(); j++)
+        {
+            if(i != j)
+            {
+                
+                ofVec3f distVec = boids[j].getPosition() - boids[i].getPosition();
+                float sqrDistance = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
+                
+                if(sqrDistance < (neighborCohesionDistance*neighborCohesionDistance))
+                {
+                    boids[i].numPerceivedNCohesion++;
+                    boids[i].flockCentroid += boids[j].getPosition();
+                }
+                
 //                if(sqrDistance < (neighborAlignmentDistance*neighborAlignmentDistance))
 //                {
 //                    boids[i].numPerceivedNAlignment++;
@@ -51,12 +52,17 @@ void BoidsManager::updateSteeringForces()
 //                    boids[i].numPerceivedNSeparation++;
 //                    boids[i].flockAverageSeparation -= distVec / sqrDistance;
 //                }
-//            }
-//        }
-//        
-//        // by computing this scalar factor we avoid dividing each component of flockCentroid vector
-//        if(boids[i].numPerceivedNCohesion > 0)
-//            boids[i].perceivedNCohesionFactor = 1 / boids[i].numPerceivedNCohesion;
+            }
+        }
+        
+        // by computing this scalar factor we avoid dividing each component of flockCentroid vector
+        if(boids[i].numPerceivedNCohesion > 0)
+        {
+            //boids[i].flockCentroid = boids[i].flockCentroid / boids[i].numPerceivedNCohesion;
+            boids[i].perceivedNCohesionFactor = 1 / boids[i].numPerceivedNCohesion;
+            boids[i].flockCentroid *= boids[i].perceivedNCohesionFactor;
+        }
+            
 //        if(boids[i].numPerceivedNAlignment > 0)
 //            boids[i].perceivedNAlignmentFactor = 1 / boids[i].numPerceivedNAlignment;
         

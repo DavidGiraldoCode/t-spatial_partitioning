@@ -57,6 +57,10 @@ Boid::Boid(const Boid& other)
     forward = other.forward;
     worldCenter = other.worldCenter;
     
+    numPerceivedNCohesion = other.numPerceivedNCohesion;
+    numPerceivedNAlignment = other.numPerceivedNAlignment;
+    numPerceivedNSeparation = other.numPerceivedNAlignment;
+    
 }
 
 Boid::~Boid()
@@ -107,29 +111,30 @@ void Boid::updateSteeringForces()
     acceleration.z = 0.0f;
     
     velocity = sphericalBoundaryForce(); //GOOD enough solution for now
-//    ofVec3f alignmentForce = ofVec3f(0,0,0);
-//    ofVec3f cohesionForce = ofVec3f(0,0,0);
-//    ofVec3f separationForce = ofVec3f(0,0,0);
+    ofVec3f alignmentForce = ofVec3f(0,0,0);
+    ofVec3f cohesionForce = ofVec3f(0,0,0);
+    ofVec3f separationForce = ofVec3f(0,0,0);
     
     /*
      Vector3 SteerTowards (Vector3 vector) {
             Vector3 v = vector.normalized * settings.maxSpeed - velocity;
             return Vector3.ClampMagnitude (v, settings.maxSteerForce);
-    }
+    }*/
      
     
     if(numPerceivedNCohesion > 0)
     {
         //Sebs Legue
-        flockCentroid *= perceivedNCohesionFactor;
-        ofVec3f offSetFromCentroid = (flockCentroid - position);//.normalize() * MAX_SPEED;
+        //flockCentroid *= perceivedNCohesionFactor;
+        //ofVec3f offSetFromCentroid = (flockCentroid - position);//.normalize() * MAX_SPEED;
         //cohesionForce = COHESION_FACTOR * offSetFromCentroid.normalize() * MAX_SPEED - velocity;
         
         //KTH
-        flockCentroid *= perceivedNCohesionFactor;
-        cohesionForce = COHESION_FACTOR * flockCentroid - position;
+        //flockCentroid *= perceivedNCohesionFactor;
+        cohesionForce =  (flockCentroid - position).normalize() * COHESION_FACTOR;
         
     }
+    /*
     if(numPerceivedNAlignment > 0)
     {
         
@@ -145,34 +150,27 @@ void Boid::updateSteeringForces()
     
     
     
-//    acceleration += cohesionForce;
-//    acceleration += alignmentForce;
-//    acceleration += separationForce;
+    acceleration += cohesionForce;
+    acceleration += alignmentForce;
+    acceleration += separationForce;
     
     velocity += acceleration;
     position += velocity * ofGetLastFrameTime();
     
     //Reset N count
-//    numPerceivedNCohesion = 0;
-//    numPerceivedNAlignment = 0;
-//    numPerceivedNSeparation = 0;
+    numPerceivedNCohesion = 0;
+    numPerceivedNAlignment = 0;
+    numPerceivedNSeparation = 0;
 }
 
 ofVec3f& Boid::sphericalBoundaryForce()
 {
-//    std::cout << worldCenter << " worldCenter |"
-//    << position << " position |"
-//    << worldCenter.distance(position)  << " worldCenter.distance(position) \n";
     float boundaryRadius = 1000.0f;
     if(worldCenter.distance(position) < boundaryRadius) return velocity;
     
-    //velocity *= -1;
-    
-    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize() * (boundaryRadius * 0.5f);
-    ofVec3f randomPointInsideSphere = worldCenter + wanderDirection;
-    
-    // Calculate a new direction towards the random point inside the sphere
-    ofVec3f newDirection = (randomPointInsideSphere - position).normalize() * MAX_SPEED;
+    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize() * (boundaryRadius * 0.5f); //Compute random direction, then scale it by half of the boundary
+    ofVec3f randomPointInsideSphere = worldCenter + wanderDirection; // Added to the position of the world so it is now a point inside the sphere
+    ofVec3f newDirection = (randomPointInsideSphere - position).normalize() * MAX_SPEED; // Calculate a new direction towards the random point inside the sphere
     
     velocity = newDirection;
     
