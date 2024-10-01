@@ -9,6 +9,7 @@
 #include "Scene.hpp"
 #include "TestDerivedScene.hpp"
 #include "RayIntersectionScene.hpp"
+#include "BoidsNaiveScene.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -35,4 +36,5 @@ class ofApp : public ofBaseApp{
         VoxelGridScene * voxelGridScene;
         //Scene * testDerivedScene;
         Scene * rayIntersectionScene;
+        Scene * boidsNaiveScene;
 };
