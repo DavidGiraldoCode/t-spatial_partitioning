@@ -27,7 +27,10 @@ public:
     ofParameter<float>   guiSeparationF;
     ofParameter<float>   guiCohesionF;
     ofParameter<float>   guiAlignmentF;
+    ofParameter<float>   guiAvoidanceF;
+    
     ofParameter<float>   guiSeparationDistance;
     ofParameter<float>   guiCohesionDistance;
     ofParameter<float>   guiAlignmentDistance;
+    ofParameter<float>   guiAvoidanceDistance;
 };

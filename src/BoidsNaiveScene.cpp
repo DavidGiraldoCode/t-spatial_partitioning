@@ -35,10 +35,13 @@ void BoidsNaiveScene::setup()
     gui.add(guiSeparationF.set( "Separation F", boidsManager.SEPARATION_FACTOR, 0, 10));
     gui.add(guiCohesionF.set( "Cohesion F", boidsManager.COHESION_FACTOR, 0, 10));
     gui.add(guiAlignmentF.set( "Alignment F", boidsManager.ALIGNMENT_FACTOR, 0, 10));
+    gui.add(guiAvoidanceF.set( "Avoidance F", boidsManager.AVOIDANCE_FACTOR, 0, 10));
     
     gui.add(guiSeparationDistance.set( "Separation Dist", boidsManager.neighborSeparationDistance, 0, 500));
     gui.add(guiCohesionDistance.set( "Cohesion Dist", boidsManager.neighborCohesionDistance, 0, 500));
     gui.add(guiAlignmentDistance.set( "Alignment Dist", boidsManager.neighborAlignmentDistance, 0, 500));
+    gui.add(guiAvoidanceDistance.set( "Avoidance Dist", boidsManager.obstacleAvoidanceDistance, 0, 1000));
+
    
 }
 void BoidsNaiveScene::update()
@@ -67,11 +70,6 @@ void BoidsNaiveScene::draw()
         roadMaterial.begin();
         environmentGround.draw();
         roadMaterial.end();
-    
-        for(size_t i = 0; i < BOIDS_COUNT; i++)
-        {
-            boidMeshes[i].draw();
-        }
         
         environmentGround.drawAxes(500);
         ofSetColor(100, 100, 100);
@@ -105,6 +103,12 @@ void BoidsNaiveScene::draw()
 //                voxelMesh.drawFaces();
             }
         }
+    
+    for(size_t i = 0; i < BOIDS_COUNT; i++)
+    {
+        ofSetColor(80, 80, 80, 255);
+        boidMeshes[i].draw();
+    }
         //emptyVoxelMAT.end();
     
     ofDisableDepthTest();
@@ -115,10 +119,12 @@ void BoidsNaiveScene::draw()
     boidsManager.SEPARATION_FACTOR = guiSeparationF;
     boidsManager.COHESION_FACTOR = guiCohesionF;
     boidsManager.ALIGNMENT_FACTOR = guiAlignmentF;
+    boidsManager.AVOIDANCE_FACTOR = guiAvoidanceF;
     
     boidsManager.neighborCohesionDistance = guiCohesionDistance;
     boidsManager.neighborSeparationDistance = guiSeparationDistance;
     boidsManager.neighborAlignmentDistance = guiAlignmentDistance;
+    boidsManager.obstacleAvoidanceDistance = guiAvoidanceDistance;
     
     guiFramesPerSecond.set(ofGetFrameRate());
     gui.draw();

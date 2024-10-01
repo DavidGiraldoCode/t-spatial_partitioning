@@ -32,6 +32,7 @@ Boid::Boid(float x, float y, float z)
     cohesionForce       =   ofVec3f(0.0f, 0.0f, 0.0f);
     separationForce     =   ofVec3f(0.0f, 0.0f, 0.0f);
     alignmentForce      =   ofVec3f(0.0f, 0.0f, 0.0f);
+    avoidanceForce      =   ofVec3f(0.0f, 0.0f, 0.0f);
 }
 
 Boid::Boid(const ofVec3f &spawnPosition)
@@ -43,10 +44,10 @@ Boid::Boid(const ofVec3f &spawnPosition)
     
     //velocity = forward * MAX_SPEED;
     
-    std::cout << velocity << " velocity\n";
+    //std::cout << velocity << " velocity\n";
     wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
     velocity = wanderDirection * MAX_SPEED;
-    std::cout << velocity << " velocity\n";
+    //std::cout << velocity << " velocity\n";
     //velocity = velocity.normalize() * MAX_SPEED;
     
     //NEW
@@ -63,6 +64,7 @@ Boid::Boid(const Boid& other)
     SEPARATION_FACTOR = other.SEPARATION_FACTOR;
     COHESION_FACTOR = other.COHESION_FACTOR;
     ALIGNMENT_FACTOR = other.ALIGNMENT_FACTOR;
+    AVOIDANCE_FACTOR = other.AVOIDANCE_FACTOR;
     
     cohesionForce = other.cohesionForce;
     separationForce = other.separationForce;
@@ -133,9 +135,14 @@ void Boid::updateSteeringForces()
     if(numPerceivedNSeparation > 0)
         separationForce = flockAverageSeparation * SEPARATION_FACTOR;
     
+    
+    avoidanceForce = obstaclesAverageAvoidance.normalize() * AVOIDANCE_FACTOR;
+    
     acceleration += cohesionForce;
     acceleration += alignmentForce;
     acceleration += separationForce;
+    
+    acceleration += avoidanceForce;
     
     velocity += acceleration;
     position += velocity * ofGetLastFrameTime();

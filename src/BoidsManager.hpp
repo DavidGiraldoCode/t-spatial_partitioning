@@ -24,11 +24,14 @@ public:
             float               neighborSeparationDistance  =   100;
             float               neighborAlignmentDistance   =   100;
     
+            float               obstacleAvoidanceDistance   =   300;
+    
             float               MAX_SPEED                   =   200.0f;
             
             float               COHESION_FACTOR             =   2.0f;
             float               ALIGNMENT_FACTOR            =   2.0f;
-            float               SEPARATION_FACTOR           =   5.0f;
+            float               SEPARATION_FACTOR           =   4.0f;
+            float               AVOIDANCE_FACTOR            =   4.0f;
     
 private:
     std::vector<Boid>  boids = {};

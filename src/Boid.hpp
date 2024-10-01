@@ -39,11 +39,15 @@ public:
     //Steering forces
             ofVec3f     flockCentroid;
             ofVec3f     flockAverageAlignment;
-            ofVec3f     flockAverageSeparation;
+            ofVec3f     flockAverageSeparation;//TODO change name, is not average
+    
+            ofVec3f     obstaclesAverageAvoidance;
     
             ofVec3f     cohesionForce;
             ofVec3f     alignmentForce;
             ofVec3f     separationForce;
+    
+            ofVec3f     avoidanceForce;
     
             float       numPerceivedNCohesion = 0;
             float       numPerceivedNAlignment = 0;
@@ -60,6 +64,7 @@ public:
             float   COHESION_FACTOR     ;//=   2.0f;
             float   ALIGNMENT_FACTOR    ;//=   2.0f;
             float   SEPARATION_FACTOR   ;//=   10.0f;
+            float   AVOIDANCE_FACTOR   ;
 private:
     
     ofVec3f forward;

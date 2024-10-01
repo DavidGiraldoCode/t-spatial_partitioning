@@ -16,6 +16,7 @@ BoidsManager::BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGr
         boids[i].SEPARATION_FACTOR = SEPARATION_FACTOR;
         boids[i].COHESION_FACTOR = COHESION_FACTOR;
         boids[i].ALIGNMENT_FACTOR = ALIGNMENT_FACTOR;
+        boids[i].AVOIDANCE_FACTOR = AVOIDANCE_FACTOR;
     }
     std::cout<<neighborCohesionDistance << ' '
     <<neighborSeparationDistance << ' '
@@ -63,7 +64,7 @@ void BoidsManager::updateSteeringForces()
                     float rSquare = neighborSeparationDistance*neighborSeparationDistance;
                     float ratio = (rSquare - sqrDistance) / sqrDistance; //This ratio can help scale the separation force inversely
                     
-                    boids[i].flockAverageSeparation += ratio * distVec.normalize(); //We want the direction but not the magnitude of the distance between boids
+                    boids[i].flockAverageSeparation -= distVec.normalize() * ratio; //We want the direction but not the magnitude of the distance between boids
                 }
             }
         }
@@ -73,18 +74,39 @@ void BoidsManager::updateSteeringForces()
         {
             boids[i].perceivedNCohesionFactor = 1 / boids[i].numPerceivedNCohesion;
             boids[i].flockCentroid *= boids[i].perceivedNCohesionFactor;
-            //boids[i].cohesionForce = (boids[i].flockCentroid - boids[i].getPosition()).normalize() * COHESION_FACTOR;
         }
             
         if(boids[i].numPerceivedNAlignment > 0)
         {
             boids[i].perceivedNAlignmentFactor = 1 / boids[i].numPerceivedNAlignment;
             boids[i].flockAverageSeparation *= boids[i].perceivedNCohesionFactor;
-            //boids[i].alignmentForce =  (boids[i].flockAverageAlignment - boids[i].getVelocity()).normalize() * ALIGNMENT_FACTOR;
         }
         
-        //boids[i].separationForce = boids[i].flockAverageSeparation * SEPARATION_FACTOR ;
+        //AVOIDANCE
         
+        for(size_t v = 0; v < uniformGridRef->obstaclesIndexs.size(); v++)
+        {
+            ofVec3f obsPos = uniformGridRef->getObstaclePositionByIndex(v);
+            //Offset becase the Voxel Mesh is rendered using the center of the cube
+            obsPos.x += 50;
+            obsPos.y += 50;
+            obsPos.z -= 50;
+            
+            //Vector describing the distance from the obstacle to the boid, since we need it to move away
+            ofVec3f distVec = boids[i].getPosition() - obsPos;
+            
+            //Euclidean distance to the obstacle
+            float sqrDistance = distVec.x * distVec.x + distVec.y * distVec.y + distVec.z * distVec.z;
+            
+            float sqrThreshold = (obstacleAvoidanceDistance * obstacleAvoidanceDistance);
+            
+            if(sqrDistance < sqrThreshold)
+            {
+                float ratio = (sqrThreshold - sqrDistance) / sqrDistance;
+                boids[i].obstaclesAverageAvoidance += distVec.normalize() * ratio;//;.normalize();
+            }
+        }
+                
         boids[i].updateSteeringForces();
         boids[i].updatePositionInWorldGrid(*uniformGridRef);
     }
