@@ -96,23 +96,35 @@ void RayIntersectionScene::update()
             
             int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
                                                                               ray.getDirection());
-            uniformGrid.setIntersection(voxelIndex);
+            //uniformGrid.setIntersection(voxelIndex);
         }
     }
     
     //Y planes
-    for(size_t i = 0; i <= gridHeight; i++)
+    if(world_Y_Normal.dot(ray.getDirection()) < 0)
+        yPlaneNormal.y = 1;
+    if(world_Y_Normal.dot(ray.getDirection()) > 0)
+        yPlaneNormal.y = -1;
+    
+    if(world_Y_Normal.dot(ray.getDirection()) != 0)
     {
-        ofVec3f planePosition = ofVec3f(0, i * VOXEL_SIZE, 0); // second plane in the Z axis away from the camera (depth)
-        //bool intersectionTest = ray.intersectPlane(  yPlaneNormal,
-//                                                     planePosition,
-//                                                     ray.getOrigin(),
-//                                                     ray.getDirection(),
-//                                                     lambaT);
-        
-        //int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
-        //uniformGrid.setIntersection(voxelIndex);
+        int direction; // If the plane normal is positive, we traverse the planes from [height -> 0]
+        for(size_t i = index3D.y; i < heightRange; i++)
+        {
+            direction = yPlaneNormal.y == 1 ? index3D.y - (heightRange - i) : i;
+            ofVec3f planePosition = ofVec3f(0, direction * VOXEL_SIZE, 0); // second plane in the Z axis away from the camera (depth)
+            bool intersectionTest = ray.intersectPlane(  yPlaneNormal,
+                                                         planePosition,
+                                                         ray.getOrigin(),
+                                                         ray.getDirection(),
+                                                         lambaT);
+            
+            int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
+                                                                              ray.getDirection());
+            uniformGrid.setIntersection(voxelIndex);
+        }
     }
+  
     
     
     //Z planess
