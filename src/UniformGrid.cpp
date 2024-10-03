@@ -159,11 +159,14 @@ UniformGrid::~UniformGrid()
 //Public
 const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
 {
+    //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
     //Casting values and de-scaling the world position to units and increments of 1
-    int pX = floor(pointQuery.x * m_normalizeSizeFactor);
+    int pX = floor(pointQuery.x * m_normalizeSizeFactor); // 1/m_voxelSize;
     int pY = floor(pointQuery.y * m_normalizeSizeFactor);
     int pZ = (floor(pointQuery.z * m_normalizeSizeFactor) * -1) -1; //Recall that we have defined the deepth of the grid to be far away from the camera
-
+    
+    //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
+    
     bool inColsBounds = pX >= 0 && pX < m_nCols;
     bool inRowsBounds = pY >= 0 && pY < m_nRows;
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
@@ -176,7 +179,7 @@ const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
     if(indexInOneD < 0 || indexInOneD >= voxels.size())
         return -1;
     
-    //std::cout << "Boid is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
+    //std::cout << "Point is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
     return indexInOneD;
 }
 

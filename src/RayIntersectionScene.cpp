@@ -90,8 +90,8 @@ void RayIntersectionScene::update()
         //uniformGrid.setIntersection(voxelIndex);
     }
     
-    //Z planes
-    for(size_t i = 0; i <= gridDepth; i++)
+    //Z planess
+    for(size_t i = 0; i <= (ray.getReach()/VOXEL_SIZE) /*gridDepth*/; i++)
     {
         ofVec3f planePosition = ofVec3f(0, 0, i * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
         
