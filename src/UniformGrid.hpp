@@ -30,6 +30,7 @@ public:
            void          addObjectToVoxel(int i);
     const  int           getVoxelState(int i) const;
     const  int           getVoxelObstacle(int i) const; //TODO this should be state instead
+    const  ofVec3f       get3DunitIndex(const ofVec3f &point);
     //For Debugging
            void          clearIntersections();
            void          setIntersection(int i);

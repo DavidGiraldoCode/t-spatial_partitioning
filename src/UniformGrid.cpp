@@ -159,6 +159,31 @@ UniformGrid::~UniformGrid()
 }
 
 //Public
+
+const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
+{
+    int pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
+    int pY = floor(point.y * m_normalizeSizeFactor);
+    
+    //The -1 is an error in the math
+    int pZ = floor((point.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    
+    bool inColsBounds = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
+    
+    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
+        return {-1, -1, -1};
+
+    int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
+    
+    if(indexInOneD < 0 || indexInOneD >= voxels.size())
+        return {-1, -1, -1};
+    
+    //std::cout << "Point is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
+    return {(float)pX, (float)pY, (float)pZ};
+}
+
 const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
 {
     //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';

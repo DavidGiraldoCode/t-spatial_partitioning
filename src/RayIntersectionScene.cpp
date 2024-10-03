@@ -91,6 +91,8 @@ void RayIntersectionScene::update()
         //uniformGrid.setIntersection(voxelIndex);
     }
     
+    ofVec3f index3D = uniformGrid.get3DunitIndex(ray.getOrigin());
+    float depthRange = index3D.z + (ray.getReach()/VOXEL_SIZE); //how far into the depth it should go
     //Z planess
     //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
     //if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
@@ -105,13 +107,14 @@ void RayIntersectionScene::update()
     
     if(world_Z_Normal.dot(ray.getDirection()) != 0) // dot = 0 means that the ray is orthogonal to the Z normal, and thus no intersection (or infinite)
     {
-        int startIndex = 
         
-        for(size_t i = 0; i <= /*(ray.getReach()/VOXEL_SIZE)*/ gridDepth ; i++)
+        
+        for(size_t i = index3D.z; i <= depthRange /*gridDepth*/ ; i++)
         {
+            std::cout << index3D << " index3D\n";
             //if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
             
-            int direction = zPlaneNormal.z == -1 ? gridDepth - i : i; // If the plane normal is negative, we traverse the planes from [deptp -> 0]
+            int direction = zPlaneNormal.z == -1 ? depthRange - i : i; // If the plane normal is negative, we traverse the planes from [deptp -> 0]
             
             ofVec3f planePosition = ofVec3f(0, 0, (direction) * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
             
