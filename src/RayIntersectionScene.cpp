@@ -61,28 +61,45 @@ void RayIntersectionScene::update()
     ofVec3f xPlaneNormal = ofVec3f(1,0,0);
     ofVec3f yPlaneNormal = ofVec3f(0,1,0);
     ofVec3f zPlaneNormal = ofVec3f(0,0,1);//ray.getDirection() * -1;
+    
+    ofVec3f world_X_Normal = ofVec3f(1,0,1);
+    ofVec3f world_Y_Normal = ofVec3f(0,1,0);
     ofVec3f world_Z_Normal = ofVec3f(0,0,1);
     
     float lambaT;
     
+    //This is the position from where the ray traversal test will start with respect to the Voxel Grid
     ofVec3f index3D = uniformGrid.get3DunitIndex(ray.getOrigin());
+    
     float depthRange = index3D.z + (ray.getReach()/VOXEL_SIZE); //how far into the depth it should go
     float widthRange = index3D.x + (ray.getReach()/VOXEL_SIZE); //how far into the width planes it should go
     float heightRange = index3D.y + (ray.getReach()/VOXEL_SIZE); //how far into the height planes it should go
     
     //X planes
-    for(size_t i = 0; i <= gridWidth; i++)
+    if(world_X_Normal.dot(ray.getDirection()) < 0)
+        xPlaneNormal.x = 1;
+    if(world_X_Normal.dot(ray.getDirection()) > 0)
+        xPlaneNormal.x = -1;
+    
+    if(world_X_Normal.dot(ray.getDirection()) != 0)
     {
-        ofVec3f planePosition = ofVec3f(i * VOXEL_SIZE, 0, 0); // second plane in the Z axis away from the camera (depth)
-        //bool intersectionTest = ray.intersectPlane(  xPlaneNormal,
-//                                                     planePosition,
-//                                                     ray.getOrigin(),
-//                                                     ray.getDirection(),
-//                                                     lambaT);
-        
-        //int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
-        //uniformGrid.setIntersection(voxelIndex);
+        int direction; // If the plane normal is positive, we traverse the planes from [width -> 0]
+        for(size_t i = index3D.x; i < widthRange; i++)
+        {
+            direction = xPlaneNormal.x == 1 ? index3D.x - (widthRange - i) : i;
+            ofVec3f planePosition = ofVec3f(direction * VOXEL_SIZE, 0, 0); // second plane in the Z axis away from the camera (depth)
+            bool intersectionTest = ray.intersectPlane(  xPlaneNormal,
+                                                         planePosition,
+                                                         ray.getOrigin(),
+                                                         ray.getDirection(),
+                                                         lambaT);
+            
+            int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
+                                                                              ray.getDirection());
+            uniformGrid.setIntersection(voxelIndex);
+        }
     }
+    
     //Y planes
     for(size_t i = 0; i <= gridHeight; i++)
     {
@@ -119,15 +136,15 @@ void RayIntersectionScene::update()
         {
             direction = zPlaneNormal.z == -1 ? index3D.z - (depthRange - i) : i;
             // -1 becase the voxel grid grows away from the camera.
-            ofVec3f zPlanePosition = ofVec3f(0, 0, (direction) * VOXEL_SIZE * -1);
+            ofVec3f zPlanePosition = ofVec3f(0, 0, direction * VOXEL_SIZE * -1);
             bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
                                                          zPlanePosition,
                                                          ray.getOrigin(),
                                                          ray.getDirection(),
                                                          lambaT);
             
-            int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
-            uniformGrid.setIntersection(voxelIndex);
+            //int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
+            //uniformGrid.setIntersection(voxelIndex);
         }
     }
     

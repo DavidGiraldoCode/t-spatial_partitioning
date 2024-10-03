@@ -76,6 +76,7 @@ const float Ray::getReach() const
                                const ofVec3f &rayDirection,
                                float &lambaT)
 {
+    lambaT = 0.0f; //clean the variable
     float parallelCheck = planeNormal.dot(rayDirection);
     float PARALLEL_THRESHOLD = 0.00000009; // To avoid multiplying by 0;
 //    std::cout << planeNormal << " planeNormal \n";

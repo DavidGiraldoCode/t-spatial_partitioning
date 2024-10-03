@@ -213,7 +213,7 @@ const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
     return indexInOneD;
 }
 
-const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &direction) const
+const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &rayDirection) const
 {
     //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
     //std::cout << m_normalizeSizeFactor << "  m_normalizeSizeFactor \n";
@@ -225,10 +225,16 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     int pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
     //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
+    std::cout << rayDirection << " ray direction\n";
+    //Checking directions
+    if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
+        pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
     
     //Checking directions
-    if (direction.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
+    if (rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
         pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
+    
+    
     
     bool inColsBounds = pX >= 0 && pX < m_nCols;
     bool inRowsBounds = pY >= 0 && pY < m_nRows;
