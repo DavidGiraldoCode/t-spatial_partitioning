@@ -100,8 +100,8 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
     unsigned voxelCount = width * height * depth;
     std::cout << "voxelCount: " << voxelCount << '\n';
     
-    m_voxelSize = VOXEL_SIZE;
-    m_normalizeSizeFactor = 1/m_voxelSize;
+    m_voxelSize = (float)VOXEL_SIZE * 1.0f; // A brute force casting to be sure
+    m_normalizeSizeFactor = (float)(1.0f / m_voxelSize);
     
     m_nx = width <= 0 ? 2 : width + 1;
     m_ny = height <= 0 ? 2 : height + 1;
@@ -141,8 +141,8 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         bool isEmpty = (randomObstacleState > OBSTACLES_POBALITIY);
         setVoxelAsObstacle(i, isEmpty);
         
-        if(y == 0)
-            setVoxelAsObstacle(i, true);
+        //if(y == 0) // Shading the ground
+            //setVoxelAsObstacle(i, true);
         
         if(isEmpty)// if it an obstacle, save the index
             obstaclesIndexs.push_back(i);
@@ -162,8 +162,9 @@ UniformGrid::~UniformGrid()
 const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
 {
     std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
+    std::cout << m_normalizeSizeFactor << "  m_normalizeSizeFactor \n";
     //Casting values and de-scaling the world position to units and increments of 1
-    int pX = floor(pointQuery.x * m_normalizeSizeFactor); // 1/m_voxelSize;
+    int pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
     int pY = floor(pointQuery.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
