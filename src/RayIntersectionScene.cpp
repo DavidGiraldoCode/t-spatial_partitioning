@@ -92,32 +92,41 @@ void RayIntersectionScene::update()
     }
     
     //Z planess
-    for(size_t i = 0; i <= /*(ray.getReach()/VOXEL_SIZE)*/ gridDepth ; i++)
+    //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
+    //if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
+    
+    if(world_Z_Normal.dot(ray.getDirection()) < 0) // The ray is going in the oposite direction as the world Z normal
+        zPlaneNormal.z = 1;
+    
+    // The ray is going in the same direction as the world Z normal, the PlaneNormal needs to flip
+    // to consider the voxels' faces that are in the direction [depth -> 0]
+    if(world_Z_Normal.dot(ray.getDirection()) > 0)
+        zPlaneNormal.z = -1;
+    
+    if(world_Z_Normal.dot(ray.getDirection()) != 0) // dot = 0 means that the ray is orthogonal to the Z normal, and thus no intersection (or infinite)
     {
-        ofVec3f planePosition = ofVec3f(0, 0, i * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
+        int startIndex = 
         
-        //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
-        //if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
-        
-        if(world_Z_Normal.dot(ray.getDirection()) < 0) // The ray is going in the oposite direction as the world Z normal
-            zPlaneNormal.z = 1;
-        
-        // The ray is going in the same direction as the world Z normal, the PlaneNormal needs to flip
-        // to consider the voxels' faces that are in the direction [depth -> 0]
-        if(world_Z_Normal.dot(ray.getDirection()) > 0)
-            zPlaneNormal.z = -1;
-        
-        if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
-        
-        bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
-                                                     planePosition,
-                                                     ray.getOrigin(),
-                                                     ray.getDirection(),
-                                                     lambaT);
-        
-        int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
-        uniformGrid.setIntersection(voxelIndex);
+        for(size_t i = 0; i <= /*(ray.getReach()/VOXEL_SIZE)*/ gridDepth ; i++)
+        {
+            //if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
+            
+            int direction = zPlaneNormal.z == -1 ? gridDepth - i : i; // If the plane normal is negative, we traverse the planes from [deptp -> 0]
+            
+            ofVec3f planePosition = ofVec3f(0, 0, (direction) * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
+            
+            
+            bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
+                                                         planePosition,
+                                                         ray.getOrigin(),
+                                                         ray.getDirection(),
+                                                         lambaT);
+            
+            int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
+            uniformGrid.setIntersection(voxelIndex);
+        }
     }
+    
     
     /*
      std::cout << "intersectionTest: " << intersectionTest

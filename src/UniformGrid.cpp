@@ -202,7 +202,7 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
     
     //Checking directions
-    if (direction.z >= 0) // if the Ray is pointing in the same direction as the world Z Normal
+    if (direction.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
         pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
     
     bool inColsBounds = pX >= 0 && pX < m_nCols;
