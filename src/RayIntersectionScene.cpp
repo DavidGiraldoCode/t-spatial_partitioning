@@ -61,6 +61,7 @@ void RayIntersectionScene::update()
     ofVec3f xPlaneNormal = ofVec3f(1,0,0);
     ofVec3f yPlaneNormal = ofVec3f(0,1,0);
     ofVec3f zPlaneNormal = ofVec3f(0,0,1);//ray.getDirection() * -1;
+    ofVec3f world_Z_Normal = ofVec3f(0,0,1);
     
     float lambaT;
     //X planes
@@ -91,12 +92,17 @@ void RayIntersectionScene::update()
     }
     
     //Z planess
-    for(size_t i = 0; i <= (ray.getReach()/VOXEL_SIZE) /*gridDepth*/; i++)
+    for(size_t i = 0; i <= /*(ray.getReach()/VOXEL_SIZE)*/ gridDepth ; i++)
     {
         ofVec3f planePosition = ofVec3f(0, 0, i * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
         
         //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
-        if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
+        //if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
+        if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
+        if(world_Z_Normal.dot(ray.getDirection()) < 0) // The ray is going in the oposite direction than Z normal
+            zPlaneNormal.z = 1;
+        if(world_Z_Normal.dot(ray.getDirection()) > 0)// The ray is going in the same direction than Z normal, the PlaneNormal needs to flipped
+            zPlaneNormal.z = -1;
         
         bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
                                                      planePosition,
@@ -104,7 +110,7 @@ void RayIntersectionScene::update()
                                                      ray.getDirection(),
                                                      lambaT);
         
-        int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
+        int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
         uniformGrid.setIntersection(voxelIndex);
     }
     
