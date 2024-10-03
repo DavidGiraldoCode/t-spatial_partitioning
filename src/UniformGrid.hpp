@@ -25,7 +25,7 @@ public:
     const  ofVec3f&      getObstaclePositionByIndex(size_t index) const;
     const  size_t        getGridSize();
     const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
-    const  int           isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &direction) const;
+    const  int           isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &rayDirection) const;
            void          removeObjectFromVoxel(int i);
            void          addObjectToVoxel(int i);
     const  int           getVoxelState(int i) const;
