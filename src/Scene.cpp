@@ -31,6 +31,45 @@ void Scene::setup()
     //roadMaterial.setDiffuseColor(roadColor);
     //roadMaterial.setShininess(0.01);
     
+
+    //==================================== Actors
+    
+    
+    //ofobstaclesBoundingVolume mesh that represets the bounding volume of the environmental obstacles
+    obstaclesBoundingVolume.set( gridWidth * VOXEL_SIZE, gridHeight * VOXEL_SIZE, gridDepth * VOXEL_SIZE);
+    obstaclesBoundingVolume.setGlobalPosition(obstaclesBoundingVolume.getWidth()/2,
+                                              obstaclesBoundingVolume.getHeight()/2,
+                                              obstaclesBoundingVolume.getDepth()/2 * -1 ); /* Right-handed coordinate system */
+    obstaclesBoundingVolume.setResolution(1);
+    
+    cam.lookAt(obstaclesBoundingVolume.getPosition(), {0.f, 1.f, 0.f});
+    
+    //ofQuad that represents the floor of the scene
+    environmentGround.set(gridWidth * VOXEL_SIZE, gridDepth * VOXEL_SIZE ,gridWidth, gridDepth);
+    environmentGround.rotateDeg(-90, glm::vec3{1,0,0});
+    //environmentGround.move(0, -49, 0);
+    environmentGround.setGlobalPosition(environmentGround.getWidth()/2, 0, obstaclesBoundingVolume.getDepth()/2 * -1);
+        
+    // Voxel GRID
+    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, VOXEL_SIZE);
+    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
+    
+    //ofPrimivite Sphere Mesh to represent the Boid
+    voxelMesh.set(VOXEL_SIZE);
+    voxelMesh.setGlobalPosition(voxelMesh.getHeight()/2 + voxelMesh.getHeight(), voxelMesh.getHeight()/2, -voxelMesh.getHeight()/2);
+    voxelMesh.setResolution(1);
+    
+    ofFloatColor emptyColor(1,1,1,0.1);
+    emptyVoxelMAT.setDiffuseColor(emptyColor);
+    
+    //
+    // LIGHT SETTINGS
+    //
+    
+    light.setup();
+    light.setPosition(obstaclesBoundingVolume.getWidth()/2, obstaclesBoundingVolume.getHeight(), obstaclesBoundingVolume.getDepth()/2 * -1);
+    light.setAmbientColor(ofFloatColor(0.4, 1.0));
+    
     //
     // GUI
     //
@@ -50,45 +89,6 @@ void Scene::setup()
     //gui.add(guiGridHeight.set( "Grid Height", 1, 1, 100));
     //gui.add(guiGridDepth.set( "Grid Depth", 1, 1, 100));
 
-    //
-    //--------   Uniform grid
-    //
-    //voxelGridResolution = 1;
-    
-    
-    //ofobstaclesBoundingVolume mesh that represets the bounding volume of the environmental obstacles
-    obstaclesBoundingVolume.set( gridWidth * VOXEL_SIZE, gridHeight * VOXEL_SIZE, gridDepth * VOXEL_SIZE);
-    obstaclesBoundingVolume.setGlobalPosition(obstaclesBoundingVolume.getWidth()/2, obstaclesBoundingVolume.getHeight()/2, obstaclesBoundingVolume.getDepth()/2 * -1);
-    obstaclesBoundingVolume.setResolution(1);
-    
-    //ofQuad that represents the floor of the scene
-    environmentGround.set(gridWidth * VOXEL_SIZE, gridDepth * VOXEL_SIZE ,gridWidth, gridDepth);
-    environmentGround.rotateDeg(-90, glm::vec3{1,0,0});
-    //environmentGround.move(0, -49, 0);
-    environmentGround.setGlobalPosition(environmentGround.getWidth()/2, 0, obstaclesBoundingVolume.getDepth()/2 * -1);
-        
-    //
-    // Voxel GRID
-    //
-    
-    uniformGrid = UniformGrid(gridWidth, gridHeight, gridDepth, VOXEL_SIZE);
-    std::cout << "Grid size:" << uniformGrid.getGridSize() << '\n';
-    
-    //ofPrimivite Sphere Mesh to represent the Boid
-    voxelMesh.set(VOXEL_SIZE);
-    voxelMesh.setGlobalPosition(voxelMesh.getHeight()/2 + voxelMesh.getHeight(), voxelMesh.getHeight()/2, -voxelMesh.getHeight()/2);
-    voxelMesh.setResolution(1);
-    
-    ofFloatColor emptyColor(1,1,1,0.1);
-    emptyVoxelMAT.setDiffuseColor(emptyColor);
-    
-    //
-    // LIGHT SETTINGS
-    //
-    
-    light.setup();
-    light.setPosition(obstaclesBoundingVolume.getWidth()/2, obstaclesBoundingVolume.getHeight(), obstaclesBoundingVolume.getDepth()/2 * -1);
-    light.setAmbientColor(ofFloatColor(0.4, 1.0));
 }
 
 void Scene::update()

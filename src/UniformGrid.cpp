@@ -125,7 +125,9 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         //These coordnate consider the size of the voxel //TODO and soon the offset position on the grid in world space
         float worldX = (x * m_voxelSize); //offset of the min
         float worldY = (y * m_voxelSize); //offset of the min
-        float worldZ = (z * m_voxelSize)* -1; //The z grow far from the camera
+        
+        z = z != 0 ? (z * -1) : 0; // Right-handed coordinate system, this avoid having -0, when z = 0, then z * -1 = -0
+        float worldZ = (z * m_voxelSize);
         
         //std::cout << "worldX: " << worldX << " worldY: " << worldY << " worldZ: " << worldZ << '\n';
         
@@ -159,13 +161,15 @@ UniformGrid::~UniformGrid()
 //Public
 const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
 {
-    //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
+    std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
     //Casting values and de-scaling the world position to units and increments of 1
     int pX = floor(pointQuery.x * m_normalizeSizeFactor); // 1/m_voxelSize;
     int pY = floor(pointQuery.y * m_normalizeSizeFactor);
-    int pZ = (floor(pointQuery.z * m_normalizeSizeFactor) * -1) -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
-    //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
+    //The -1 is an error in the math
+    int pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    
+    std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
     
     bool inColsBounds = pX >= 0 && pX < m_nCols;
     bool inRowsBounds = pY >= 0 && pY < m_nRows;
@@ -179,7 +183,7 @@ const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
     if(indexInOneD < 0 || indexInOneD >= voxels.size())
         return -1;
     
-    //std::cout << "Point is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
+    std::cout << "Point is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
     return indexInOneD;
 }
 
