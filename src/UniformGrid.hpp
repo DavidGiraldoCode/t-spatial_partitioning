@@ -25,10 +25,12 @@ public:
     const  ofVec3f&      getObstaclePositionByIndex(size_t index) const;
     const  size_t        getGridSize();
     const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
+    const  int           isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &direction) const;
            void          removeObjectFromVoxel(int i);
            void          addObjectToVoxel(int i);
     const  int           getVoxelState(int i) const;
     const  int           getVoxelObstacle(int i) const; //TODO this should be state instead
+    const  ofVec3f       get3DunitIndex(const ofVec3f &point);
     //For Debugging
            void          clearIntersections();
            void          setIntersection(int i);
