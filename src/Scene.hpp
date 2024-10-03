@@ -45,10 +45,10 @@ public:
     //==================================== Game settings
           int           BOIDS_COUNT = 100;
     const float         VOXEL_SIZE = 100;
-    const unsigned      gridWidth = 20;
-    const unsigned      gridHeight = 20;
-    const unsigned      gridDepth = 30;
-    const float         CURSOR_SPEED = 50.0f;
+    const unsigned      gridWidth = 10;
+    const unsigned      gridHeight = 10;
+    const unsigned      gridDepth = 15;
+    const float         CURSOR_SPEED = 25.0f;
     
     //==================================== Game state
     bool                isInside = false;

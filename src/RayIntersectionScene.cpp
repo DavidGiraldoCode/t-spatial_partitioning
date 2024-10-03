@@ -96,7 +96,7 @@ void RayIntersectionScene::update()
             
             int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
                                                                               ray.getDirection());
-            //uniformGrid.setIntersection(voxelIndex);
+            uniformGrid.setIntersection(voxelIndex);
         }
     }
     
@@ -155,8 +155,9 @@ void RayIntersectionScene::update()
                                                          ray.getDirection(),
                                                          lambaT);
             
-            //int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
-            //uniformGrid.setIntersection(voxelIndex);
+            int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
+                                                                              ray.getDirection());
+            uniformGrid.setIntersection(voxelIndex);
         }
     }
     
