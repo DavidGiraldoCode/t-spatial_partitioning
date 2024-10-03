@@ -105,28 +105,33 @@ void RayIntersectionScene::update()
     if(world_Z_Normal.dot(ray.getDirection()) > 0)
         zPlaneNormal.z = -1;
     
-    if(world_Z_Normal.dot(ray.getDirection()) != 0) // dot = 0 means that the ray is orthogonal to the Z normal, and thus no intersection (or infinite)
+    // dot = 0 means that the ray is orthogonal to the Z normal, and thus no intersection (or infinite)
+    if(world_Z_Normal.dot(ray.getDirection()) != 0) 
     {
-        
-        
+        int direction; // If the plane normal is negative, we traverse the planes from [deptp -> 0]
+
         for(size_t i = index3D.z; i <= depthRange /*gridDepth*/ ; i++)
         {
             std::cout << index3D << " index3D\n";
+            std::cout << depthRange << " depthRange\n";
+            std::cout << i << " i\n";
             //if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
+            direction = zPlaneNormal.z == -1 ? index3D.z - (depthRange - i) : i;
+            std::cout << direction << " direction\n";
             
-            int direction = zPlaneNormal.z == -1 ? depthRange - i : i; // If the plane normal is negative, we traverse the planes from [deptp -> 0]
-            
-            ofVec3f planePosition = ofVec3f(0, 0, (direction) * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
+            ofVec3f zPlanePosition = ofVec3f(0, 0, (direction) * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
             
             
             bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
-                                                         planePosition,
+                                                         zPlanePosition,
                                                          ray.getOrigin(),
                                                          ray.getDirection(),
                                                          lambaT);
             
             int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(), ray.getDirection());
+            //std::cout << voxelIndex << " voxelIndex\n";
             uniformGrid.setIntersection(voxelIndex);
+            
         }
     }
     
