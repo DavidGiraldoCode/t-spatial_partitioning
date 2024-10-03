@@ -21,7 +21,13 @@ git clone [URL]
 - [ ] Add point on MAX visibility distance in the head of the direction vector
 - [ ] Implement Boids behaviours
 
+## To keep in mind
 
+In a right-handed coordinate system:
+
+The X-axis points to the right.
+The Y-axis points up.
+The Z-axis points out of the screen (positive Z) towards the camera, and negative Z goes further into the scene, away from the camera.
 
 ## Useful snipets
 ```C++
