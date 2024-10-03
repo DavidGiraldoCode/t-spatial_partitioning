@@ -67,33 +67,37 @@ void RayIntersectionScene::update()
     for(size_t i = 0; i <= gridWidth; i++)
     {
         ofVec3f planePosition = ofVec3f(i * VOXEL_SIZE, 0, 0); // second plane in the Z axis away from the camera (depth)
-        bool intersectionTest = ray.intersectPlane(  xPlaneNormal,
-                                                     planePosition,
-                                                     ray.getOrigin(),
-                                                     ray.getDirection(),
-                                                     lambaT);
+        //bool intersectionTest = ray.intersectPlane(  xPlaneNormal,
+//                                                     planePosition,
+//                                                     ray.getOrigin(),
+//                                                     ray.getDirection(),
+//                                                     lambaT);
         
-        int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
-        uniformGrid.setIntersection(voxelIndex);
+        //int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
+        //uniformGrid.setIntersection(voxelIndex);
     }
     //Y planes
     for(size_t i = 0; i <= gridHeight; i++)
     {
         ofVec3f planePosition = ofVec3f(0, i * VOXEL_SIZE, 0); // second plane in the Z axis away from the camera (depth)
-        bool intersectionTest = ray.intersectPlane(  yPlaneNormal,
-                                                     planePosition,
-                                                     ray.getOrigin(),
-                                                     ray.getDirection(),
-                                                     lambaT);
+        //bool intersectionTest = ray.intersectPlane(  yPlaneNormal,
+//                                                     planePosition,
+//                                                     ray.getOrigin(),
+//                                                     ray.getDirection(),
+//                                                     lambaT);
         
-        int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
-        uniformGrid.setIntersection(voxelIndex);
+        //int voxelIndex = uniformGrid.isPointInsideAVoxel(ray.getIntersectionPoint());
+        //uniformGrid.setIntersection(voxelIndex);
     }
     
-    //Z planes
-    for(size_t i = 0; i <= gridDepth; i++)
+    //Z planess
+    for(size_t i = 0; i <= (ray.getReach()/VOXEL_SIZE) /*gridDepth*/; i++)
     {
-        ofVec3f planePosition = ofVec3f(0, 0, i * VOXEL_SIZE * -1); // second plane in the Z axis away from the camera (depth)
+        ofVec3f planePosition = ofVec3f(0, 0, i * VOXEL_SIZE * -1); // -1 becase the voxel grid grows away from the camera.
+        
+        //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
+        if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
+        
         bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
                                                      planePosition,
                                                      ray.getOrigin(),
@@ -107,7 +111,7 @@ void RayIntersectionScene::update()
     /*
      std::cout << "intersectionTest: " << intersectionTest
              << "\n | Ray Origin Position: " << rayOriginPosition
-             << "\n | Ray ["<< i <<"] Intersection Point: " << ray.getIntersectionPoint()
+             << "\n | Ray ["<< i <<"] Interwsection Point: " << ray.getIntersectionPoint()
              << "\n | Intersection ["<< i <<"] Point Index in Grid: " << voxelIndex
              << "\n | Ray Origin Position in Grid: " << uniformGrid.isPointInsideAVoxel(rayOriginPosition)
              <<'\n';
@@ -246,7 +250,10 @@ void RayIntersectionScene::keyPressed(int key)
     }
     
     //Updating position of cursor in Voxel Grid
-    //std::cout << "cursor: "<<rayOriginPosition << '\n';
+    std::cout << "rayOriginPosition: "<<rayOriginPosition << '\n';
+    
+    std::cout << "ray normal: "<<ray.getDirection().getNormalized() << '\n';
+    
     int cursorNewPos = uniformGrid.isPointInsideAVoxel(rayOriginPosition);
     
     //std::cout << "Cursor Position in Grid: " << cursorNewPos<< '\n';

@@ -61,7 +61,7 @@ const ofVec3f&  Ray::getIntersectionPoint() const
 
 
 
-const float Ray::getReach()
+const float Ray::getReach() const
 {
     return m_reach;
 }
