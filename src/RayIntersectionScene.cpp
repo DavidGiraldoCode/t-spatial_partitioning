@@ -98,11 +98,16 @@ void RayIntersectionScene::update()
         
         //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
         //if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
-        if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
-        if(world_Z_Normal.dot(ray.getDirection()) < 0) // The ray is going in the oposite direction than Z normal
+        
+        if(world_Z_Normal.dot(ray.getDirection()) < 0) // The ray is going in the oposite direction as the world Z normal
             zPlaneNormal.z = 1;
-        if(world_Z_Normal.dot(ray.getDirection()) > 0)// The ray is going in the same direction than Z normal, the PlaneNormal needs to flipped
+        
+        // The ray is going in the same direction as the world Z normal, the PlaneNormal needs to flip
+        // to consider the voxels' faces that are in the direction [depth -> 0]
+        if(world_Z_Normal.dot(ray.getDirection()) > 0)
             zPlaneNormal.z = -1;
+        
+        if(world_Z_Normal.dot(ray.getDirection()) == 0) break; // Because the ray is orthogonal to the Z normal
         
         bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
                                                      planePosition,
