@@ -144,18 +144,25 @@ void RayIntersectionScene::update()
     // dot = 0 means that the ray is orthogonal to the Z normal, and thus no intersection (or infinite)
     if(world_Z_Normal.dot(ray.getDirection()) != 0) 
     {
-        int direction; // If the plane normal is negative, we traverse the planes from [depth -> 0]
+        int planeIndex; // If the plane normal is negative, we traverse the planes from [depth -> 0]
         std::cout << zPlaneNormal << " zPlaneNormal\n";
         std::cout << ray.getDirection() << " Ray Direction\n";
         std::cout << index3D.z << " index3D.z\n";
+        std::cout << depthRange << " depthRange\n";
         
-        for(size_t i = index3D.z + 1; i <= depthRange; i++)
+        for(size_t i = 1; i <= (depthRange - index3D.z); i++)
         {
-            direction = zPlaneNormal.z == -1 ? index3D.z - (depthRange - i) : i;
+            /**
+            depthRange - index3D.z = absoluteDistance
+            since depthRange - absoluteDistance = index3D.z, we use this equation to offset the plane position adding i
+            depthRange - absoluteDistance - i = index3D.z - i
+             **/
+            planeIndex = zPlaneNormal.z == -1 ? (depthRange - (depthRange - index3D.z)) - i : index3D.z + i;// - (depthRange - i) : i;
             // -1 becase the voxel grid grows away from the camera.
+            std::cout << planeIndex << " planeIndex\n";
             
             int flip = i == 0 ? 1 : -1; // Sneaky way to avoid having -0
-            ofVec3f zPlanePosition = ofVec3f(0, 0, direction * VOXEL_SIZE * flip); // -1 becase the grid grows away from the camera
+            ofVec3f zPlanePosition = ofVec3f(0, 0, planeIndex * VOXEL_SIZE * flip); // -1 becase the grid grows away from the camera
             bool intersectionTest = ray.intersectPlane(  zPlaneNormal,
                                                          zPlanePosition,
                                                          ray.getOrigin(),
@@ -163,12 +170,12 @@ void RayIntersectionScene::update()
                                                          lambaT);
             //stop doing intersection test because
             // 1. Lamba may be grater than the reach
-            if (!intersectionTest) break;
-            
             std::cout << zPlanePosition << " zPlanePosition | "
                       << intersectionTest << " intersectionTest | "
                       << ray.getIntersectionPoint() << " Intersection Point |"
                       << uniformGrid.get3DunitIndex(ray.getIntersectionPoint()) << " 3D index \n";
+            
+            if (!intersectionTest) break;
             
             int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
                                                                               ray.getDirection());

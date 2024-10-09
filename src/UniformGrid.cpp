@@ -163,15 +163,15 @@ UniformGrid::~UniformGrid()
 const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
 {
     //std::cout << point << " point \n";
-    int pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
-    int pY = floor(point.y * m_normalizeSizeFactor);
+    float pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
+    float pY = floor(point.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
-    int pZ = floor(point.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    float pZ = floor(point.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
     //std::cout << "Test for -500 floor: " << (point.z) * m_normalizeSizeFactor << '\n';
     
-    pZ = point.z < 0 ? pZ * -1 : pZ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
+    pZ = point.z < 0 ? pZ * -1.0f : pZ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
     
     //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
     
@@ -188,7 +188,7 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
         return {-1, -1, -1};
     
     //std::cout << "Point is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
-    return {(float)pX, (float)pY, (float)pZ};
+    return {pX, pY, pZ};
 }
 
 const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
@@ -225,13 +225,13 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
     //std::cout << m_normalizeSizeFactor << "  m_normalizeSizeFactor \n";
     //Casting values and de-scaling the world position to units and increments of 1
-    int pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
-    int pY = floor(pointQuery.y * m_normalizeSizeFactor);
+    float pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
+    float pY = floor(pointQuery.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
-    int pZ = floor(pointQuery.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    float pZ = floor(pointQuery.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
-    pZ = pointQuery.z < 0 ? pZ * -1 : pZ;
+    pZ = pointQuery.z < 0 ? pZ * -1.0f : pZ;
     
     //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
     //std::cout << rayDirection << " ray direction\n";
@@ -242,10 +242,10 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     if (rayDirection.y < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
         pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
     
-    //Checking directions
+    //Checking directions*/
     if (rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
         pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
-    */
+    
     
     
     bool inColsBounds   = pX >= 0 && pX < m_nCols;
@@ -255,7 +255,7 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
         return -1;
 
-    int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
+    int indexInOneD = (int)pZ * m_nCols * m_nRows + (int)pY * m_nCols + (int)pX;
     
     if(indexInOneD < 0 || indexInOneD >= voxels.size())
         return -1;
