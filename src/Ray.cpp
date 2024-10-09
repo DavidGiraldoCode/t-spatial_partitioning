@@ -90,7 +90,7 @@ const float Ray::getReach() const
         lambaT = (planeNormal.dot(planePosition - rayOrigin)) / parallelCheck;
         //Threshold
         if(abs(lambaT) > m_reach) return false; // Clamps the ray to only intersect voxels within its reach
-        //std::cout << lambaT << " lambaT \n";
+        std::cout << lambaT << " lambaT \n";
         m_intersectionPoint = rayOrigin + rayDirection * lambaT;
         //std::cout << m_intersectionPoint << " intersectionPoint \n";
         

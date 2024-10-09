@@ -137,12 +137,12 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         // RANDOM assignation of the Voxel as obstacle
         float randomObstacleState = ofRandom(0, 1);
         //std::cout << "randomObstacleState: " << randomObstacleState << '\n';
-        float OBSTACLES_POBALITIY = 0.9999; // Gives more chances of voxels being emty spaces
+        float OBSTACLES_POBALITIY = 0.99999; // Gives more chances of voxels being emty spaces
         bool isEmpty = (randomObstacleState > OBSTACLES_POBALITIY);
         setVoxelAsObstacle(i, isEmpty);
         
-        //if(y == 0) // Shading the ground
-            //setVoxelAsObstacle(i, true);
+//        if(y == 0) // Shading the ground
+//            setVoxelAsObstacle(i, true);
         
         if(isEmpty)// if it an obstacle, save the index
             obstaclesIndexs.push_back(i);
@@ -162,14 +162,21 @@ UniformGrid::~UniformGrid()
 
 const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
 {
+    //std::cout << point << " point \n";
     int pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
     int pY = floor(point.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
-    int pZ = floor((point.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    int pZ = floor(point.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
-    bool inColsBounds = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    //std::cout << "Test for -500 floor: " << (point.z) * m_normalizeSizeFactor << '\n';
+    
+    pZ = point.z < 0 ? pZ * -1 : pZ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
+    
+    //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
+    
+    bool inColsBounds   = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
     
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
@@ -222,11 +229,13 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     int pY = floor(pointQuery.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
-    int pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    int pZ = floor(pointQuery.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    
+    pZ = pointQuery.z < 0 ? pZ * -1 : pZ;
     
     //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
-    std::cout << rayDirection << " ray direction\n";
-    //Checking directions
+    //std::cout << rayDirection << " ray direction\n";
+    /*Checking directions
     if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
         pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
     
@@ -236,11 +245,11 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     //Checking directions
     if (rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
         pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
+    */
     
     
-    
-    bool inColsBounds = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    bool inColsBounds   = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
     
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
