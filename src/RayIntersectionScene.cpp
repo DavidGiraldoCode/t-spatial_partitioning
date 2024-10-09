@@ -176,7 +176,7 @@ void RayIntersectionScene::update()
 //                      << ray.getIntersectionPoint() << " Intersection Point |"
 //                      << uniformGrid.get3DunitIndex(ray.getIntersectionPoint()) << " 3D index \n";
             
-            //if (!intersectionTest) break;
+            if (!intersectionTest) break;
             
             int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
                                                                               ray.getDirection());

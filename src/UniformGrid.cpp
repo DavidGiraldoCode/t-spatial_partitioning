@@ -170,10 +170,13 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
     float pZ = floor(point.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
     //std::cout << "Test for -500 floor: " << (point.z) * m_normalizeSizeFactor << '\n';
+    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
+    std::cout << point.z << " point.z |\n";
     
     pZ = point.z == 0 ? pZ : pZ * -1.0f ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
     
-    //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
+    
+    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
     
     bool inColsBounds   = pX >= 0 && pX < m_nCols;
     bool inRowsBounds   = pY >= 0 && pY < m_nRows;
@@ -188,6 +191,12 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
         pX = pX < 0 ? -1 : pX >= m_nCols   ? m_nCols   : pX ;
         pY = pY < 0 ? -1 : pY >= m_nRows   ? m_nRows   : pY ;
         pZ = pZ < 0 ? -1 : pZ >= m_nLayers ? m_nLayers : pZ ;
+        
+        if (pZ == -0.0f)
+        {
+            std::cout << pZ << " -> -0\n";
+            pZ = 0.0f;
+        }
         
         return {pX, pY, pZ}; //previously {-1, -1, -1};
     }
