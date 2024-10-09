@@ -70,7 +70,7 @@ void RayIntersectionScene::update()
     
     // Ray testing STARTING POINT
     // This is the position inside the 3D array from where the ray traversal test will start with respect to the Voxel Grid
-    // 0 based [0,0,0] -> [width, height, depth] inclusive, meaning uniformGrid[width, height, depth] is a valid position within bounds
+    // 0 based [0,0,0] -> [width - 1, height - 1, depth - 1] inclusive, meaning uniformGrid[width, height, depth] is NOT a valid position within bounds
     ofVec3f index3D = uniformGrid.get3DunitIndex(ray.getOrigin());
     
     float depthRange = index3D.z + (int)(ray.getReach()/VOXEL_SIZE); //how far along the depth it should go
@@ -145,10 +145,11 @@ void RayIntersectionScene::update()
     if(world_Z_Normal.dot(ray.getDirection()) != 0) 
     {
         int planeIndex; // If the plane normal is negative, we traverse the planes from [depth -> 0]
-        std::cout << zPlaneNormal << " zPlaneNormal\n";
-        std::cout << ray.getDirection() << " Ray Direction\n";
-        std::cout << index3D.z << " index3D.z\n";
-        std::cout << depthRange << " depthRange\n";
+//        std::cout << zPlaneNormal       << " zPlaneNormal\n";
+//        std::cout << ray.getDirection() << " Ray Direction\n";
+//        std::cout << ray.getOrigin()    << " Ray Origin\n";
+//        std::cout << index3D.z          << " index3D.z\n";
+//        std::cout << depthRange         << " depthRange\n";
         
         for(size_t i = 1; i <= (depthRange - index3D.z); i++)
         {
@@ -159,7 +160,7 @@ void RayIntersectionScene::update()
              **/
             planeIndex = zPlaneNormal.z == -1 ? (depthRange - (depthRange - index3D.z)) - i : index3D.z + i;// - (depthRange - i) : i;
             // -1 becase the voxel grid grows away from the camera.
-            std::cout << planeIndex << " planeIndex\n";
+            //std::cout << planeIndex << " planeIndex\n";
             
             int flip = i == 0 ? 1 : -1; // Sneaky way to avoid having -0
             ofVec3f zPlanePosition = ofVec3f(0, 0, planeIndex * VOXEL_SIZE * flip); // -1 becase the grid grows away from the camera
@@ -170,19 +171,19 @@ void RayIntersectionScene::update()
                                                          lambaT);
             //stop doing intersection test because
             // 1. Lamba may be grater than the reach
-            std::cout << zPlanePosition << " zPlanePosition | "
-                      << intersectionTest << " intersectionTest | "
-                      << ray.getIntersectionPoint() << " Intersection Point |"
-                      << uniformGrid.get3DunitIndex(ray.getIntersectionPoint()) << " 3D index \n";
+//            std::cout << zPlanePosition << " zPlanePosition | "
+//                      << intersectionTest << " intersectionTest | "
+//                      << ray.getIntersectionPoint() << " Intersection Point |"
+//                      << uniformGrid.get3DunitIndex(ray.getIntersectionPoint()) << " 3D index \n";
             
-            if (!intersectionTest) break;
+            //if (!intersectionTest) break;
             
             int voxelIndex = uniformGrid.isPointInsideAVoxelGivenRayDirection(ray.getIntersectionPoint(),
                                                                               ray.getDirection());
             
             uniformGrid.setIntersection(voxelIndex);
         }
-        std::cout << '\n';
+        //std::cout << '\n';
     }
     
     
@@ -327,9 +328,10 @@ void RayIntersectionScene::keyPressed(int key)
             break;
     }
     
-    //Updating position of cursor in Voxel Grid
+    //Updating position of ray in Voxel Grid
     std::cout << "\n rayOriginPosition: "<<rayOriginPosition << '\n';
     std::cout << "ray normal: "<<ray.getDirection().getNormalized() << '\n';
+    std::cout << "ray 3D position in Grid: "<< uniformGrid.get3DunitIndex(rayOriginPosition) << '\n';
     
     int cursorNewPos = uniformGrid.isPointInsideAVoxel(rayOriginPosition);
     

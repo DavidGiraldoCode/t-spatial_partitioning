@@ -171,7 +171,7 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
     
     //std::cout << "Test for -500 floor: " << (point.z) * m_normalizeSizeFactor << '\n';
     
-    pZ = point.z < 0 ? pZ * -1.0f : pZ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
+    pZ = point.z == 0 ? pZ : pZ * -1.0f ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
     
     //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
     
@@ -180,7 +180,18 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
     
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
-        return {-1, -1, -1};
+    {
+        //TODO
+        /**
+         A more comprenhensive solution, this is giving information of the last position from where the boid exited the grid
+         **/
+        pX = pX < 0 ? -1 : pX >= m_nCols   ? m_nCols   : pX ;
+        pY = pY < 0 ? -1 : pY >= m_nRows   ? m_nRows   : pY ;
+        pZ = pZ < 0 ? -1 : pZ >= m_nLayers ? m_nLayers : pZ ;
+        
+        return {pX, pY, pZ}; //previously {-1, -1, -1};
+    }
+        
 
     int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
     
