@@ -255,14 +255,14 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     
     //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
     //std::cout << rayDirection << " ray direction\n";
-    /*Checking directions
+    /*Checking directions*/
     if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
         pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
     
     if (rayDirection.y < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
         pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
     
-    //Checking directions*/
+    //Checking directions
     if (rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
         pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
     

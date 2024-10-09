@@ -89,12 +89,19 @@ void computeAxisAlignIntersection(const ofVec3f & worldNormal,
             since depthRange - absoluteDistance = index3D.z, we use this equation to offset the plane position adding i
             depthRange - absoluteDistance - i = index3D.z - i
              **/
-            planeIndex = planeNormal.z == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;// - (depthRange - i) : i;
+            planeIndex = planeNormal.z == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
+            planeIndex = planeNormal.x == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
+            planeIndex = planeNormal.y == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
             // -1 becase the voxel grid grows away from the camera.
-            //std::cout << planeIndex << " planeIndex\n";
             
-            int flip = i == 0 ? 1 : -1; // Sneaky way to avoid having -0
-            ofVec3f planePosition = ofVec3f(0, 0, planeIndex * stepSize * flip); // -1 becase the grid grows away from the camera
+            //std::cout << planeIndex << " planeIndex\n";
+            int flip; // -1 becase the grid grows away from the camera, but only for Z
+            if(planeNormal.z != 0)
+                flip = i == 0 ? 1 : -1; // Sneaky way to avoid having -0
+            else
+                flip = 1;
+            
+            ofVec3f planePosition = ofVec3f(0, 0, planeIndex * stepSize * flip);
             bool intersectionTest = testRay.intersectPlane(planeNormal,
                                                            planePosition,
                                                            testRay.getOrigin(),
@@ -144,6 +151,9 @@ void RayIntersectionScene::update()
     float heightRange = index3D.y + (int)(ray.getReach()/VOXEL_SIZE); //how far along the height planes it should go
     
     computeAxisAlignIntersection(world_Z_Normal, uniformGrid, ray, zPlaneNormal, index3D.z, depthRange, lambaT, VOXEL_SIZE);
+    computeAxisAlignIntersection(world_Y_Normal, uniformGrid, ray, yPlaneNormal, index3D.y, heightRange, lambaT, VOXEL_SIZE);
+    computeAxisAlignIntersection(world_X_Normal, uniformGrid, ray, xPlaneNormal, index3D.x, widthRange, lambaT, VOXEL_SIZE);
+    
     /*X planes
     if(world_X_Normal.dot(ray.getDirection()) < 0)
         xPlaneNormal.x = 1;
