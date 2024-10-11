@@ -137,12 +137,12 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         // RANDOM assignation of the Voxel as obstacle
         float randomObstacleState = ofRandom(0, 1);
         //std::cout << "randomObstacleState: " << randomObstacleState << '\n';
-        float OBSTACLES_POBALITIY = 0.9999; // Gives more chances of voxels being emty spaces
+        float OBSTACLES_POBALITIY = 0.99999; // Gives more chances of voxels being emty spaces
         bool isEmpty = (randomObstacleState > OBSTACLES_POBALITIY);
         setVoxelAsObstacle(i, isEmpty);
         
-        //if(y == 0) // Shading the ground
-            //setVoxelAsObstacle(i, true);
+//        if(y == 0) // Shading the ground
+//            setVoxelAsObstacle(i, true);
         
         if(isEmpty)// if it an obstacle, save the index
             obstaclesIndexs.push_back(i);
@@ -162,18 +162,48 @@ UniformGrid::~UniformGrid()
 
 const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
 {
-    int pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
-    int pY = floor(point.y * m_normalizeSizeFactor);
+    //std::cout << point << " point \n";
+    float pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
+    float pY = floor(point.y * m_normalizeSizeFactor);
     
-    //The -1 is an error in the math
-    int pZ = floor((point.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    //Multiplying *-1 will create an artefact, a jumping voxel
+    float pZ = floor(point.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
-    bool inColsBounds = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    
+    //std::cout << "Test for floor: " << (point.z) * m_normalizeSizeFactor << '\n';
+    //float z = (point.z) * m_normalizeSizeFactor * -1;
+    //std::cout << "Test for floor: " << floor(z) << '\n';
+    //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
+    //std::cout << point.z << " point.z |\n";
+    
+    pZ = point.z == 0 ? pZ : pZ * -1.0f ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
+    
+    
+    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pZ |\n";
+    
+    bool inColsBounds   = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
     
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
-        return {-1, -1, -1};
+    {
+        //TODO
+        /**
+         A more comprenhensive solution, this is giving information of the last position from where the boid exited the grid
+         **/
+        pX = pX < 0 ? -1 : pX >= m_nCols   ? m_nCols   : pX ;
+        pY = pY < 0 ? -1 : pY >= m_nRows   ? m_nRows   : pY ;
+        pZ = pZ < 0 ? -1 : pZ >= m_nLayers ? m_nLayers : pZ ;
+        
+        if (pZ == -0.0f)
+        {
+            std::cout << pZ << " -> -0\n";
+            pZ = 0.0f;
+        }
+        
+        return {pX, pY, pZ}; //previously {-1, -1, -1};
+    }
+        
 
     int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
     
@@ -181,7 +211,7 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
         return {-1, -1, -1};
     
     //std::cout << "Point is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
-    return {(float)pX, (float)pY, (float)pZ};
+    return {pX, pY, pZ};
 }
 
 const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
@@ -213,40 +243,54 @@ const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
     return indexInOneD;
 }
 
-const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &rayDirection) const
+const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f & planeNormal ,const ofVec3f &rayDirection) const
 {
     //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
     //std::cout << m_normalizeSizeFactor << "  m_normalizeSizeFactor \n";
     //Casting values and de-scaling the world position to units and increments of 1
-    int pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
-    int pY = floor(pointQuery.y * m_normalizeSizeFactor);
+    float pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
+    float pY = floor(pointQuery.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
-    int pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    float pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    
+    //pZ = pointQuery.z < 0 ? pZ * -1.0f : pZ;
     
     //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
-    std::cout << rayDirection << " ray direction\n";
-    //Checking directions
-    if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
-        pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
+    //std::cout << rayDirection << " ray direction\n";
+    /*Checking directions*/
+    //if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
+    //    pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
+    if (planeNormal.x != 0)
+    {
+        if (rayDirection.x < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
+            pX -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
+    }
     
-    if (rayDirection.y < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
-        pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
-    
-    //Checking directions
-    if (rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
-        pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
-    
+    if (planeNormal.y != 0)
+    {
+        if (rayDirection.y < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
+            pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
+    }
     
     
-    bool inColsBounds = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds = pY >= 0 && pY < m_nRows;
+    if (planeNormal.z != 0) // If we are evaluating the Z axis
+    {
+        if(rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
+            pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
+    }
+        
+    
+    
+    
+    bool inColsBounds   = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
     bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
     
     if(!inColsBounds || !inRowsBounds || !inLayersBounds)
         return -1;
 
-    int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
+    int indexInOneD = (int)pZ * m_nCols * m_nRows + (int)pY * m_nCols + (int)pX;
     
     if(indexInOneD < 0 || indexInOneD >= voxels.size())
         return -1;
