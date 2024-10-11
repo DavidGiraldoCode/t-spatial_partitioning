@@ -166,17 +166,20 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
     float pX = floor(point.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
     float pY = floor(point.y * m_normalizeSizeFactor);
     
-    //The -1 is an error in the math
+    //Multiplying *-1 will create an artefact, a jumping voxel
     float pZ = floor(point.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
-    //std::cout << "Test for -500 floor: " << (point.z) * m_normalizeSizeFactor << '\n';
-    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
-    std::cout << point.z << " point.z |\n";
+    
+    //std::cout << "Test for floor: " << (point.z) * m_normalizeSizeFactor << '\n';
+    //float z = (point.z) * m_normalizeSizeFactor * -1;
+    //std::cout << "Test for floor: " << floor(z) << '\n';
+    //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
+    //std::cout << point.z << " point.z |\n";
     
     pZ = point.z == 0 ? pZ : pZ * -1.0f ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
     
     
-    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pX |\n";
+    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pZ |\n";
     
     bool inColsBounds   = pX >= 0 && pX < m_nCols;
     bool inRowsBounds   = pY >= 0 && pY < m_nRows;
@@ -240,7 +243,7 @@ const int UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery) const
     return indexInOneD;
 }
 
-const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f &rayDirection) const
+const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f & planeNormal ,const ofVec3f &rayDirection) const
 {
     //std::cout << "pointQuery ["<< pointQuery <<"]"<< '\n';
     //std::cout << m_normalizeSizeFactor << "  m_normalizeSizeFactor \n";
@@ -249,22 +252,34 @@ const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &poin
     float pY = floor(pointQuery.y * m_normalizeSizeFactor);
     
     //The -1 is an error in the math
-    float pZ = floor(pointQuery.z * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
+    float pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// * -1; //Recall that we have defined the deepth of the grid to be far away from the camera
     
-    pZ = pointQuery.z < 0 ? pZ * -1.0f : pZ;
+    //pZ = pointQuery.z < 0 ? pZ * -1.0f : pZ;
     
     //std::cout << "unit positions["<< pX <<' '<< pY << ' ' << pZ <<"]"<< '\n';
     //std::cout << rayDirection << " ray direction\n";
     /*Checking directions*/
-    if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
-        pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
+    //if (rayDirection.x < 0) // if the Ray is pointing in the same direction as the world X Normal
+    //    pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
+    if (planeNormal.x != 0)
+    {
+        if (rayDirection.x < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
+            pX -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
+    }
     
-    if (rayDirection.y < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
-        pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
+    if (planeNormal.y != 0)
+    {
+        if (rayDirection.y < 0) // if the Ray is pointing in the oposite direction as the world Y Normal
+            pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
+    }
     
-    //Checking directions
-    if (rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
-        pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
+    
+    if (planeNormal.z != 0) // If we are evaluating the Z axis
+    {
+        if(rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
+            pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
+    }
+        
     
     
     

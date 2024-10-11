@@ -67,31 +67,31 @@ void computeAxisAlignIntersection(const ofVec3f & worldNormal,
     //if(worldNormal.dot(testRay.getDirection()) < 0) // The ray is going in the oposite direction than the world Z normal
         //planeNormal *= 1;
     
-    // The ray is going in the same direction as the world Z normal, the PlaneNormal needs to flip
-    // to consider the voxels' faces that are in the direction [depth -> 0]
+    // If ray is going in the same direction as the world normal, the PlaneNormal needs to flip
+    // to consider the voxels' faces that are in the direction [MaxBound -> 0]
     if(worldNormal.dot(testRay.getDirection()) > 0)
         planeNormal *= -1;
+        
     
-    // dot = 0 means that the ray is orthogonal to the Z normal, and thus no intersection (or infinite)
+    // dot = 0 means that the ray is orthogonal to the world, and thus no intersection happen (or infinite)
     if(worldNormal.dot(testRay.getDirection()) != 0)
     {
         int planeIndex; // If the plane normal is negative, we traverse the planes from [depth -> 0]
-//        std::cout << zPlaneNormal       << " zPlaneNormal\n";
-//        std::cout << ray.getDirection() << " Ray Direction\n";
-//        std::cout << ray.getOrigin()    << " Ray Origin\n";
-//        std::cout << index3D.z          << " index3D.z\n";
-//        std::cout << depthRange         << " depthRange\n";
+        std::cout << planeNormal       << " PlaneNormal\n";
+        std::cout << testRay.getDirection() << " Ray Direction\n";
+        std::cout << testRay.getOrigin()    << " Ray Origin\n";
+        std::cout << startingIndex      << " startingIndex\n";
+        std::cout << range              << " range\n";
+        
+        ofVec3f planePosition;
         
         for(size_t i = 1; i <= (range - startingIndex); i++)
         {
             /**
             depthRange - index3D.z = absoluteDistance
-            since depthRange - absoluteDistance = index3D.z, we use this equation to offset the plane position adding i
+            since depthRange - absoluteDistance = index3D.z, we use this equation to offset the plane position adding (or substrating) i
             depthRange - absoluteDistance - i = index3D.z - i
              **/
-            planeIndex = planeNormal.z == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
-            planeIndex = planeNormal.x == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
-            planeIndex = planeNormal.y == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
             // -1 becase the voxel grid grows away from the camera.
             
             //std::cout << planeIndex << " planeIndex\n";
@@ -101,7 +101,25 @@ void computeAxisAlignIntersection(const ofVec3f & worldNormal,
             else
                 flip = 1;
             
-            ofVec3f planePosition = ofVec3f(0, 0, planeIndex * stepSize * flip);
+            if(planeNormal.x != 0) // Meaning, is the X axis what is being tested
+            {
+                planeIndex = planeNormal.x == 1 ? (range - (range - startingIndex)) - i : startingIndex + i;
+                planePosition.x = planeIndex * stepSize;
+            }
+            if(planeNormal.y != 0) // Meaning, is the Y axis what is being tested
+            {
+                planeIndex = planeNormal.y == 1 ? (range - (range - startingIndex)) - i : startingIndex + i;
+                planePosition.y = planeIndex * stepSize;
+            }
+                
+            if(planeNormal.z != 0) // Meaning, is the Z axis what is being tested
+            {
+                planeIndex = planeNormal.z == -1 ? (range - (range - startingIndex)) - i : startingIndex + i;
+                planePosition.z = planeIndex * stepSize * flip;
+            }
+                
+            
+            
             bool intersectionTest = testRay.intersectPlane(planeNormal,
                                                            planePosition,
                                                            testRay.getOrigin(),
@@ -109,15 +127,17 @@ void computeAxisAlignIntersection(const ofVec3f & worldNormal,
                                                            lamba);
             //stop doing intersection test because
             // 1. Lamba may be grater than the reach
-//            std::cout << zPlanePosition << " zPlanePosition | "
-//                      << intersectionTest << " intersectionTest | "
-//                      << ray.getIntersectionPoint() << " Intersection Point |"
-//                      << uniformGrid.get3DunitIndex(ray.getIntersectionPoint()) << " 3D index \n";
+            std::cout << planePosition << " PlanePosition | "
+                      << intersectionTest << " intersectionTest | "
+                      << testRay.getIntersectionPoint() << " Intersection Point |\n";
             
-            if (!intersectionTest) break;
+            if (!intersectionTest) break; //This avoiding jumping voxels
             
             int voxelIndex = uniformGridRef.isPointInsideAVoxelGivenRayDirection(testRay.getIntersectionPoint(),
-                                                                              testRay.getDirection());
+                                                                                 planeNormal,
+                                                                                 testRay.getDirection());
+            
+            std::cout << uniformGridRef.get3DunitIndex(testRay.getIntersectionPoint()) << " 3D index \n";
             
             uniformGridRef.setIntersection(voxelIndex);
         }
@@ -135,7 +155,7 @@ void RayIntersectionScene::update()
     ofVec3f yPlaneNormal = ofVec3f(0,1,0);
     ofVec3f zPlaneNormal = ofVec3f(0,0,1);//ray.getDirection() * -1;
     
-    ofVec3f world_X_Normal = ofVec3f(1,0,1);
+    ofVec3f world_X_Normal = ofVec3f(1,0,0);
     ofVec3f world_Y_Normal = ofVec3f(0,1,0);
     ofVec3f world_Z_Normal = ofVec3f(0,0,1);
     
@@ -150,9 +170,9 @@ void RayIntersectionScene::update()
     float widthRange = index3D.x + (int)(ray.getReach()/VOXEL_SIZE); //how far along the width planes it should go
     float heightRange = index3D.y + (int)(ray.getReach()/VOXEL_SIZE); //how far along the height planes it should go
     
-    computeAxisAlignIntersection(world_Z_Normal, uniformGrid, ray, zPlaneNormal, index3D.z, depthRange, lambaT, VOXEL_SIZE);
-    computeAxisAlignIntersection(world_Y_Normal, uniformGrid, ray, yPlaneNormal, index3D.y, heightRange, lambaT, VOXEL_SIZE);
     computeAxisAlignIntersection(world_X_Normal, uniformGrid, ray, xPlaneNormal, index3D.x, widthRange, lambaT, VOXEL_SIZE);
+    computeAxisAlignIntersection(world_Y_Normal, uniformGrid, ray, yPlaneNormal, index3D.y, heightRange, lambaT, VOXEL_SIZE);
+    computeAxisAlignIntersection(world_Z_Normal, uniformGrid, ray, zPlaneNormal, index3D.z, depthRange, lambaT, VOXEL_SIZE);
     
     /*X planes
     if(world_X_Normal.dot(ray.getDirection()) < 0)
@@ -411,9 +431,9 @@ void RayIntersectionScene::keyPressed(int key)
     }
     
     //Updating position of ray in Voxel Grid
-    std::cout << "\n rayOriginPosition: "<<rayOriginPosition << '\n';
-    std::cout << "ray normal: "<<ray.getDirection().getNormalized() << '\n';
-    std::cout << "ray 3D position in Grid: "<< uniformGrid.get3DunitIndex(rayOriginPosition) << '\n';
+    //std::cout << "\n rayOriginPosition: "<<rayOriginPosition << '\n';
+    //std::cout << "ray normal: "<<ray.getDirection().getNormalized() << '\n';
+    //std::cout << "ray 3D position in Grid: "<< uniformGrid.get3DunitIndex(rayOriginPosition) << '\n';
     
     int cursorNewPos = uniformGrid.isPointInsideAVoxel(rayOriginPosition);
     
