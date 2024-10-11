@@ -1,5 +1,9 @@
-# Spatial partitioning study - with OpenFrameworks
+# Spatial partitioning study - with C++ in OpenFrameworks
 
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/6c7df04e-a9f7-4cd7-aa70-b4b079645729">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/963b99a4-e775-4128-b00f-f8a33ffb47a5">
+
+# Build instructions
 To run this project, first [Download OpenFrameworks source code](https://openframeworks.cc/download/). Then, move inside the `myApps` folder. You need this to have access to the OpenFrameworks header files.
 ```bash
 cd openframeworks_version_####/apps/myApps/
@@ -21,13 +25,51 @@ git clone [URL]
 - [ ] Add point on MAX visibility distance in the head of the direction vector
 - [ ] Implement Boids behaviours
 
-## To keep in mind
+## Algorithm to determine if a point is inside a voxel
 
-In a right-handed coordinate system:
+```C++
+const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f & planeNormal ,const ofVec3f &rayDirection) const
+{
+    //Casting values and de-scaling the world position to units and increments of 1
+    float pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
+    float pY = floor(pointQuery.y * m_normalizeSizeFactor);
+    float pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// Recall that we have defined the depth of the grid to be far away from the camera
+    
+    /*Checking directions*/
+    if (planeNormal.x != 0)
+    {
+        if (rayDirection.x < 0) // if the Ray is pointing in the opposite direction as the world X Normal
+            pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
+    }
+    
+    if (planeNormal.y != 0)
+    {
+        if (rayDirection.y < 0) // if the Ray is pointing in the opposite direction as the world Y Normal
+            pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
+    }
+    
+    
+    if (planeNormal.z != 0) // If we are evaluating the Z axis
+    {
+        if(rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
+            pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
+    }
+    
+    bool inColsBounds   = pX >= 0 && pX < m_nCols;
+    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
+    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
+    
+    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
+        return -1;
 
-The X-axis points to the right.
-The Y-axis points up.
-The Z-axis points out of the screen (positive Z) towards the camera, and negative Z goes further into the scene, away from the camera.
+    int indexInOneD = (int)pZ * m_nCols * m_nRows + (int)pY * m_nCols + (int)pX;
+    
+    if(indexInOneD < 0 || indexInOneD >= voxels.size())
+        return -1;
+
+    return indexInOneD;
+}
+```
 
 ## Useful snipets
 ```C++
@@ -36,43 +78,4 @@ The Z-axis points out of the screen (positive Z) towards the camera, and negativ
     ss << "FPS: " << ofToString(ofGetFrameRate(),0) << '\n' ;
     ss << "Voxel Grid Resolution: " << voxelGridResolution << '\n' ;
     ofDrawBitmapStringHighlight(ss.str().c_str(), 20, 20);
-```
-
-## Algorithm to determine if a point is inside a voxel
-
-```C++
-bool UniformGrid::isPointInsideAVoxel(const ofVec3f &pointQuery)
-{
-    bool result = true;
-    std::cout << "Cursor Position: " << pointQuery << '\n';
-    //Casting values and de-scaling the world position to units and increments of 1
-    int pX = floor(pointQuery.x / m_voxelSize);
-    int pY = floor(pointQuery.y / m_voxelSize);
-    int pZ = (floor(pointQuery.z / m_voxelSize) * -1) -1; //Recall that we hace define the deepth of the grid to be far away from the camera
-    std::cout << "pX: " << pX << " pY: " << pY << " pZ: " << pZ << '\n';
-    
-    bool inColsBounds = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds = pY >= 0 && pY < m_nRows;
-    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
-    
-    std::cout << "Boundings X Y Z: " << inColsBounds << inRowsBounds << inLayersBounds << '\n';
-    
-    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
-    {
-        std::cout << "Boid is outside the grid by Bounding checks" << '\n';
-        return false;
-    }
-
-    int indexInOneD = pZ * m_nCols * m_nRows + pY * m_nCols + pX;
-    std::cout << "indexInOneD: " << indexInOneD << '\n';
-    
-    if(indexInOneD < 0 || indexInOneD >= voxels.size())
-    {
-        std::cout << "Boid is outside the grid" << '\n';
-        return false;
-    }
-    
-    std::cout << "Boid is at voxel["<< indexInOneD <<"] : "<<voxels[indexInOneD].position << '\n';
-    return true;
-}
 ```
