@@ -2,7 +2,7 @@
 /*
  In OpenGL Y is Up
  */
-int currentScene = 51;
+int currentScene = 50;
 //--------------------------------------------------------------
 void ofApp::setup()
 {

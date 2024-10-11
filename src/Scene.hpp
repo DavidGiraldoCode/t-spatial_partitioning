@@ -48,7 +48,7 @@ public:
     const unsigned      gridWidth = 20;
     const unsigned      gridHeight = 20;
     const unsigned      gridDepth = 30;
-    const float         CURSOR_SPEED = 50.0f;
+    const float         CURSOR_SPEED = 25.0f;
     
     //==================================== Game state
     bool                isInside = false;

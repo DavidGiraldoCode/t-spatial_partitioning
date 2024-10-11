@@ -21,7 +21,7 @@ public:
             void        setDirection(const ofVec3f & direction);
     const   ofVec3f&    getIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
     const   ofVec3f&    getFirstIntersectionPoint(const ofVec3f & origin, const ofVec3f & direction);
-    const   float       getReach();
+    const   float       getReach()const;
     const   ofVec3f&    getDirection() const;
     const   ofVec3f&    getOrigin() const;
     const   ofVec3f&    getIntersectionPoint() const;

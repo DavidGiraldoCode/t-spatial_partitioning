@@ -61,7 +61,7 @@ const ofVec3f&  Ray::getIntersectionPoint() const
 
 
 
-const float Ray::getReach()
+const float Ray::getReach() const
 {
     return m_reach;
 }
@@ -70,12 +70,13 @@ const float Ray::getReach()
  https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection.html
  https://lousodrome.net/blog/light/2020/07/03/intersection-of-a-ray-and-a-plane/
 **/
- const bool Ray::intersectPlane(const ofVec3f &planeNormal,
-                               const ofVec3f &planePosition,
-                               const ofVec3f &rayOrigin,
-                               const ofVec3f &rayDirection,
-                               float &lambaT)
+ const bool Ray::intersectPlane(    const ofVec3f &planeNormal,
+                                    const ofVec3f &planePosition,
+                                    const ofVec3f &rayOrigin,
+                                    const ofVec3f &rayDirection,
+                                          float   &lambaT)
 {
+    lambaT = 0.0f; //clean the variable
     float parallelCheck = planeNormal.dot(rayDirection);
     float PARALLEL_THRESHOLD = 0.00000009; // To avoid multiplying by 0;
 //    std::cout << planeNormal << " planeNormal \n";

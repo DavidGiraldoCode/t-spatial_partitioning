@@ -1,4 +1,11 @@
 # Devlogs
+- 2024-10-11 Implemented Ray-AxisAlignPlane intersection for XYZ on a user-controlled ray. The ray leaves and enters the bounding volume while keeping the intersections
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/df9e1d7f-5021-4748-a7f1-6b0ae5ba68b7">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/6c7df04e-a9f7-4cd7-aa70-b4b079645729">
+<p> Here can be seen how the ray leaves and enters the volume, and the intersections persist </p>
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/963b99a4-e775-4128-b00f-f8a33ffb47a5">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/20f541cd-1a97-49e1-aa68-4ff947e63779">
+
 - 2024-10-01 Implemented boids algorithm in naïve form in $O(n^2)$ with obstacle avoidance as a steering force
 ![boids_obstacles_floor_GIF](https://github.com/user-attachments/assets/ba46988c-e8d3-4a20-8dcd-78e4a7d64d3f)
 - 2024-09-30 Implemented a Ray-AxisAlignPlane Intersection Test, and fill intersected voxels with red
