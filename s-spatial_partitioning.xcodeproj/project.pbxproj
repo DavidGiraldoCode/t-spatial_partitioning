@@ -20,6 +20,7 @@
 		96356A142CAA819500657B2F /* RayIntersectionScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96356A132CAA819200657B2F /* RayIntersectionScene.cpp */; };
 		964320F32CABD5FF00EA11CF /* BoidsNaiveScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964320F22CABD5FE00EA11CF /* BoidsNaiveScene.cpp */; };
 		964320F72CABF1AF00EA11CF /* BoidsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964320F62CABF1A900EA11CF /* BoidsManager.cpp */; };
+		9643D4BB2CBD636A00763512 /* SensingBoidsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9643D4BA2CBD636600763512 /* SensingBoidsScene.cpp */; };
 		9646CA9F2CA304F8007608B9 /* VoxelGridScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9646CA9E2CA304F5007608B9 /* VoxelGridScene.cpp */; };
 		9646CAA22CA31585007608B9 /* TestDerivedScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9646CAA12CA31581007608B9 /* TestDerivedScene.cpp */; };
 		969204B32C916EDD000BC71D /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969204B12C916EDD000BC71D /* Scene.cpp */; };
@@ -87,6 +88,8 @@
 		964320F22CABD5FE00EA11CF /* BoidsNaiveScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsNaiveScene.cpp; sourceTree = "<group>"; };
 		964320F42CABE76C00EA11CF /* BoidsManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BoidsManager.hpp; sourceTree = "<group>"; };
 		964320F62CABF1A900EA11CF /* BoidsManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsManager.cpp; sourceTree = "<group>"; };
+		9643D4B92CBD5F6500763512 /* SensingBoidsScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SensingBoidsScene.hpp; sourceTree = "<group>"; };
+		9643D4BA2CBD636600763512 /* SensingBoidsScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SensingBoidsScene.cpp; sourceTree = "<group>"; };
 		9646CA9D2CA30329007608B9 /* VoxelGridScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VoxelGridScene.hpp; sourceTree = "<group>"; };
 		9646CA9E2CA304F5007608B9 /* VoxelGridScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VoxelGridScene.cpp; sourceTree = "<group>"; };
 		9646CAA02CA31422007608B9 /* TestDerivedScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TestDerivedScene.hpp; sourceTree = "<group>"; };
@@ -182,6 +185,8 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				9643D4B92CBD5F6500763512 /* SensingBoidsScene.hpp */,
+				9643D4BA2CBD636600763512 /* SensingBoidsScene.cpp */,
 				964320F42CABE76C00EA11CF /* BoidsManager.hpp */,
 				964320F62CABF1A900EA11CF /* BoidsManager.cpp */,
 				964320F12CABD5B900EA11CF /* BoidsNaiveScene.hpp */,
@@ -322,6 +327,7 @@
 				"8F2B853E-618F-4508-BADA-CB4E3FDDAB61" /* ofxInputField.cpp in Sources */,
 				"73B5AE2F-9B73-4DB3-91A5-37DD17E439C4" /* ofxLabel.cpp in Sources */,
 				"2193C069-E449-4149-8A13-BF0F9E12C489" /* ofxPanel.cpp in Sources */,
+				9643D4BB2CBD636A00763512 /* SensingBoidsScene.cpp in Sources */,
 				"FFCA626E-FE42-4144-B0B5-1B2E1190DEC4" /* ofxSlider.cpp in Sources */,
 				"A9A81929-7663-4A31-827A-8695AF92F1AD" /* ofxSliderGroup.cpp in Sources */,
 				"037D833F-C55A-45CC-A4A7-4554851F7DC8" /* ofxToggle.cpp in Sources */,

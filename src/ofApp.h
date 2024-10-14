@@ -10,6 +10,7 @@
 #include "TestDerivedScene.hpp"
 #include "RayIntersectionScene.hpp"
 #include "BoidsNaiveScene.hpp"
+#include "SensingBoidsScene.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -37,4 +38,5 @@ class ofApp : public ofBaseApp{
         //Scene * testDerivedScene;
         Scene * rayIntersectionScene;
         Scene * boidsNaiveScene;
+        Scene * sensingBoidsScene;          // EnhancedBoid with ray
 };
