@@ -6,13 +6,14 @@
 //
 #pragma once
 #include "Scene.hpp"
+#include "Drone.hpp"
 
 class SensingBoidsScene : public Scene
 {
 public:
     SensingBoidsScene(){};
     SensingBoidsScene(const std::string & name);
-    ~SensingBoidsScene();
+    ~SensingBoidsScene() = default;
     
     void setup() override;
     void update() override;
@@ -21,4 +22,6 @@ public:
     
     //================================= Actors
     
+    //BoidsManager                    boidsManager;
+    std::vector<Drone>              drones = {};
 };

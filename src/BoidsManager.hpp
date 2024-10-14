@@ -6,6 +6,7 @@
 //
 //  In a naive appproach, traverse the boids to compute averages
 //
+#pragma once
 #include "Boid.hpp"
 #include "UniformGrid.hpp"
 
@@ -14,7 +15,7 @@ class BoidsManager
 public:
     BoidsManager(){};
     BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGrid* uniformGridRef);
-    ~BoidsManager();
+    ~BoidsManager() = default;
     
             void                updateSteeringForces();
     const   std::vector<Boid>   getBoids() const; //For passing the values to the mesh

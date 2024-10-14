@@ -23,10 +23,6 @@ BoidsManager::BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGr
     <<neighborAlignmentDistance
     <<'\n';
 }
-BoidsManager::~BoidsManager()
-{
-            
-}
                         
 void BoidsManager::updateSteeringForces()
 {

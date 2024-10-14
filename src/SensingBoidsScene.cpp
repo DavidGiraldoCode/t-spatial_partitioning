@@ -11,15 +11,12 @@ SensingBoidsScene::SensingBoidsScene(const std::string &name)
     sceneName = name;
 }
 
-SensingBoidsScene::~SensingBoidsScene()
-{
-    
-}
-
 void SensingBoidsScene::setup()
 {
     Scene::setup();
-    
+    //drones.push_back(Drone());
+    //drones.push_back(Drone(ofVec3f(500,500,-500)));
+
 }
 
 void SensingBoidsScene::update()
@@ -41,6 +38,11 @@ void SensingBoidsScene::draw()
         environmentGround.drawAxes(500);
         ofSetColor(100, 100, 100);
         obstaclesBoundingVolume.drawWireframe();
+    // ==============================================  Rendering Drones
+    for( auto &drone : drones)
+    {
+        drone.draw();
+    }
     
     //===============================================  Rendering Uniform grid
         

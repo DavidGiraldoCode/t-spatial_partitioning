@@ -90,6 +90,8 @@
 		964320F62CABF1A900EA11CF /* BoidsManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BoidsManager.cpp; sourceTree = "<group>"; };
 		9643D4B92CBD5F6500763512 /* SensingBoidsScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SensingBoidsScene.hpp; sourceTree = "<group>"; };
 		9643D4BA2CBD636600763512 /* SensingBoidsScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SensingBoidsScene.cpp; sourceTree = "<group>"; };
+		9643D4BC2CBD68CA00763512 /* EnhancedBoid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EnhancedBoid.hpp; sourceTree = "<group>"; };
+		9643D4BD2CBD6B6400763512 /* Drone.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Drone.hpp; sourceTree = "<group>"; };
 		9646CA9D2CA30329007608B9 /* VoxelGridScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VoxelGridScene.hpp; sourceTree = "<group>"; };
 		9646CA9E2CA304F5007608B9 /* VoxelGridScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VoxelGridScene.cpp; sourceTree = "<group>"; };
 		9646CAA02CA31422007608B9 /* TestDerivedScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TestDerivedScene.hpp; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				9643D4BD2CBD6B6400763512 /* Drone.hpp */,
 				9643D4B92CBD5F6500763512 /* SensingBoidsScene.hpp */,
 				9643D4BA2CBD636600763512 /* SensingBoidsScene.cpp */,
 				964320F42CABE76C00EA11CF /* BoidsManager.hpp */,
@@ -209,6 +212,7 @@
 				9616BD352C88EEE1006DC1FC /* UniformGrid.hpp */,
 				9628417A2C8DE325000FE64C /* Boid.cpp */,
 				9628417B2C8DE325000FE64C /* Boid.hpp */,
+				9643D4BC2CBD68CA00763512 /* EnhancedBoid.hpp */,
 				969204B12C916EDD000BC71D /* Scene.cpp */,
 				969204B22C916EDD000BC71D /* Scene.hpp */,
 			);
