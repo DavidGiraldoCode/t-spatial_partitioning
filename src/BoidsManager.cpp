@@ -8,6 +8,7 @@
 
 BoidsManager::BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGrid *uniformGrid)
 {
+    boids = {};
     uniformGridRef = uniformGrid;
     //Instantiating the Boids in the center of the bounding volume
     for(size_t i = 0; i < BOIDS_COUNT; i++)

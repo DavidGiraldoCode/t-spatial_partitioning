@@ -35,6 +35,6 @@ public:
             float               AVOIDANCE_FACTOR            =   4.0f;
     
 private:
-    std::vector<Boid>  boids = {};
+    std::vector<Boid>  boids;
 
 };

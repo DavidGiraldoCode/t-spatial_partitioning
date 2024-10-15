@@ -23,5 +23,5 @@ public:
     //================================= Actors
     
     //BoidsManager                    boidsManager;
-    std::vector<Drone>              drones = {};
+    //std::vector<Drone>              drones = {};
 };

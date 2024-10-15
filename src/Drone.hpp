@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include "of3dPrimitives.h"
 
+// 4 duplicated symbols error
+/// This happend because the methods were being define here aswell, so other translations units ended up with their own copies of the definitions, solution, keep good practices, use .cpp
+
 class Drone
 {
 public:
@@ -29,36 +32,10 @@ public:
     /// If the class doesn't dynamically allocate memory or handles file, the default destructor will suffice.
     ~Drone() = default;
     
-    void update(const ofVec3f & newPosition);
-    void draw();
+    void updateD(const ofVec3f & newPosition);
+    void drawD();
     
 private:
     ofSpherePrimitive       m_droneBodyMesh;
     of3dPrimitive           m_raySensorMesh;
 };
-
-Drone::Drone(const ofVec3f & spawnPosition)
-{
-   
-    //The ray mesh needs to be define in local space.
-    m_raySensorMesh.getMesh().addVertex(ofVec3f(-2,0,0));
-    m_raySensorMesh.getMesh().addVertex(ofVec3f(0,0, -800));
-    m_raySensorMesh.getMesh().addVertex(ofVec3f(2,0,0));
-    m_raySensorMesh.getMesh().setMode(OF_PRIMITIVE_TRIANGLE_FAN);
-    
-    m_droneBodyMesh.setGlobalPosition(spawnPosition);
-    m_raySensorMesh.setGlobalPosition(spawnPosition);
-}
-
-
-void Drone::update(const ofVec3f & newPosition)
-{
-    m_droneBodyMesh.setGlobalPosition(newPosition);
-    m_raySensorMesh.setGlobalPosition(newPosition);
-}
-
-void Drone::draw()
-{
-    m_droneBodyMesh.drawWireframe();
-    m_raySensorMesh.drawWireframe();
-}

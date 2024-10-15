@@ -17,6 +17,7 @@
 		9607A2542CA443AE005702B7 /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9607A2532CA443AD005702B7 /* Ray.cpp */; };
 		9616BD362C88EEE1006DC1FC /* UniformGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9616BD342C88EEE1006DC1FC /* UniformGrid.cpp */; };
 		9628417C2C8DE325000FE64C /* Boid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9628417A2C8DE325000FE64C /* Boid.cpp */; };
+		9634CAD12CBE8F82006004AD /* Drone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9634CAD02CBE8F7E006004AD /* Drone.cpp */; };
 		96356A142CAA819500657B2F /* RayIntersectionScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 96356A132CAA819200657B2F /* RayIntersectionScene.cpp */; };
 		964320F32CABD5FF00EA11CF /* BoidsNaiveScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964320F22CABD5FE00EA11CF /* BoidsNaiveScene.cpp */; };
 		964320F72CABF1AF00EA11CF /* BoidsManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 964320F62CABF1A900EA11CF /* BoidsManager.cpp */; };
@@ -82,6 +83,7 @@
 		9616BD352C88EEE1006DC1FC /* UniformGrid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UniformGrid.hpp; sourceTree = "<group>"; };
 		9628417A2C8DE325000FE64C /* Boid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Boid.cpp; sourceTree = "<group>"; };
 		9628417B2C8DE325000FE64C /* Boid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Boid.hpp; sourceTree = "<group>"; };
+		9634CAD02CBE8F7E006004AD /* Drone.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Drone.cpp; sourceTree = "<group>"; };
 		96356A122CAA80D900657B2F /* RayIntersectionScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RayIntersectionScene.hpp; sourceTree = "<group>"; };
 		96356A132CAA819200657B2F /* RayIntersectionScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RayIntersectionScene.cpp; sourceTree = "<group>"; };
 		964320F12CABD5B900EA11CF /* BoidsNaiveScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BoidsNaiveScene.hpp; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				9643D4BD2CBD6B6400763512 /* Drone.hpp */,
+				9634CAD02CBE8F7E006004AD /* Drone.cpp */,
 				9643D4B92CBD5F6500763512 /* SensingBoidsScene.hpp */,
 				9643D4BA2CBD636600763512 /* SensingBoidsScene.cpp */,
 				964320F42CABE76C00EA11CF /* BoidsManager.hpp */,
@@ -311,6 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9634CAD12CBE8F82006004AD /* Drone.cpp in Sources */,
 				96356A142CAA819500657B2F /* RayIntersectionScene.cpp in Sources */,
 				964320F72CABF1AF00EA11CF /* BoidsManager.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
