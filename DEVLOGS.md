@@ -1,4 +1,6 @@
 # Devlogs
+- 2024-10-15 Enabled the ray intersection at the head of the boid
+<img width="480" alt="image" src="https://github.com/user-attachments/assets/be9ddd61-9139-45b6-bcb7-84c8cb9f3665"></br>
 - 2024-10-11 Implemented Ray-AxisAlignPlane intersection for XYZ on a user-controlled ray. The ray leaves and enters the bounding volume while keeping the intersections
 <img width="400" alt="image" src="https://github.com/user-attachments/assets/df9e1d7f-5021-4748-a7f1-6b0ae5ba68b7">
 <img width="400" alt="image" src="https://github.com/user-attachments/assets/6c7df04e-a9f7-4cd7-aa70-b4b079645729">
