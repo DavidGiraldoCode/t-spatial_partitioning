@@ -21,7 +21,7 @@ void SensingBoidsScene::setup()
     
     
     // ========== Boids
-    BOIDS_COUNT = 1;
+    BOIDS_COUNT = 3;
     boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     
     for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
@@ -120,7 +120,7 @@ void computeAxisAlignPlaneIntersection(const ofVec3f & worldNormal,
                                                                                  planeNormal,
                                                                                  testRay.getDirection());
             
-            std::cout << uniformGridRef.get3DunitIndex(testRay.getIntersectionPoint()) << " 3D index \n";
+            //std::cout << uniformGridRef.get3DunitIndex(testRay.getIntersectionPoint()) << " 3D index \n";
             
             uniformGridRef.setIntersection(voxelIndex);
         }

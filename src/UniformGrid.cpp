@@ -179,7 +179,7 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
     pZ = point.z == 0 ? pZ : pZ * -1.0f ; // A brute force to avoid C++ flooring 5.0 to 4 for some reason
     
     
-    std::cout << pX << " pX |" << pY << " pY |" << pZ << " pZ |\n";
+    //std::cout << pX << " pX |" << pY << " pY |" << pZ << " pZ |\n";
     
     bool inColsBounds   = pX >= 0 && pX < m_nCols;
     bool inRowsBounds   = pY >= 0 && pY < m_nRows;
@@ -197,7 +197,7 @@ const  ofVec3f UniformGrid::get3DunitIndex(const ofVec3f &point)
         
         if (pZ == -0.0f)
         {
-            std::cout << pZ << " -> -0\n";
+            //std::cout << pZ << " -> -0\n";
             pZ = 0.0f;
         }
         
