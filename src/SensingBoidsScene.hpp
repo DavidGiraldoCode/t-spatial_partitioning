@@ -8,6 +8,7 @@
 #include "Scene.hpp"
 #include "Drone.hpp"
 #include "BoidsManager.hpp"
+#include "Ray.hpp"
 
 class SensingBoidsScene : public Scene
 {
@@ -25,4 +26,5 @@ public:
     
     BoidsManager                        boidsManager;
     std::vector<Drone>                  drones;
+    std::vector<Ray>                    rays;
 };
