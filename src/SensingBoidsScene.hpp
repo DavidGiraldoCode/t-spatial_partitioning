@@ -7,6 +7,7 @@
 #pragma once
 #include "Scene.hpp"
 #include "Drone.hpp"
+#include "BoidsManager.hpp"
 
 class SensingBoidsScene : public Scene
 {
@@ -22,6 +23,6 @@ public:
     
     //================================= Actors
     
-    //BoidsManager                    boidsManager;
-    //std::vector<Drone>              drones = {};
+    BoidsManager                        boidsManager;
+    std::vector<Drone>                  drones;
 };

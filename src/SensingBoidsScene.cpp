@@ -15,14 +15,30 @@ SensingBoidsScene::SensingBoidsScene(const std::string &name)
 void SensingBoidsScene::setup()
 {
     Scene::setup();
+    drones = {};
     //drones.push_back(Drone());
-    //drones.push_back(Drone(ofVec3f(500,500,-500)));
+    
+    
+    // ========== Boids
+    BOIDS_COUNT = 1;
+    boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
+    
+    for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
+    {
+        drones.push_back(Drone(ofVec3f(500,500,-500)));
+    }
 
 }
 
 void SensingBoidsScene::update()
 {
     
+    boidsManager.updateSteeringForces();
+    for(size_t i = 0; i < BOIDS_COUNT; i++)
+    {
+        drones[i].update(boidsManager.getBoids()[i].getPosition(),
+                         boidsManager.getBoids()[i].getVelocity());
+    }
 }
 
 void SensingBoidsScene::draw()
@@ -40,10 +56,10 @@ void SensingBoidsScene::draw()
         ofSetColor(100, 100, 100);
         obstaclesBoundingVolume.drawWireframe();
     // ==============================================  Rendering Drones
-//    for( auto &drone : drones)
-//    {
-//        drone.draw();
-//    }
+    for( auto &drone : drones)
+    {
+        drone.draw();
+    }
     
     //===============================================  Rendering Uniform grid
         

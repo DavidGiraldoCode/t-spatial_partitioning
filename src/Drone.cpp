@@ -21,13 +21,15 @@ Drone::Drone(const ofVec3f & spawnPosition)
 }
 
 
-void Drone::updateD(const ofVec3f & newPosition)
+void Drone::update(const ofVec3f & newPosition, const ofVec3f & newOrientation)
 {
     m_droneBodyMesh.setGlobalPosition(newPosition);
     m_raySensorMesh.setGlobalPosition(newPosition);
+    
+    m_raySensorMesh.lookAt(newPosition + newOrientation);
 }
 
-void Drone::drawD()
+void Drone::draw()
 {
     m_droneBodyMesh.drawWireframe();
     m_raySensorMesh.drawWireframe();

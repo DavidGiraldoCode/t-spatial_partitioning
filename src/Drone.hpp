@@ -32,8 +32,8 @@ public:
     /// If the class doesn't dynamically allocate memory or handles file, the default destructor will suffice.
     ~Drone() = default;
     
-    void updateD(const ofVec3f & newPosition);
-    void drawD();
+    void update(const ofVec3f & newPosition, const ofVec3f & newOrientation);
+    void draw();
     
 private:
     ofSpherePrimitive       m_droneBodyMesh;
