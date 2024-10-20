@@ -2,7 +2,7 @@
 /*
  In OpenGL Y is Up
  */
-int currentScene = 50;
+int currentScene = 52;
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -10,11 +10,13 @@ void ofApp::setup()
     //testDerivedScene        = new TestDerivedScene();
     rayIntersectionScene    = new RayIntersectionScene();
     boidsNaiveScene         = new BoidsNaiveScene();
+    sensingBoidsScene       = new SensingBoidsScene("Boids with Rays");
     
     voxelGridScene->setup();
     //testDerivedScene->setup();
     rayIntersectionScene->setup();
     boidsNaiveScene->setup();
+    sensingBoidsScene->setup();
     
 }
 
@@ -31,6 +33,9 @@ void ofApp::update()
         break;
     case 51:
         boidsNaiveScene->update();
+        break;
+    case 52:
+        sensingBoidsScene->update();
         break;
     };
     
@@ -50,6 +55,9 @@ void ofApp::draw()
     case 51:
         boidsNaiveScene->draw();
         break;
+    case 52:
+        sensingBoidsScene->draw();
+        break;
     };
 
 }
@@ -60,6 +68,7 @@ void ofApp::exit()
     delete voxelGridScene;
     delete rayIntersectionScene;
     delete boidsNaiveScene;
+    delete sensingBoidsScene;
 
 }
 
@@ -81,6 +90,9 @@ void ofApp::keyPressed(int key)
     case 51: //3
             currentScene = key;
         break;
+    case 52: //4
+            currentScene = key;
+        break;
     };
     
     switch(currentScene)
@@ -93,6 +105,9 @@ void ofApp::keyPressed(int key)
         break;
     case 51:
         boidsNaiveScene->keyPressed(key);
+        break;
+    case 53:
+        sensingBoidsScene->keyPressed(key);
         break;
     };
     //currentScene = key == 49 || key == 50 ? 49 :;

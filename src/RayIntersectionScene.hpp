@@ -5,6 +5,7 @@
 //  Created by David MacBook on 2024-09-30.
 //
 //  Scene to debug the intersection of Rays using manual controller
+#pragma once
 #include "Scene.hpp"
 #include "Ray.hpp"
 

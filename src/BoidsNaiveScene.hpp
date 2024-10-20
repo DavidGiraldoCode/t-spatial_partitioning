@@ -4,6 +4,7 @@
 //
 //  Created by David MacBook on 2024-10-01.
 //
+#pragma once
 #include "Scene.hpp"
 //#include "Boid.hpp"
 #include "BoidsManager.hpp"
