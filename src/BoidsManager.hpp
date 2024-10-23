@@ -14,9 +14,21 @@ class BoidsManager
 {
 public:
     BoidsManager(){};
+    /**
+     * Constructs a BoidsManager object. This constructor initializes the boid swarm at a specific spawn point
+     * within the 3D environment, based on the number of boids specified.
+     * @param spawnPoint The position to spawn the boids.
+     * @param BOIDS_COUNT The number of boids to spawn.
+     * @param uniformGridRef A pointer to the Uniform grid.
+     */
     BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGrid* uniformGridRef);
     ~BoidsManager() = default;
     
+    /**
+     * Updates the steering forces (separation, cohesion and alignment) for all the boid by iterating in i and j. Also compute boid-like obstacle avoidance.
+     * It calls `updateSteeringForces` on each boid.
+     * @note Complexity O(n^2)
+     */
             void                updateSteeringForces();
     const   std::vector<Boid>   getBoids() const; //For passing the values to the mesh
             UniformGrid*        uniformGridRef = nullptr;

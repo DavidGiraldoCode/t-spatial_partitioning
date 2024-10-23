@@ -21,12 +21,14 @@ void SensingBoidsScene::setup()
     
     
     // ========== Boids
-    BOIDS_COUNT = 3;
-    boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
+    BOIDS_COUNT = 1;
+    ofVec3f spawnPoint  = ofVec3f(1000,1000,-100);
+    //boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
+    boidsManager = BoidsManager(spawnPoint, BOIDS_COUNT, &uniformGrid);
     
     for(size_t i = 0; i < BOIDS_COUNT; i++) //Instantiating the Boids in the center of the bounding volume
     {
-        drones.push_back(Drone(ofVec3f(500,500,-500)));
+        drones.push_back(Drone(spawnPoint));
         
         rays.push_back(Ray());
         ofVec3f direction = ofVec3f(boidsManager.getBoids()[i].getVelocity());

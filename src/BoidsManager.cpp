@@ -13,7 +13,7 @@ BoidsManager::BoidsManager(const ofVec3f &spawnPoint, int BOIDS_COUNT, UniformGr
     //Instantiating the Boids in the center of the bounding volume
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
-        boids.push_back(Boid(spawnPoint));
+        boids.push_back(Boid(spawnPoint, false));
         boids[i].SEPARATION_FACTOR = SEPARATION_FACTOR;
         boids[i].COHESION_FACTOR = COHESION_FACTOR;
         boids[i].ALIGNMENT_FACTOR = ALIGNMENT_FACTOR;
@@ -79,7 +79,7 @@ void BoidsManager::updateSteeringForces()
             boids[i].flockAverageSeparation *= boids[i].perceivedNCohesionFactor;
         }
         
-        //AVOIDANCE
+        //BOID-LIKE OBSTACLE AVOIDANCE
         
         for(size_t v = 0; v < uniformGridRef->obstaclesIndexs.size(); v++)
         {

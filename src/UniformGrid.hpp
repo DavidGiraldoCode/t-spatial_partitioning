@@ -15,7 +15,13 @@ public:
     UniformGrid(){};
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
     UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
-    /*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
+    /**
+     * Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner
+     * @param width Number of voxels in the x axis
+     * @param height Number of voxels in the y axis
+     * @param depth Number of voxels in the z axis
+     * @param VOXEL_SIZE Size of the voxel, can be thought as the resolution of the obstacles
+     */
     UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
            void          getVoxelByWorldCoordinates(const ofVec3f &point);

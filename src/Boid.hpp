@@ -23,7 +23,13 @@ public:
         acceleration(0.0f, 0.0f, 0.0f){};
     Boid(float x, float y, float z);
     Boid(const Boid& other);
-    Boid(const ofVec3f &spawnPosition);
+    
+    /**
+     * Spawn the boid in a given spawn position.
+     * @param spawnPosition is a vector representing the position
+     * @param hasRandomDirection enables a random direction once it is spawned, if false it will go along in the Z axis.
+     */
+    Boid(const ofVec3f &spawnPosition, bool hasRandomDirection = true);
     //copy and move construc
     ~Boid();
             void        move();
@@ -34,6 +40,11 @@ public:
             void        updatePositionInWorldGrid(UniformGrid & uniformGrid);
     //NEW
             void        updateSteeringForces();
+    
+    /**
+     * Creates an spherical boundary that make the boid change direction once it reaches the surface of the sphere from the inside
+     * @note This is for testing and prototyping purposes
+     */
             ofVec3f&    sphericalBoundaryForce();
     
     //Steering forces
