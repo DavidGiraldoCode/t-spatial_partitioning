@@ -1,4 +1,8 @@
 # Devlogs
+- 2024-10-23 The boid starts a simple avoidance protocol by steering to the right
+Note that while turning to avoid, the other forces are still influencing the boid's trajectory. This must be constrained in some way
+so the obstacle avoidance protocol can have more dominance over the boid's flight routine. The next step is to first evaluate a clear escape route and then steer the boid in that direction. Also, add the destination force so it can correct its path back to the target.
+<img width="480" alt="image" src="/images/avoidance_to_rigth.gif"></br>
 - 2024-10-15 Enabled the ray intersection at the head of the boid
 <img width="480" alt="image" src="https://github.com/user-attachments/assets/be9ddd61-9139-45b6-bcb7-84c8cb9f3665"></br>
 - 2024-10-11 Implemented Ray-AxisAlignPlane intersection for XYZ on a user-controlled ray. The ray leaves and enters the bounding volume while keeping the intersections
