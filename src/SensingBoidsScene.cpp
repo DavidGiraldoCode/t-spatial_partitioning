@@ -36,7 +36,8 @@ void SensingBoidsScene::setup()
     }
 
 }
-void computeAxisAlignPlaneIntersection(const ofVec3f & worldNormal,
+void computeAxisAlignPlaneIntersection( Boid& currentBoid,
+                                  const ofVec3f & worldNormal,
                                         UniformGrid & uniformGridRef,
                                         Ray & testRay,
                                         ofVec3f & planeNormal,
@@ -45,20 +46,13 @@ void computeAxisAlignPlaneIntersection(const ofVec3f & worldNormal,
                                         float lamba,
                                   const float stepSize)
 {
-    //Z planess
-    //Do a behind-check to avoid computing intersection when the ray is hiting the back of the surface.
-    //if(zPlaneNormal.dot(ray.getDirection()) >= 0) break;
-    
-    //if(worldNormal.dot(testRay.getDirection()) < 0) // The ray is going in the oposite direction than the world Z normal
-        //planeNormal *= 1;
     
     // If ray is going in the same direction as the world normal, the PlaneNormal needs to flip
     // to consider the voxels' faces that are in the direction [MaxBound -> 0]
     if(worldNormal.dot(testRay.getDirection()) > 0)
         planeNormal *= -1;
         
-    
-    // dot = 0 means that the ray is orthogonal to the world, and thus no intersection happen (or infinite)
+    // dot = 0 means that the ray is orthogonal to the world, and thus no intersection happens (or infinite)
     if(worldNormal.dot(testRay.getDirection()) != 0)
     {
         int planeIndex; // If the plane normal is negative, we traverse the planes from [depth -> 0]
@@ -123,8 +117,19 @@ void computeAxisAlignPlaneIntersection(const ofVec3f & worldNormal,
                                                                                  testRay.getDirection());
             
             //std::cout << uniformGridRef.get3DunitIndex(testRay.getIntersectionPoint()) << " 3D index \n";
-            
             uniformGridRef.setIntersection(voxelIndex);
+            
+            if(uniformGridRef.isVoxelAnObstacle(voxelIndex))
+            {
+                //Start avoidanceProtocol on the Boid
+                currentBoid.activateAvoidanceProtocol();
+                break; //Stops sensing
+            }
+            else if(i == (range - startingIndex))
+            {
+                currentBoid.deactivateAvoidanceProtocol();
+            }
+                
         }
         //std::cout << '\n';
     }
@@ -134,26 +139,26 @@ void SensingBoidsScene::update()
 {
     
     boidsManager.updateSteeringForces();
+    ofVec3f xPlaneNormal = ofVec3f(1,0,0);
+    ofVec3f yPlaneNormal = ofVec3f(0,1,0);
+    ofVec3f zPlaneNormal = ofVec3f(0,0,1);//ray.getDirection() * -1;
+    
+    ofVec3f world_X_Normal = ofVec3f(1,0,0);
+    ofVec3f world_Y_Normal = ofVec3f(0,1,0);
+    ofVec3f world_Z_Normal = ofVec3f(0,0,1);
+    
     for(size_t i = 0; i < BOIDS_COUNT; i++)
     {
-        ofVec3f boidPos = boidsManager.getBoids()[i].getPosition();
-        ofVec3f boidDir = ofVec3f(boidsManager.getBoids()[i].getVelocity()).normalize();
+        Boid& boid = boidsManager.getBoids()[i];
+        ofVec3f boidPos = boid.getPosition();
+        ofVec3f boidDir = ofVec3f(boid.getVelocity()).normalize();
         
-        drones[i].update(boidsManager.getBoids()[i].getPosition(),
-                         boidsManager.getBoids()[i].getVelocity());
-        
+        drones[i].update(boid.getPosition(),
+                         boid.getVelocity());
         
         //upadate the ray vector
         rays[i].setOrigin(boidPos);
         rays[i].setDirection(boidDir); // The forward vector in this scene is -1
-        
-        ofVec3f xPlaneNormal = ofVec3f(1,0,0);
-        ofVec3f yPlaneNormal = ofVec3f(0,1,0);
-        ofVec3f zPlaneNormal = ofVec3f(0,0,1);//ray.getDirection() * -1;
-        
-        ofVec3f world_X_Normal = ofVec3f(1,0,0);
-        ofVec3f world_Y_Normal = ofVec3f(0,1,0);
-        ofVec3f world_Z_Normal = ofVec3f(0,0,1);
         
         float lambaT;
         
@@ -166,9 +171,9 @@ void SensingBoidsScene::update()
         float widthRange = index3D.x + (int)(rays[i].getReach()/VOXEL_SIZE); //how far along the width planes it should go
         float heightRange = index3D.y + (int)(rays[i].getReach()/VOXEL_SIZE); //how far along the height planes it should go
         
-        computeAxisAlignPlaneIntersection(world_X_Normal, uniformGrid, rays[i], xPlaneNormal, index3D.x, widthRange, lambaT, VOXEL_SIZE);
-        computeAxisAlignPlaneIntersection(world_Y_Normal, uniformGrid, rays[i], yPlaneNormal, index3D.y, heightRange, lambaT, VOXEL_SIZE);
-        computeAxisAlignPlaneIntersection(world_Z_Normal, uniformGrid, rays[i], zPlaneNormal, index3D.z, depthRange, lambaT, VOXEL_SIZE);
+        computeAxisAlignPlaneIntersection(boid, world_X_Normal, uniformGrid, rays[i], xPlaneNormal, index3D.x, widthRange, lambaT, VOXEL_SIZE);
+        computeAxisAlignPlaneIntersection(boid, world_Y_Normal, uniformGrid, rays[i], yPlaneNormal, index3D.y, heightRange, lambaT, VOXEL_SIZE);
+        computeAxisAlignPlaneIntersection(boid, world_Z_Normal, uniformGrid, rays[i], zPlaneNormal, index3D.z, depthRange, lambaT, VOXEL_SIZE);
         
     }
 }

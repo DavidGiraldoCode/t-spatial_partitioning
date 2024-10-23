@@ -30,7 +30,7 @@ public:
      * @note Complexity O(n^2)
      */
             void                updateSteeringForces();
-    const   std::vector<Boid>   getBoids() const; //For passing the values to the mesh
+    std::vector<Boid>&   getBoids(); //For passing the values to the mesh
             UniformGrid*        uniformGridRef = nullptr;
     // Steering forces settings
             float               neighborCohesionDistance    =   200;

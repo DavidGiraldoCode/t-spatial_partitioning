@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "ofVec3f.h"
 #include "ofMath.h"
+#include <cmath>
 #include "ofUtils.h"
 #include "UniformGrid.hpp"
 #include "ofAppRunner.h"
@@ -38,8 +39,17 @@ public:
     const   ofVec3f     getDirection();
     const   ofVec3f&    getVelocity() const;
             void        updatePositionInWorldGrid(UniformGrid & uniformGrid);
-    //NEW
             void        updateSteeringForces();
+    
+    // Avoidance
+    /**
+     * Signals the boid to take evasive maneuvers
+     */
+            void        activateAvoidanceProtocol();
+    /**
+     * Signals the boid to stop evasive maneuvers
+     */
+            void        deactivateAvoidanceProtocol();
     
     /**
      * Creates an spherical boundary that make the boid change direction once it reaches the surface of the sphere from the inside
@@ -92,7 +102,9 @@ private:
     int wanderChange = 0;
     //Steering forces
     float   MAX_SPEED           =     200.0f;
-//    
+    
+    // Avoidance
+    bool obstacleDetected = false;
 
     
     

@@ -108,7 +108,7 @@ void BoidsManager::updateSteeringForces()
         boids[i].updatePositionInWorldGrid(*uniformGridRef);
     }
 }
-const std::vector<Boid> BoidsManager::getBoids() const
+std::vector<Boid>& BoidsManager::getBoids()
 {
   return boids;
 }

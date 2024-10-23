@@ -50,6 +50,10 @@ Boid::Boid(const ofVec3f &spawnPosition, bool hasRandomDirection)
         wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
         velocity = wanderDirection * MAX_SPEED;
     }
+    else
+    {
+        velocity = ofVec3f(0,0,-1) * MAX_SPEED;
+    }
     //std::cout << velocity << " velocity\n";
     //velocity = velocity.normalize() * MAX_SPEED;
     
@@ -76,6 +80,8 @@ Boid::Boid(const Boid& other)
     numPerceivedNCohesion = other.numPerceivedNCohesion;
     numPerceivedNAlignment = other.numPerceivedNAlignment;
     numPerceivedNSeparation = other.numPerceivedNAlignment;
+    
+    //obstacleDetected = other.obstacleDetected;
     
 }
 
@@ -150,6 +156,20 @@ void Boid::updateSteeringForces()
     acceleration += separationForce;
     
     //acceleration += avoidanceForce;
+    std::cout << obstacleDetected << " obstacleDetected\n";
+    if(obstacleDetected)
+    {
+        float angle = -(glm::pi<float>()/2);
+        // Applying a rotation matrix equation with respect to y
+        float x = (velocity.x * cos(angle)) + (velocity.z * sin(angle));
+        float z = (velocity.x * (-sin(angle))) + (velocity.z * cos(angle));
+        
+        ofVec3f rightAvoidanceV = ofVec3f(x, velocity.y, z);
+        float avoidanceFore = 0.5f;
+        acceleration += (rightAvoidanceV * avoidanceFore);
+        std::cout << rightAvoidanceV << " \n";
+    }
+        
     
     velocity += acceleration;
     position += velocity * ofGetLastFrameTime();
@@ -274,4 +294,18 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
         uniformGrid.removeObjectFromVoxel(previousPositionInGrid);
     
     previousPositionInGrid = currentPositionInGrid; //Update position.
+}
+
+// Avoidance
+
+void Boid::activateAvoidanceProtocol()
+{
+    //std::cout << "obstacleDetected\n";
+    obstacleDetected = true;
+}
+
+void Boid::deactivateAvoidanceProtocol()
+{
+    //std::cout << "obstacleDetected\n";
+    obstacleDetected = false;
 }
