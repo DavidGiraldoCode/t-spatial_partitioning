@@ -1,7 +1,8 @@
-# Spatial partitioning study - with C++ in OpenFrameworks
-
-<img width="400" alt="image" src="https://github.com/user-attachments/assets/be9ddd61-9139-45b6-bcb7-84c8cb9f3665">
-<img width="400" alt="image" src="https://github.com/user-attachments/assets/963b99a4-e775-4128-b00f-f8a33ffb47a5">
+# Ray-Voxel obstacle avoidance algorithm
+*A Spatial partitioning study with C++ in OpenFrameworks*
+<img width="600" alt="image" src="/images/avoidance_to_rigth.gif"><br>
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/be9ddd61-9139-45b6-bcb7-84c8cb9f3665">
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/963b99a4-e775-4128-b00f-f8a33ffb47a5">
 
 # Build instructions
 To run this project, first [Download OpenFrameworks source code](https://openframeworks.cc/download/). Then, move inside the `myApps` folder. You need this to have access to the OpenFrameworks header files.
