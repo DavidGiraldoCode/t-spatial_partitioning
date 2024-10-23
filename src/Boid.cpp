@@ -165,9 +165,12 @@ void Boid::updateSteeringForces()
         float z = (velocity.x * (-sin(angle))) + (velocity.z * cos(angle));
         
         ofVec3f rightAvoidanceV = ofVec3f(x, velocity.y, z);
-        float avoidanceFore = 0.5f;
+        float avoidanceFore = 0.006f;
         acceleration += (rightAvoidanceV * avoidanceFore);
         std::cout << rightAvoidanceV << " \n";
+        COHESION_FACTOR = 0.001f;
+        ALIGNMENT_FACTOR = 0.001f;
+        SEPARATION_FACTOR = 0.001f;
     }
         
     

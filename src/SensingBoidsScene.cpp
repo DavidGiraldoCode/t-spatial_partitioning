@@ -22,7 +22,7 @@ void SensingBoidsScene::setup()
     
     // ========== Boids
     BOIDS_COUNT = 1;
-    ofVec3f spawnPoint  = ofVec3f(1000,1000,-100);
+    ofVec3f spawnPoint  = ofVec3f(1000,1000,100);
     //boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     boidsManager = BoidsManager(spawnPoint, BOIDS_COUNT, &uniformGrid);
     
