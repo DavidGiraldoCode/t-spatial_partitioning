@@ -35,7 +35,7 @@ Boid::Boid(float x, float y, float z)
     avoidanceForce      =   ofVec3f(0.0f, 0.0f, 0.0f);
 }
 
-Boid::Boid(const ofVec3f &spawnPosition)
+Boid::Boid(const ofVec3f &spawnPosition, bool hasRandomDirection)
 {
     
     position = spawnPosition;
@@ -45,8 +45,15 @@ Boid::Boid(const ofVec3f &spawnPosition)
     //velocity = forward * MAX_SPEED;
     
     //std::cout << velocity << " velocity\n";
-    wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
-    velocity = wanderDirection * MAX_SPEED;
+    if(hasRandomDirection)
+    {
+        wanderDirection = ofVec3f(ofRandomf(), ofRandomf(), ofRandomf()).normalize();
+        velocity = wanderDirection * MAX_SPEED;
+    }
+    else
+    {
+        velocity = ofVec3f(0,0,-1) * MAX_SPEED;
+    }
     //std::cout << velocity << " velocity\n";
     //velocity = velocity.normalize() * MAX_SPEED;
     
@@ -73,6 +80,8 @@ Boid::Boid(const Boid& other)
     numPerceivedNCohesion = other.numPerceivedNCohesion;
     numPerceivedNAlignment = other.numPerceivedNAlignment;
     numPerceivedNSeparation = other.numPerceivedNAlignment;
+    
+    //obstacleDetected = other.obstacleDetected;
     
 }
 
@@ -116,6 +125,10 @@ void Boid::move()
 //    << ", z: " << position.z << "] \n";
 }
 
+/**
+ * Updates the forces on the boid, gets call from the class `BoidManager`.
+ * @note This will be re-factor, as in further version, the boid will get it neighbours spatially hashed
+ */
 void Boid::updateSteeringForces()
 {
     //reset the acceleration at the begging of the simulation step
@@ -123,7 +136,7 @@ void Boid::updateSteeringForces()
     acceleration.y = 0.0f;
     acceleration.z = 0.0f;
     
-    velocity = sphericalBoundaryForce(); //GOOD enough solution for now
+    //velocity = sphericalBoundaryForce(); //GOOD enough solution for now
      
     
     if(numPerceivedNCohesion > 0)
@@ -135,14 +148,31 @@ void Boid::updateSteeringForces()
     if(numPerceivedNSeparation > 0)
         separationForce = flockAverageSeparation * SEPARATION_FACTOR;
     
-    
-    avoidanceForce = obstaclesAverageAvoidance.normalize() * AVOIDANCE_FACTOR;
+    //BOID-LIKE obstacle avoidance
+    //avoidanceForce = obstaclesAverageAvoidance.normalize() * AVOIDANCE_FACTOR;
     
     acceleration += cohesionForce;
     acceleration += alignmentForce;
     acceleration += separationForce;
     
-    acceleration += avoidanceForce;
+    //acceleration += avoidanceForce;
+    std::cout << obstacleDetected << " obstacleDetected\n";
+    if(obstacleDetected)
+    {
+        float angle = -(glm::pi<float>()/2);
+        // Applying a rotation matrix equation with respect to y
+        float x = (velocity.x * cos(angle)) + (velocity.z * sin(angle));
+        float z = (velocity.x * (-sin(angle))) + (velocity.z * cos(angle));
+        
+        ofVec3f rightAvoidanceV = ofVec3f(x, velocity.y, z);
+        float avoidanceFore = 0.006f;
+        acceleration += (rightAvoidanceV * avoidanceFore);
+        std::cout << rightAvoidanceV << " \n";
+        COHESION_FACTOR = 0.001f;
+        ALIGNMENT_FACTOR = 0.001f;
+        SEPARATION_FACTOR = 0.001f;
+    }
+        
     
     velocity += acceleration;
     position += velocity * ofGetLastFrameTime();
@@ -267,4 +297,18 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
         uniformGrid.removeObjectFromVoxel(previousPositionInGrid);
     
     previousPositionInGrid = currentPositionInGrid; //Update position.
+}
+
+// Avoidance
+
+void Boid::activateAvoidanceProtocol()
+{
+    //std::cout << "obstacleDetected\n";
+    obstacleDetected = true;
+}
+
+void Boid::deactivateAvoidanceProtocol()
+{
+    //std::cout << "obstacleDetected\n";
+    obstacleDetected = false;
 }

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "ofVec3f.h"
 #include "ofMath.h"
+#include <cmath>
 #include "ofUtils.h"
 #include "UniformGrid.hpp"
 #include "ofAppRunner.h"
@@ -23,7 +24,13 @@ public:
         acceleration(0.0f, 0.0f, 0.0f){};
     Boid(float x, float y, float z);
     Boid(const Boid& other);
-    Boid(const ofVec3f &spawnPosition);
+    
+    /**
+     * Spawn the boid in a given spawn position.
+     * @param spawnPosition is a vector representing the position
+     * @param hasRandomDirection enables a random direction once it is spawned, if false it will go along in the Z axis.
+     */
+    Boid(const ofVec3f &spawnPosition, bool hasRandomDirection = true);
     //copy and move construc
     ~Boid();
             void        move();
@@ -32,8 +39,22 @@ public:
     const   ofVec3f     getDirection();
     const   ofVec3f&    getVelocity() const;
             void        updatePositionInWorldGrid(UniformGrid & uniformGrid);
-    //NEW
             void        updateSteeringForces();
+    
+    // Avoidance
+    /**
+     * Signals the boid to take evasive maneuvers
+     */
+            void        activateAvoidanceProtocol();
+    /**
+     * Signals the boid to stop evasive maneuvers
+     */
+            void        deactivateAvoidanceProtocol();
+    
+    /**
+     * Creates an spherical boundary that make the boid change direction once it reaches the surface of the sphere from the inside
+     * @note This is for testing and prototyping purposes
+     */
             ofVec3f&    sphericalBoundaryForce();
     
     //Steering forces
@@ -81,7 +102,9 @@ private:
     int wanderChange = 0;
     //Steering forces
     float   MAX_SPEED           =     200.0f;
-//    
+    
+    // Avoidance
+    bool obstacleDetected = false;
 
     
     

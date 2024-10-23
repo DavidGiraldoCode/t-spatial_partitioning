@@ -91,7 +91,7 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivo
     }
     std::cout << "voxels.size(): " << voxels.size() << '\n';
 }
-/*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
+
 UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE)
 {
     std::cout << "Building the grid with voxel origin at corner [0,0,0]" << '\n';
@@ -139,13 +139,26 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         //std::cout << "randomObstacleState: " << randomObstacleState << '\n';
         float OBSTACLES_POBALITIY = 0.9995; // Gives more chances of voxels being emty spaces
         bool isEmpty = (randomObstacleState > OBSTACLES_POBALITIY);
-        setVoxelAsObstacle(i, isEmpty);
+        //setVoxelAsObstacle(i, isEmpty);
         
-        if(y == 0) // Shading the ground
+        //if(y == 0) // Shading the ground as obstacles
+            //setVoxelAsObstacle(i, true);
+        
+        if(isEmpty)// if it an obstacle, save the index, TODO, I need to change the readability of the logic
+            obstaclesIndexs.push_back(i);
+        
+        // ===============================================================================================================
+        // For testing purposes, I am hard-coding obstacles on the grid  🚧
+        // ===============================================================================================================
+        if(worldX >= 800 && worldX < 1200 &&
+           worldY >= 800 && worldY < 1200 &&
+           worldZ == -2000)
             setVoxelAsObstacle(i, true);
         
-        if(isEmpty)// if it an obstacle, save the index
-            obstaclesIndexs.push_back(i);
+        if(worldX == 1800 &&
+           worldY >= 800 && worldY < 1200 &&
+           worldZ <= -800 && worldZ > -2000)
+            setVoxelAsObstacle(i, true);
         
         //std::cout << "voxels["<<i<<"].position = " << voxels[i].position << '\n';
     }
@@ -153,6 +166,8 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
     std::cout << "obstaclesIndexs.size(): " << obstaclesIndexs.size() << '\n';
 }
 
+
+           
 UniformGrid::~UniformGrid()
 {
     //std::cout << "Bye bye UniformGrid" << '\n';
@@ -316,7 +331,15 @@ ofVec3f UniformGrid::getVoxelPositionByIndex(size_t index)
 
 const ofVec3f& UniformGrid::getObstaclePositionByIndex(size_t index) const
 {
+    //TODO needs invariance, otherwise the index could be out of bounce
     return voxels[obstaclesIndexs[index]].position;
+}
+
+const  bool UniformGrid::isVoxelAnObstacle(int i) const
+{
+    if(i < 0 || i > voxels.size()) return false;
+    
+    return voxels[i].obstacle == VoxelType::OBSTACLE;
 }
 
 const size_t UniformGrid::getGridSize()

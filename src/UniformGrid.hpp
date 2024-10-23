@@ -15,7 +15,13 @@ public:
     UniformGrid(){};
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
     UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
-    /*Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner*/
+    /**
+     * Constructor of a uniform grid with cell origin on the bottom left front [0,0,0] corner
+     * @param width Number of voxels in the x axis
+     * @param height Number of voxels in the y axis
+     * @param depth Number of voxels in the z axis
+     * @param VOXEL_SIZE Size of the voxel, can be thought as the resolution of the obstacles
+     */
     UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE);
     ~UniformGrid();
            void          getVoxelByWorldCoordinates(const ofVec3f &point);
@@ -25,7 +31,19 @@ public:
     const  ofVec3f&      getObstaclePositionByIndex(size_t index) const;
     const  size_t        getGridSize();
     const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
-    const  int           isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f & axis, const ofVec3f &rayDirection) const;
+    
+    /**
+     * Checks if the intersection point of the ray is inside a voxel in the grid.
+     * This takes into consideration the orientation of the ray to compare it with the normal of the voxel agaist.
+     * @param pointQuery The intersection point
+     * @param planeNormal The plane normal representing the orientation of the voxel
+     * @param rayDirection The direction of the ray
+     * @return A 1D index of the voxel that was intersected, or -1 if any voxel was intersected
+     * @note Compleity O(1)
+     */
+    const  int           isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery,
+                                                              const ofVec3f & planeNormal,
+                                                              const ofVec3f &rayDirection) const;
            void          removeObjectFromVoxel(int i);
            void          addObjectToVoxel(int i);
     const  int           getVoxelState(int i) const;
@@ -33,15 +51,32 @@ public:
     const  ofVec3f       get3DunitIndex(const ofVec3f &point);
     //For Debugging
            void          clearIntersections();
+    
+    /**
+     * Flags the voxels as being intersected, shading it.
+     * @note This is for debugging purposes
+     */
            void          setIntersection(int i);
-    const  bool           getVoxelIntersectionState(int i) const;
+    
+    /**
+     * Checks if a voxel is an obstacle by a given index
+     * @param i The index in 1D
+     * @return `true` if the voxel is an obstacle
+     */
+    const  bool          isVoxelAnObstacle(int i) const;
+    
+    const  bool          getVoxelIntersectionState(int i) const;
     //NEW for obstacle avoidance
     std::vector<int> obstaclesIndexs;
+    
 private:
     struct Voxel // Bucket in Rynolds PS3 approach
     {
         size_t index = 0;
         unsigned state = 0; // 0 empty, 1 is full
+        /**
+         * Defines this voxel as an obstacle to avoid, `0` is void, `1` is obstacle
+         */
         unsigned obstacle = 0;
         ofVec3f position = ofVec3f(0,0,0);
         bool intersected = false;
@@ -83,4 +118,15 @@ private:
     size_t  width, height, depth = 1; // Columns X, Rows Y, and Layers Z
     float   m_voxelSize, m_dx, m_dy, m_dz; // voxel size
     float   m_normalizeSizeFactor;
+    
+    //New for obstacle avoidance
+    /**
+     * Defines the two types of voxels. Use this to make safe comparissons
+     * Recall that :: is used to access values in a scope, the . operator is used for accessing members of an object (like struct members).
+     */
+    enum VoxelType
+    {
+        OBSTACLE = true,
+        EMPTY = false
+    };
 };
