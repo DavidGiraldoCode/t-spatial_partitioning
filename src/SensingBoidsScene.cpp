@@ -22,7 +22,7 @@ void SensingBoidsScene::setup()
     
     // ========== Boids
     BOIDS_COUNT = 1;
-    ofVec3f spawnPoint  = ofVec3f(1000,1000,100);
+    ofVec3f spawnPoint  = ofVec3f(950,950,200);
     //boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     boidsManager = BoidsManager(spawnPoint, BOIDS_COUNT, &uniformGrid);
     
@@ -122,7 +122,9 @@ void computeAxisAlignPlaneIntersection( Boid& currentBoid,
             if(uniformGridRef.isVoxelAnObstacle(voxelIndex))
             {
                 //Start avoidanceProtocol on the Boid
-                currentBoid.activateAvoidanceProtocol();
+                // We need the World location of the voxel
+                ofVec3f obstacle = testRay.getIntersectionPoint();
+                currentBoid.activateAvoidanceProtocol(obstacle);
                 break; //Stops sensing
             }
             else if(i == (range - startingIndex))
