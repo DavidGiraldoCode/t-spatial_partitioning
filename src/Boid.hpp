@@ -45,7 +45,7 @@ public:
     /**
      * Signals the boid to take evasive maneuvers
      */
-            void        activateAvoidanceProtocol();
+            void        activateAvoidanceProtocol(const ofVec3f & obstaclePoint);
     /**
      * Signals the boid to stop evasive maneuvers
      */
@@ -101,11 +101,11 @@ private:
     int wanderCounter = 0;
     int wanderChange = 0;
     //Steering forces
-    float   MAX_SPEED           =     200.0f;
+    float   MAX_SPEED           =     400.0f;
     
     // Avoidance
     bool obstacleDetected = false;
-
+    ofVec3f obstacle; // I realized that the boid might have many obstacle to avoid at the same time, not only one
     
     
     //
