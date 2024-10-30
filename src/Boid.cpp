@@ -156,6 +156,7 @@ void Boid::updateSteeringForces()
     acceleration += separationForce;
     
     //acceleration += avoidanceForce;
+    /* 🚧 Obstacle avoidance logic, simple rotation
     std::cout << obstacleDetected << " obstacleDetected\n";
     if(obstacleDetected)
     {
@@ -172,9 +173,95 @@ void Boid::updateSteeringForces()
         ALIGNMENT_FACTOR = 0.001f;
         SEPARATION_FACTOR = 0.001f;
     }
+    */
+    
+    // Ma and Chou Rotator Operator
+    obstacle = ofVec3f(910,950, -2000);
+    //ofVec3f(950,980, -2000); // The obstacle is slightly to the right
+    ofVec3f boidToObstacle = obstacle - position;
+    ofVec3f obstacleToBoid = boidToObstacle * -1;
+    // Critical radius
+    float criticalRadius = 800.0f; // Ideally half the reach of the visibility, ray reach.
+    float distanceToObstacle = boidToObstacle.length();
+    if(distanceToObstacle <= criticalRadius /*obstacleDetected*/)
+    {
         
+        
+        
+        // Simple Cross product, taking Y as Up vector, with contribution zero.
+        float obstacleLocation = (velocity.normalize().x * boidToObstacle.normalize().z)
+                                - (velocity.normalize().z * boidToObstacle.normalize().x);
+        
+        ofVec3f rotatorVelocity = ofVec3f(0.0f, 0.0f, 0.0f);
+        const float overflowThreshold = 9999.0f;
+        
+        if(obstacleLocation < -overflowThreshold)
+            obstacleLocation = -overflowThreshold;
+        else if(obstacleLocation > overflowThreshold)
+            obstacleLocation = overflowThreshold;
+
+        std::cout << obstacleLocation << " obstacleLocation\n";
+        
+        // If obstacleLocation > 0 the obstacle is to the left, we reflect to the right
+        if(obstacleLocation < 0)
+        {
+            //std::cout << " to the left\n";
+            rotatorVelocity.x = obstacleToBoid.z;
+            rotatorVelocity.z = -obstacleToBoid.x;
+        }
+        else if(obstacleLocation >= 0) // If obstacleLocation <= 0 the obstacle is to the rigth, we refelct to the left
+        {
+            //std::cout << " to the right\n";
+            rotatorVelocity.x = -obstacleToBoid.z;
+            rotatorVelocity.z = obstacleToBoid.x;
+        }
+        std::cout << rotatorVelocity << " rotatorVelocity\n";
+        
+        
+        float amplitudCoefficient = 50000.0f; // This is user defined, and is to make the operator stronger
+        
+        // Compute the radial attenuation function to the closer it gets, the stronger the avoidance rotation.
+        float radialAttenuation = (1.0f / distanceToObstacle) - (1.0f / criticalRadius);
+        // The radialAttenuation is getting value of 1.35573e-05
+//        if(radialAttenuation < -overflowThreshold)
+//            radialAttenuation = -overflowThreshold;
+//        else if(radialAttenuation > overflowThreshold)
+//            radialAttenuation = overflowThreshold;
+        
+        std::cout << radialAttenuation << " radialAttenuation\n";
+        /**
+         term acts as a proximity-based and velocity-aware scaling factor that ensures the avoidance maneuver is effective and natural
+         r Squaring the distance indicates that the avoidance force decreases rapidly as the agent moves farther from the obstacle
+         Dividing by 𝑉rotMagnitud scales down the effect when the agent moves faster, which is common in collision avoidance systems to prevent abrupt, unnatural-looking changes in direction at higher speeds.
+         */
+        // The original uses the squareDistanceToObstacle
+        float squareDistanceToObstacle = (boidToObstacle.x * boidToObstacle.x) + (boidToObstacle.y * boidToObstacle.y) + (boidToObstacle.z * boidToObstacle.z);
+        
+        // Here I am using the euclian distance
+        float velocityAndProximityDamping = 1.0f / (boidToObstacle.length() * rotatorVelocity.length());
+        
+        //Original;
+        ofVec3f rotatorOperator = amplitudCoefficient * velocityAndProximityDamping * radialAttenuation * rotatorVelocity;
+        
+        acceleration += rotatorOperator;
+        
+        acceleration += ofVec3f(0.0f, 0.0f, -1.0f) * MAX_SPEED;
+        //std::cout << rotatorOperator << " rotatorOperator\n";
+    }
+    else
+    {
+        acceleration += ofVec3f(0.0f, 0.0f, -1.0f) * MAX_SPEED;
+    }
+    
+    //force the moving forwad;
+//    ofVec3f forward = ofVec3f(0.0f, 0.0f, -1.0f) * MAX_SPEED;
+//    velocity += forward;
     
     velocity += acceleration;
+    
+    if(velocity.length() > MAX_SPEED)
+        velocity = velocity.normalize() * MAX_SPEED;
+    
     position += velocity * ofGetLastFrameTime();
     
     //Reset N count
@@ -301,9 +388,10 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
 
 // Avoidance
 
-void Boid::activateAvoidanceProtocol()
+void Boid::activateAvoidanceProtocol(const ofVec3f& obstaclePoint)
 {
-    //std::cout << "obstacleDetected\n";
+    
+    //obstacle = obstaclePoint;
     obstacleDetected = true;
 }
 
