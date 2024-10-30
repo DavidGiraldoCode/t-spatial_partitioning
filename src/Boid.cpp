@@ -187,13 +187,14 @@ void Boid::updateSteeringForces()
     {
         
         
+        ofVec3f rotatorVelocity = ofVec3f(0.0f, 0.0f, 0.0f);
+        
         
         // Simple Cross product, taking Y as Up vector, with contribution zero.
         float obstacleLocation = (velocity.normalize().x * boidToObstacle.normalize().z)
                                 - (velocity.normalize().z * boidToObstacle.normalize().x);
         
-        ofVec3f rotatorVelocity = ofVec3f(0.0f, 0.0f, 0.0f);
-        const float overflowThreshold = 9999.0f;
+        const float overflowThreshold = 99.0f;
         
         if(obstacleLocation < -overflowThreshold)
             obstacleLocation = -overflowThreshold;
@@ -215,10 +216,10 @@ void Boid::updateSteeringForces()
             rotatorVelocity.x = -obstacleToBoid.z;
             rotatorVelocity.z = obstacleToBoid.x;
         }
-        std::cout << rotatorVelocity << " rotatorVelocity\n";
+        //std::cout << rotatorVelocity << " rotatorVelocity\n";
         
         
-        float amplitudCoefficient = 50000.0f; // This is user defined, and is to make the operator stronger
+        float amplitudCoefficient = 80000.0f; // This is user defined, and is to make the operator stronger
         
         // Compute the radial attenuation function to the closer it gets, the stronger the avoidance rotation.
         float radialAttenuation = (1.0f / distanceToObstacle) - (1.0f / criticalRadius);
@@ -228,7 +229,7 @@ void Boid::updateSteeringForces()
 //        else if(radialAttenuation > overflowThreshold)
 //            radialAttenuation = overflowThreshold;
         
-        std::cout << radialAttenuation << " radialAttenuation\n";
+        //std::cout << radialAttenuation << " radialAttenuation\n";
         /**
          term acts as a proximity-based and velocity-aware scaling factor that ensures the avoidance maneuver is effective and natural
          r Squaring the distance indicates that the avoidance force decreases rapidly as the agent moves farther from the obstacle
@@ -237,8 +238,8 @@ void Boid::updateSteeringForces()
         // The original uses the squareDistanceToObstacle
         float squareDistanceToObstacle = (boidToObstacle.x * boidToObstacle.x) + (boidToObstacle.y * boidToObstacle.y) + (boidToObstacle.z * boidToObstacle.z);
         
-        // Here I am using the euclian distance
-        float velocityAndProximityDamping = 1.0f / (boidToObstacle.length() * rotatorVelocity.length());
+        // Here I am using the euclian distance boidToObstacle.length()
+        float velocityAndProximityDamping = 1.0f / (squareDistanceToObstacle * rotatorVelocity.length());
         
         //Original;
         ofVec3f rotatorOperator = amplitudCoefficient * velocityAndProximityDamping * radialAttenuation * rotatorVelocity;

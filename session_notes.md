@@ -25,7 +25,8 @@ Using this approach, the objective is to enable an agent to dodge an obstacle di
 2. **Angle Comparison**:
 
 Compare the angle between the agent's velocity (a) and agent-to-obstacle (ao) to determine if the obstacle is to the left and to the right. And here, I simplified the proposed method. The original compares the absolute rotation, and if it is greater than PI, computes the two different equations with arctan2 to determine whether the agent should turn to the left (obstacle to the right ) or to the right (obstacle to the left).
-[IMAGE].
+
+![alt text](images/origital_angle_check.png)
 
 My simplification (considering a 2D avoidance) is as follows:
 
@@ -59,7 +60,7 @@ $$K_{amplitud}=8$$
 
 $$R_{operator}=K_{amplitud}\cdot\frac{1}{\left(r_{o}^{2}\cdot V_{rotMagnitud}\right)}\cdot k_{radialAttenuation}\cdot V_{rotation}$$
 
-[GIF]
+![alt text](images/rotation_operator.gif)
 
 [Play this it in DESMOS](https://www.desmos.com/calculator/qc0rr7hacq)
 
@@ -81,10 +82,36 @@ $$R_{operator}=K_{amplitud}\cdot\frac{1}{\left(r_{o}^{2}\cdot V_{rotMagnitud}\ri
 
 ### Findings
 - The Boid successfully avoided obstacles, but turns were minimal; adjusting the amplitude coefficient had a significant effect.
-- Modified the attenuation function to use linear distance instead of squared distance.
-- Functionality verified from both left and right approaches.
+```C++
+float amplitudCoefficient = 80000.0f; 
+```
+- Functionality verified from both left and right obstacle positioning.
+- Computing the simplified Cross yield very small number, consider adding a threshold since we only care about the sign
+```C++
+// Simple Cross product, taking Y as Up vector, with contribution zero.
+float obstacleLocation = (velocity.normalize().x * boidToObstacle.normalize().z)
+                        - (velocity.normalize().z * boidToObstacle.normalize().x);
 
-[GIF]
+const float overflowThreshold = 99.0f;
+
+if(obstacleLocation < -overflowThreshold)
+    obstacleLocation = -overflowThreshold;
+else if(obstacleLocation > overflowThreshold)
+    obstacleLocation = overflowThreshold;
+```
+- Lastly, just add the vectors
+```C++
+ofVec3f rotatorOperator = amplitudCoefficient * velocityAndProximityDamping * radialAttenuation * rotatorVelocity;
+acceleration += rotatorOperator;
+velocity += acceleration;
+
+ if(velocity.length() > MAX_SPEED)
+        velocity = velocity.normalize() * MAX_SPEED;
+
+position += velocity * ofGetLastFrameTime();
+```
+
+![alt text](images/boid_avoidance_rotation_operator.gif)
 
 ### Next Steps
 - **Dynamic Obstacle Positioning**: Test how the rotation operator functions with real-time updates in obstacle positions.
