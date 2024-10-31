@@ -22,7 +22,7 @@ void SensingBoidsScene::setup()
     
     // ========== Boids
     BOIDS_COUNT = 1;
-    ofVec3f spawnPoint  = ofVec3f(950,950,200);
+    ofVec3f spawnPoint  = ofVec3f(920,950, 4000);
     //boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     boidsManager = BoidsManager(spawnPoint, BOIDS_COUNT, &uniformGrid);
     
@@ -127,7 +127,7 @@ void computeAxisAlignPlaneIntersection( Boid& currentBoid,
                 currentBoid.activateAvoidanceProtocol(obstacle);
                 break; //Stops sensing
             }
-            else if(i == (range - startingIndex))
+            else if(i == (range - startingIndex)) // if the traversal reaches the edge and did not find any obstacles
             {
                 currentBoid.deactivateAvoidanceProtocol();
             }

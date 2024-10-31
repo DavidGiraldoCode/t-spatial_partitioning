@@ -150,10 +150,38 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         // ===============================================================================================================
         // For testing purposes, I am hard-coding obstacles on the grid  🚧
         // ===============================================================================================================
+        
+        //Single obstacle
+        /*
         if(worldX >= 900 && worldX < 1000 &&
            worldY >= 900 && worldY < 1000 &&
-           worldZ == -2000)
+           worldZ == -1600)
             setVoxelAsObstacle(i, true);
+        */
+        /* in-line obstacles */
+        /*
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -400)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -2400)
+            setVoxelAsObstacle(i, true);
+        */
+        /* wall obstacle */
+        
+        if(worldX >= 600 && worldX < 1200 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
         
 //        if(worldX == 1800 &&
 //           worldY >= 800 && worldY < 1200 &&

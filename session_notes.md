@@ -72,7 +72,7 @@ $$R_{operator}=K_{amplitud}\cdot\frac{1}{\left(r_{o}^{2}\cdot V_{rotMagnitud}\ri
 
 ---
 
-## 💻 Session 2024-10-29: Rotation Operator Brute Force Implementation
+## 💻 Session 2024-10-30: Rotation Operator Brute Force Implementation
 
 ### Objective
 **Make a Boid move forward while dodging an obstacle in front using Ma and Chou's Rotation Operator.**
@@ -118,61 +118,36 @@ position += velocity * ofGetLastFrameTime();
 - **Multiple Obstacles**: Experiment with handling multiple obstacles simultaneously.
 - **New Obstacle Detection**: Determine if the agent should track several obstacles in the critical zone, similar to neighbor tracking.
 
---- 
+---
 
-## On Spatial queries in 1D and 3D
+## 💻 Session 2024-10-31: Rotation Operator when detecting obstacle with a Ray
 
-Algorithm to determine if a point is inside a voxel
+**Objective:** Make the boid use the rotation operator when an ray-sensed obstacle
+- What happend when the intersection point starts changing position?
+- Would the rotation operator work whit multiple obstacles being tracked?
 
+**pseudocode:** Update the ref of one obstacle, the current intersection point
 ```C++
-const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f & planeNormal ,const ofVec3f &rayDirection) const
-{
-    //Casting values and de-scaling the world position to units and increments of 1
-    float pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
-    float pY = floor(pointQuery.y * m_normalizeSizeFactor);
-    float pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// Recall that we have defined the depth of the grid to be far away from the camera
-    
-    /*Checking directions*/
-    if (planeNormal.x != 0)
-    {
-        if (rayDirection.x < 0) // if the Ray is pointing in the opposite direction as the world X Normal
-            pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
-    }
-    
-    if (planeNormal.y != 0)
-    {
-        if (rayDirection.y < 0) // if the Ray is pointing in the opposite direction as the world Y Normal
-            pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
-    }
-    
-    
-    if (planeNormal.z != 0) // If we are evaluating the Z axis
-    {
-        if(rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
-            pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
-    }
-    
-    bool inColsBounds   = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
-    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
-    
-    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
-        return -1;
-
-    int indexInOneD = (int)pZ * m_nCols * m_nRows + (int)pY * m_nCols + (int)pX;
-    
-    if(indexInOneD < 0 || indexInOneD >= voxels.size())
-        return -1;
-
-    return indexInOneD;
-}
+1 if obstacle detected, upate obstacle position to avoid
+    when the ray stops detecting obstacle, keep the last obstacel reference
+3 while distance obstacle-boid <= crititcal radious
+4   Apply rotattion operator
+5 if distance obstacle-boid > critical radious
+6   set rotation operator to zero
 ```
 
-## Useful snipets
-```C++
-    stringstream ss;
-    ss << "Spatial partitioning: " << '\n' << '\n';
-    ss << "FPS: " << ofToString(ofGetFrameRate(),0) << '\n' ;
-    ss << "Voxel Grid Resolution: " << voxelGridResolution << '\n' ;
-    ofDrawBitmapStringHighlight(ss.str().c_str(), 20, 20);
-```
+**Results:** 
+- But when reaching the last obstacle, and leaves the bouding volume, the boid disapears. This was due to not updating the distance boid-to-obstacle, so the distance was zero and the force basically shooted out the boid instantly.
+Some cases:
+- Noticed that the boid jumps when deciding the direction,
+the algorithm workd with comparing the velocity and the boid-to-obstacle angle, since the ray retunr a point along the ray, taking that poitn as the obstacel yiedl a zero angle, and the boid tried to gues in which side the obstace is. We need the center of the voxel
+
+
+Case 1: in-line obstacles
+[GIF]
+
+Case 2: a wall obstacle
+[GIF]
+
+Case 2: zig-zag obstacles
+[GIF]
