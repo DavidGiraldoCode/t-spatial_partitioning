@@ -33,18 +33,18 @@ public:
     std::vector<Boid>&   getBoids(); //For passing the values to the mesh
             UniformGrid*        uniformGridRef = nullptr;
     // Steering forces settings
-            float               neighborCohesionDistance    =   200;
-            float               neighborSeparationDistance  =   100;
-            float               neighborAlignmentDistance   =   100;
+            float               neighborCohesionDistance    =   800;
+            float               neighborSeparationDistance  =   800;
+            float               neighborAlignmentDistance   =   800;
     
             float               obstacleAvoidanceDistance   =   300;
     
-            float               MAX_SPEED                   =   200.0f;
+            float               MAX_SPEED                   =   80.0f;
             
-            float               COHESION_FACTOR             =   2.0f;
-            float               ALIGNMENT_FACTOR            =   2.0f;
-            float               SEPARATION_FACTOR           =   4.0f;
-            float               AVOIDANCE_FACTOR            =   4.0f;
+            float               COHESION_FACTOR             =   6.0f;
+            float               ALIGNMENT_FACTOR            =   1.0f;
+            float               SEPARATION_FACTOR           =   10.0f;
+            float               AVOIDANCE_FACTOR            =   100.0f;
     
 private:
     std::vector<Boid>  boids;

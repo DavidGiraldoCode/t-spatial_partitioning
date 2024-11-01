@@ -120,34 +120,67 @@ position += velocity * ofGetLastFrameTime();
 
 ---
 
-## 💻 Session 2024-10-31: Rotation Operator when detecting obstacle with a Ray
+## 💻 Session 2024-10-31: Rotation Operator when Detecting Obstacle with a Ray
 
-**Objective:** Make the boid use the rotation operator when an ray-sensed obstacle
-- What happend when the intersection point starts changing position?
-- Would the rotation operator work whit multiple obstacles being tracked?
+**Objective:** Make the boid use the rotation operator when a ray-sensed obstacle is detected.
+- What happens when the intersection point starts changing position?
+- Would the rotation operator work with multiple obstacles being tracked?
 
-**pseudocode:** Update the ref of one obstacle, the current intersection point
+**Pseudocode:** Update the reference of one obstacle, the current intersection point.
 ```C++
-1 if obstacle detected, upate obstacle position to avoid
-    when the ray stops detecting obstacle, keep the last obstacel reference
-3 while distance obstacle-boid <= crititcal radious
-4   Apply rotattion operator
-5 if distance obstacle-boid > critical radious
+1 if obstacle detected, update obstacle position to avoid
+2 when the ray stops detecting obstacle, keep the last obstacle reference
+3 while distance obstacle-boid <= critical radius
+4   Apply rotation operator
+5 if distance obstacle-boid > critical radius
 6   set rotation operator to zero
 ```
 
-**Results:** 
-- But when reaching the last obstacle, and leaves the bouding volume, the boid disapears. This was due to not updating the distance boid-to-obstacle, so the distance was zero and the force basically shooted out the boid instantly.
+Results:
+
+When reaching the last obstacle and leaving the bounding volume, the boid disappears. This was due to not updating the boid-to-obstacle distance, so the distance was zero, and the force shot the boid out instantly.
 Some cases:
-- Noticed that the boid jumps when deciding the direction,
-the algorithm workd with comparing the velocity and the boid-to-obstacle angle, since the ray retunr a point along the ray, taking that poitn as the obstacel yiedl a zero angle, and the boid tried to gues in which side the obstace is. We need the center of the voxel
 
+Noticed the boid jumps when deciding the direction. The algorithm works by comparing the velocity and boid-to-obstacle angle. Since the ray returns a point along the ray, taking that point as the obstacle yields a zero angle, causing the boid to guess which side the obstacle is on. We need the center of the voxel.
+Noticed the orientation of the turn has changed.
 
-Case 1: in-line obstacles
-[GIF]
+Case 1: In-line obstacles
+![alt text](images/in_line.gif)
 
-Case 2: a wall obstacle
-[GIF]
+IMPORTANT consideration is to reflect the Cross product to account for the -Z axis.
 
-Case 2: zig-zag obstacles
-[GIF]
+Case 2: A wall obstacle
+![alt text](images/fails_wall_case.gif)
+
+It fails miserably when multiple obstacles are close (size by size) and have distinct centers. The voxel grid model would have to support subgroups of obstacles to distinguish between a large obstacle consisting of multiple voxels sharing the same center. This is still useful as the first part of the algorithm helps understand the shortest escape path, but during the avoidance protocol, the boid will have to check surrounding areas to fly free.
+
+Case 2: Zig-zag obstacles
+![alt text](images/zig_zag.gif)
+Sparsed obstacle are an easy task for the rotation operator.
+
+Case 4: In-line on x-axis
+![alt text](<images/in-line horizontal.gif>)
+As with the wall, obstacles close to each other are troublesome. It fails again because the ray is push to the voxel on the side, but the voxel center is further outwards, making the operator steer the boid to the other side again.
+
+*Multiple boids, n = 20*
+
+- Case 1: sparsed obstacle field
+![alt text](images/cross_sparse_obstacle_field.gif)
+In a flock, sparsed obstacle are also easy
+
+- Case 3: Comparisson, Random obstacles with and without rotation operator
+<div style="display: flex; justify-content: space-around;">
+    <img src="images/many_random_without.gif" alt="Without Avoidance" width="45%">
+    <img src="images/many_random_with.gif" alt="With Avoidance" width="45%">
+</div>
+One can see that without (left) the operator, there are more collission (red voxels), than when the operator is present (right). There still the need for a another heuristic to handle this scenatio propertly.
+
+Conclusion:
+- Tracking juts one obstacle is unrealistic and does not mimic the behaviour of real agents. It might be better to follow C. W. Reynolds, “Steering Behaviors For Autonomous Characters” original method, or evaluate how the operator con complemente Raynolds's mehtod.
+- The operator ALONE simply does not work if there are obstacle verry close to each other. Theres is the need for a more complex logic.
+- It does offers a smooth way to deal with small discrite obstacles, but if the voxel grid is too dense, meaning the vobstacle voxel are smaller, it might be overkill. It work well when the obstacle is comparatively similar to the size of the boid.
+
+Next Setps:
+- Track multiple obstacles
+- Add Reynolds methods
+- Fix original boids behaviour, and add follow target behaviour

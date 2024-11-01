@@ -39,7 +39,12 @@ Boid::Boid(const ofVec3f &spawnPosition, bool hasRandomDirection)
 {
     
     position = spawnPosition;
-    forward = ofVec3f(0,0,1);
+    
+    position.x += (ofRandomf() * 400.0f);
+    position.y += (ofRandomf() * 400.0f);
+    position.z += (ofRandomf() * 400.0f);
+    
+    forward = ofVec3f(0,0,-1);
     acceleration = ofVec3f(0,0,0);
     obstacle = ofVec3f(0.0f, 0.0f, 0.0f);
     
@@ -137,6 +142,9 @@ void Boid::updateSteeringForces()
     acceleration.y = 0.0f;
     acceleration.z = 0.0f;
     
+    if(velocity.length() > MAX_SPEED)
+        velocity = velocity.normalize() * 100.0f;
+    
     //velocity = sphericalBoundaryForce(); //GOOD enough solution for now
      
     
@@ -189,7 +197,7 @@ void Boid::updateSteeringForces()
     
     if((obstacle - position).length() <= criticalRadius /*obstacleDetected*/)
     {
-        std::cout << obstacle << " obstacle\n";
+        //std::cout << obstacle << " obstacle\n";
         ofVec3f boidToObstacle = obstacle - position;
         ofVec3f obstacleToBoid = boidToObstacle * -1;
         float distanceToObstacle = boidToObstacle.length();
@@ -201,6 +209,7 @@ void Boid::updateSteeringForces()
         float obstacleLocation = (velocity.normalize().x * boidToObstacle.normalize().z)
                                 - (velocity.normalize().z * boidToObstacle.normalize().x);
         
+        obstacleLocation *= -1;
         const float overflowThreshold = 99.0f;
         
         if(obstacleLocation < -overflowThreshold)
@@ -208,17 +217,17 @@ void Boid::updateSteeringForces()
         else if(obstacleLocation > overflowThreshold)
             obstacleLocation = overflowThreshold;
 
-        std::cout << obstacleLocation << " obstacleLocation\n";
+        //std::cout << obstacleLocation << " obstacleLocation\n";
         
-        if(obstacleLocation < 0) // on the right
+        if(obstacleLocation >= 0) // on the right
         {
-            std::cout << ", turning to the left\n";
+            //std::cout << ", turning to the left\n";
             rotatorVelocity.x = obstacleToBoid.z;
             rotatorVelocity.z = -obstacleToBoid.x;
         }
-        else if(obstacleLocation >= 0) // on the left
+        else if(obstacleLocation < 0) // on the left
         {
-            std::cout << ", turning to the right\n";
+            //std::cout << ", turning to the right\n";
             rotatorVelocity.x = -obstacleToBoid.z;
             rotatorVelocity.z = obstacleToBoid.x;
         }
@@ -257,7 +266,7 @@ void Boid::updateSteeringForces()
     }
     else
     {
-        std::cout << obstacle << " safe distance\n";
+        //std::cout << obstacle << " safe distance\n";
         acceleration += ofVec3f(0.0f, 0.0f, -1.0f) * MAX_SPEED;
     }
     
@@ -266,9 +275,6 @@ void Boid::updateSteeringForces()
 //    velocity += forward;
     
     velocity += acceleration;
-    
-    if(velocity.length() > MAX_SPEED)
-        velocity = velocity.normalize() * MAX_SPEED;
     
     position += velocity * ofGetLastFrameTime();
     
