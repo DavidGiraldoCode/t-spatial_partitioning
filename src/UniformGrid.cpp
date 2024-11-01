@@ -92,6 +92,8 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivo
     std::cout << "voxels.size(): " << voxels.size() << '\n';
 }
 
+// ================= 🚧 The current grid
+
 UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_SIZE)
 {
     std::cout << "Building the grid with voxel origin at corner [0,0,0]" << '\n';
@@ -99,6 +101,8 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
     
     unsigned voxelCount = width * height * depth;
     std::cout << "voxelCount: " << voxelCount << '\n';
+    
+    m_VOXEL_SIZE = VOXEL_SIZE;
     
     m_voxelSize = (float)VOXEL_SIZE * 1.0f; // A brute force casting to be sure
     m_normalizeSizeFactor = (float)(1.0f / m_voxelSize);
@@ -137,9 +141,11 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         // RANDOM assignation of the Voxel as obstacle
         float randomObstacleState = ofRandom(0, 1);
         //std::cout << "randomObstacleState: " << randomObstacleState << '\n';
-        float OBSTACLES_POBALITIY = 0.9995; // Gives more chances of voxels being emty spaces
+        float OBSTACLES_POBALITIY = 0.95; // Gives more chances of voxels being emty spaces
         bool isEmpty = (randomObstacleState > OBSTACLES_POBALITIY);
-        //setVoxelAsObstacle(i, isEmpty);
+        if(worldX >= 400 && worldX < 1400 &&
+           worldY >= 400 && worldY < 1400)
+            setVoxelAsObstacle(i, isEmpty);
         
         //if(y == 0) // Shading the ground as obstacles
             //setVoxelAsObstacle(i, true);
@@ -150,11 +156,162 @@ UniformGrid::UniformGrid(size_t width, size_t height, size_t depth, float VOXEL_
         // ===============================================================================================================
         // For testing purposes, I am hard-coding obstacles on the grid  🚧
         // ===============================================================================================================
+        
+        //Single obstacle
+        /*
         if(worldX >= 900 && worldX < 1000 &&
            worldY >= 900 && worldY < 1000 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        */
+        /* in-line obstacles */
+        /*
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -100)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -800)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX >= 900 && worldX < 1000 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -2400)
+            setVoxelAsObstacle(i, true);
+        */
+        /* in-line obstacles */
+        /*
+        int lineOne = 600;
+        int lineTwo = 900;
+        int lineThree = 1200;
+        
+        //------------------ lineOne
+        if(worldX == lineOne &&
+           worldY == 900 &&
+           worldZ == -100)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineOne &&
+           worldY == 900 &&
+           worldZ == -800)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineOne &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineOne &&
+           worldY == 900 &&
+           worldZ == -2400)
+            setVoxelAsObstacle(i, true);
+        //-------------------- lineTwo
+        if(worldX == lineTwo &&
+           worldY == 900 &&
+           worldZ == -100)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineTwo &&
+           worldY == 900 &&
+           worldZ == -800)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineTwo &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineTwo &&
+           worldY == 900 &&
+           worldZ == -2400)
+            setVoxelAsObstacle(i, true);
+        
+        //-------------------- lineThree
+        if(worldX == lineThree &&
+           worldY == 900 &&
+           worldZ == -100)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineThree &&
+           worldY == 900 &&
+           worldZ == -800)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineThree &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == lineThree &&
+           worldY == 900 &&
+           worldZ == -2400)
+            setVoxelAsObstacle(i, true);
+        */
+        /* wall obstacle */
+        /*
+        if(worldX >= 600 && worldX < 1200 &&
+           worldY >= 900 && worldY < 1000 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        */
+        
+        /* zig-zag */
+        /*
+        if(worldX == 900 &&
+           worldY == 900 &&
+           worldZ == -400)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == 600 &&
+           worldY == 900 &&
+           worldZ == -800)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == 1100 &&
+           worldY == 900 &&
+           worldZ == -1200)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == 600 &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == 1100 &&
+           worldY == 900 &&
            worldZ == -2000)
             setVoxelAsObstacle(i, true);
         
+        if(worldX == 600 &&
+           worldY == 900 &&
+           worldZ == -2400)
+            setVoxelAsObstacle(i, true);
+        
+        */
+        // in-line horizontal
+        /*
+        if(worldX == 700 &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == 900 &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        
+        if(worldX == 1100 &&
+           worldY == 900 &&
+           worldZ == -1600)
+            setVoxelAsObstacle(i, true);
+        */
 //        if(worldX == 1800 &&
 //           worldY >= 800 && worldY < 1200 &&
 //           worldZ <= -800 && worldZ > -2000)
@@ -324,7 +481,25 @@ void UniformGrid::getVoxelByIndex(size_t index)
     
 }
 
-ofVec3f UniformGrid::getVoxelPositionByIndex(size_t index)
+const ofVec3f UniformGrid::getVoxelWorldCenterPosition(int voxelIndex) const
+{
+    ofVec3f positionInWorldSpace = getVoxelPositionByIndex(voxelIndex);
+    //std::cout << positionInWorldSpace << " position In GridSpace\n";
+    float offSetToCenter = m_VOXEL_SIZE * 0.5f;
+//    
+//    positionInWorldSpace.x *= (m_VOXEL_SIZE);
+//    positionInWorldSpace.y *= (m_VOXEL_SIZE);
+//    positionInWorldSpace.z *= (m_VOXEL_SIZE);
+    
+    positionInWorldSpace.x += offSetToCenter;
+    positionInWorldSpace.y += offSetToCenter;
+    positionInWorldSpace.z += (offSetToCenter * -1);
+    
+    
+    return positionInWorldSpace;
+}
+
+const ofVec3f UniformGrid::getVoxelPositionByIndex(size_t index) const
 {
     return voxels[index].position;
 }

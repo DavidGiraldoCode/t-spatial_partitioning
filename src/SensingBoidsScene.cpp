@@ -21,8 +21,8 @@ void SensingBoidsScene::setup()
     
     
     // ========== Boids
-    BOIDS_COUNT = 1;
-    ofVec3f spawnPoint  = ofVec3f(950,950,200);
+    BOIDS_COUNT = 20;
+    ofVec3f spawnPoint  = ofVec3f(980,950, 8000);
     //boidsManager = BoidsManager(obstaclesBoundingVolume.getPosition(), BOIDS_COUNT, &uniformGrid);
     boidsManager = BoidsManager(spawnPoint, BOIDS_COUNT, &uniformGrid);
     
@@ -123,11 +123,13 @@ void computeAxisAlignPlaneIntersection( Boid& currentBoid,
             {
                 //Start avoidanceProtocol on the Boid
                 // We need the World location of the voxel
-                ofVec3f obstacle = testRay.getIntersectionPoint();
+                //std::cout << testRay.getIntersectionPoint() << " intersection point\n";
+                ofVec3f obstacle = uniformGridRef.getVoxelWorldCenterPosition(voxelIndex); //testRay.getIntersectionPoint();
+                //std::cout << obstacle << " obstacle center\n";
                 currentBoid.activateAvoidanceProtocol(obstacle);
                 break; //Stops sensing
             }
-            else if(i == (range - startingIndex))
+            else if(i == (range - startingIndex)) // if the traversal reaches the edge and did not find any obstacles
             {
                 currentBoid.deactivateAvoidanceProtocol();
             }
@@ -179,7 +181,6 @@ void SensingBoidsScene::update()
         
     }
 }
-
 void SensingBoidsScene::draw()
 {
     ofBackground(255,255,255,255);
@@ -217,12 +218,13 @@ void SensingBoidsScene::draw()
             {
                 ofSetColor(255, 0, 0, 50);
                 voxelMesh.drawFaces();
+                
             }
-            else if(uniformGrid.getVoxelObstacle(i) == 0 && uniformGrid.getVoxelState(i) == 1)//Boid flys inside
-            {
-//                ofSetColor(0, 255, 0, 5);
-//                voxelMesh.drawFaces();
-            }
+//            else if(uniformGrid.getVoxelObstacle(i) == 0 && uniformGrid.getVoxelState(i) == 1)//Boid flys inside
+//            {
+////                ofSetColor(0, 255, 0, 5);
+////                voxelMesh.drawFaces();
+//            }
             //voxelMesh.drawWireframe();
             
             // VISUALIZING INTERSECTIONS
@@ -230,7 +232,7 @@ void SensingBoidsScene::draw()
             if(uniformGrid.getVoxelIntersectionState(i) == true) //Boid flys inside of an obstacle
             {
                 ofSetColor(255, 0, 0, 50);
-                voxelMesh.drawFaces();
+                //voxelMesh.drawFaces();
             }
         }
     uniformGrid.clearIntersections();
