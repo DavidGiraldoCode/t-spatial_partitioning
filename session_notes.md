@@ -72,7 +72,7 @@ $$R_{operator}=K_{amplitud}\cdot\frac{1}{\left(r_{o}^{2}\cdot V_{rotMagnitud}\ri
 
 ---
 
-## 💻 Session 2024-10-29: Rotation Operator Brute Force Implementation
+## 💻 Session 2024-10-30: Rotation Operator Brute Force Implementation
 
 ### Objective
 **Make a Boid move forward while dodging an obstacle in front using Ma and Chou's Rotation Operator.**
@@ -118,61 +118,68 @@ position += velocity * ofGetLastFrameTime();
 - **Multiple Obstacles**: Experiment with handling multiple obstacles simultaneously.
 - **New Obstacle Detection**: Determine if the agent should track several obstacles in the critical zone, similar to neighbor tracking.
 
---- 
+---
 
-## On Spatial queries in 1D and 3D
+## 💻 Session 2024-10-31: Rotation Operator when Detecting Obstacle with a Ray
 
-Algorithm to determine if a point is inside a voxel
+**Objective:** Make the boid use the rotation operator when a ray-sensed obstacle is detected.
+- What happens when the intersection point starts changing position?
+- Would the rotation operator work with multiple obstacles being tracked?
 
+**Pseudocode:** Update the reference of one obstacle, the current intersection point.
 ```C++
-const  int UniformGrid::isPointInsideAVoxelGivenRayDirection(const ofVec3f &pointQuery, const ofVec3f & planeNormal ,const ofVec3f &rayDirection) const
-{
-    //Casting values and de-scaling the world position to units and increments of 1
-    float pX = floor(pointQuery.x * m_normalizeSizeFactor); // m_normalizeSizeFactor = 1/m_voxelSize;
-    float pY = floor(pointQuery.y * m_normalizeSizeFactor);
-    float pZ = floor((pointQuery.z * -1) * m_normalizeSizeFactor);// Recall that we have defined the depth of the grid to be far away from the camera
-    
-    /*Checking directions*/
-    if (planeNormal.x != 0)
-    {
-        if (rayDirection.x < 0) // if the Ray is pointing in the opposite direction as the world X Normal
-            pX -= 1; // The Voxel is hitting is not from [0 -> width] but [width -> 0]
-    }
-    
-    if (planeNormal.y != 0)
-    {
-        if (rayDirection.y < 0) // if the Ray is pointing in the opposite direction as the world Y Normal
-            pY -= 1; // The Voxel is hitting is not from [0 -> height] but [height -> 0]
-    }
-    
-    
-    if (planeNormal.z != 0) // If we are evaluating the Z axis
-    {
-        if(rayDirection.z > 0) // if the Ray is pointing in the same direction as the world Z Normal
-            pZ -= 1; // The Voxel is hitting is not from [0 -> depth] but [depth -> 0]
-    }
-    
-    bool inColsBounds   = pX >= 0 && pX < m_nCols;
-    bool inRowsBounds   = pY >= 0 && pY < m_nRows;
-    bool inLayersBounds = pZ >= 0 && pZ < m_nLayers;
-    
-    if(!inColsBounds || !inRowsBounds || !inLayersBounds)
-        return -1;
-
-    int indexInOneD = (int)pZ * m_nCols * m_nRows + (int)pY * m_nCols + (int)pX;
-    
-    if(indexInOneD < 0 || indexInOneD >= voxels.size())
-        return -1;
-
-    return indexInOneD;
-}
+1 if obstacle is detected, update the obstacle position to avoid
+2 when the ray stops detecting obstacles, keep the last obstacle reference
+3 while distance obstacle-boid <= critical radius
+4   Apply rotation operator
+5 if distance obstacle-boid > critical radius
+6   set rotation operator to zero
 ```
 
-## Useful snipets
-```C++
-    stringstream ss;
-    ss << "Spatial partitioning: " << '\n' << '\n';
-    ss << "FPS: " << ofToString(ofGetFrameRate(),0) << '\n' ;
-    ss << "Voxel Grid Resolution: " << voxelGridResolution << '\n' ;
-    ofDrawBitmapStringHighlight(ss.str().c_str(), 20, 20);
-```
+### Results:
+
+> ### Some fixed bugs:
+> - When reaching the last obstacle and leaving the bounding volume, the boid disappears. The force shot the boid out instantly because the boid-to-obstacle distance was not updated.
+> - Noticed the orientation of the turn has changed. Due to the -Z axis.
+> - Noticed the boid jumps when deciding the direction. The algorithm works by comparing the velocity and boid-to-obstacle angle. Since the ray returns a point along the ray, taking that point as the obstacle yields a zero angle, causing the boid to **guess** which side the obstacle is on. I checnged the algorithm to fit Ma's method, passing the the center of the voxel.
+
+### Some cases:
+
+**Case 1:** In-line obstacles
+An IMPORTANT consideration is to reflect the cross-product to account for the -Z axis.<br/>
+<img src="images/in_line.gif" width="45%">
+
+**Case 2:** A wall obstacle
+It fails miserably when multiple obstacles are close (size by size) and have distinct centers. The voxel grid model would have to support subgroups of obstacles to distinguish between a large obstacle consisting of multiple voxels sharing the same center. This is still useful as the first part of the algorithm helps understand the shortest escape path, but during the avoidance protocol, the boid will have to check surrounding areas to fly free.<br/>
+<img src="images/fails_wall_case.gif" width="45%">
+
+**Case 3:** Zig-zag obstacles
+Sparsed obstacles are an easy task for the rotation operator.<br/>
+<img src="images/zig_zag.gif" width="45%">
+
+**Case 4:** In-line on the x-axis
+As with the wall, obstacles close to each other are troublesome. It fails again because the ray is pushed to the voxel on the side, but the new voxel center is further outwards, making the operator steer the boid to the opposite side again.<br/>
+<img src="images/in-line horizontal.gif" width="45%">
+
+### Multiple boids, n = 20
+
+**Case 1:** Sparsed obstacle field: 
+In a flock, sparsed obstacles are also easy.<br/>
+<img src="images/cross_sparse_obstacle_field.gif" width="45%">
+
+**Case 2:** Comparison, Random obstacles with and without rotation operator:
+One can see that without (left) the operator, there are more collisions (red voxels) than when the operator is present (right). Another heuristic is still needed to handle this scenario properly.<br/>
+<div style="display: flex; justify-content: space-around;">
+    <img src="images/many random without.gif" alt="Without Avoidance" width="45%">
+    <img src="images/many random with.gif" alt="With Avoidance" width="45%">
+</div>
+
+### Conclusion:
+- Tracking just one obstacle is unrealistic and does not mimic the behavior of real agents. It might be better to follow C. W. Reynolds, “Steering Behaviors For Autonomous Characters” original method, or evaluate how the operator con complements Raynolds's method.
+- The operator ALONE simply does not work if there are obstacles verry close to each other. There is a need for more complex logic.
+- It does offer a smooth way to deal with small discrete obstacles, but if the voxel grid is too dense, meaning the obstacle voxel is smaller, it might be overkill. It works well when the obstacle is comparatively similar to the size of the boid.
+
+### Next Steps:
+- Track multiple obstacles
+- Add Reynolds methods
+- Fix original boids behavior, and add follow target behavior

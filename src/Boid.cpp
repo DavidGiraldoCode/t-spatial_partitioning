@@ -39,8 +39,14 @@ Boid::Boid(const ofVec3f &spawnPosition, bool hasRandomDirection)
 {
     
     position = spawnPosition;
-    forward = ofVec3f(0,0,1);
+    
+    position.x += (ofRandomf() * 400.0f);
+    position.y += (ofRandomf() * 400.0f);
+    position.z += (ofRandomf() * 400.0f);
+    
+    forward = ofVec3f(0,0,-1);
     acceleration = ofVec3f(0,0,0);
+    obstacle = ofVec3f(0.0f, 0.0f, 0.0f);
     
     //velocity = forward * MAX_SPEED;
     
@@ -82,7 +88,7 @@ Boid::Boid(const Boid& other)
     numPerceivedNSeparation = other.numPerceivedNAlignment;
     
     //obstacleDetected = other.obstacleDetected;
-    
+    obstacle  = other.obstacle;
 }
 
 Boid::~Boid()
@@ -136,6 +142,9 @@ void Boid::updateSteeringForces()
     acceleration.y = 0.0f;
     acceleration.z = 0.0f;
     
+    if(velocity.length() > MAX_SPEED)
+        velocity = velocity.normalize() * 100.0f;
+    
     //velocity = sphericalBoundaryForce(); //GOOD enough solution for now
      
     
@@ -176,16 +185,22 @@ void Boid::updateSteeringForces()
     */
     
     // Ma and Chou Rotator Operator
-    obstacle = ofVec3f(910,950, -2000);
+    //obstacle = ofVec3f(910,950, -2000); // hard-coded obstacle for testing
     //ofVec3f(950,980, -2000); // The obstacle is slightly to the right
-    ofVec3f boidToObstacle = obstacle - position;
-    ofVec3f obstacleToBoid = boidToObstacle * -1;
-    // Critical radius
+    
     float criticalRadius = 800.0f; // Ideally half the reach of the visibility, ray reach.
-    float distanceToObstacle = boidToObstacle.length();
-    if(distanceToObstacle <= criticalRadius /*obstacleDetected*/)
+    
+    if (obstacleDetected)
     {
-        
+        // Critical radius
+    }
+    
+    if((obstacle - position).length() <= criticalRadius /*obstacleDetected*/)
+    {
+        //std::cout << obstacle << " obstacle\n";
+        ofVec3f boidToObstacle = obstacle - position;
+        ofVec3f obstacleToBoid = boidToObstacle * -1;
+        float distanceToObstacle = boidToObstacle.length();
         
         ofVec3f rotatorVelocity = ofVec3f(0.0f, 0.0f, 0.0f);
         
@@ -194,6 +209,7 @@ void Boid::updateSteeringForces()
         float obstacleLocation = (velocity.normalize().x * boidToObstacle.normalize().z)
                                 - (velocity.normalize().z * boidToObstacle.normalize().x);
         
+        obstacleLocation *= -1;
         const float overflowThreshold = 99.0f;
         
         if(obstacleLocation < -overflowThreshold)
@@ -201,18 +217,17 @@ void Boid::updateSteeringForces()
         else if(obstacleLocation > overflowThreshold)
             obstacleLocation = overflowThreshold;
 
-        std::cout << obstacleLocation << " obstacleLocation\n";
+        //std::cout << obstacleLocation << " obstacleLocation\n";
         
-        // If obstacleLocation > 0 the obstacle is to the left, we reflect to the right
-        if(obstacleLocation < 0)
+        if(obstacleLocation >= 0) // on the right
         {
-            //std::cout << " to the left\n";
+            //std::cout << ", turning to the left\n";
             rotatorVelocity.x = obstacleToBoid.z;
             rotatorVelocity.z = -obstacleToBoid.x;
         }
-        else if(obstacleLocation >= 0) // If obstacleLocation <= 0 the obstacle is to the rigth, we refelct to the left
+        else if(obstacleLocation < 0) // on the left
         {
-            //std::cout << " to the right\n";
+            //std::cout << ", turning to the right\n";
             rotatorVelocity.x = -obstacleToBoid.z;
             rotatorVelocity.z = obstacleToBoid.x;
         }
@@ -251,6 +266,7 @@ void Boid::updateSteeringForces()
     }
     else
     {
+        //std::cout << obstacle << " safe distance\n";
         acceleration += ofVec3f(0.0f, 0.0f, -1.0f) * MAX_SPEED;
     }
     
@@ -259,9 +275,6 @@ void Boid::updateSteeringForces()
 //    velocity += forward;
     
     velocity += acceleration;
-    
-    if(velocity.length() > MAX_SPEED)
-        velocity = velocity.normalize() * MAX_SPEED;
     
     position += velocity * ofGetLastFrameTime();
     
@@ -391,13 +404,12 @@ void Boid::updatePositionInWorldGrid(UniformGrid & uniformGrid)
 
 void Boid::activateAvoidanceProtocol(const ofVec3f& obstaclePoint)
 {
-    
-    //obstacle = obstaclePoint;
+    obstacle = obstaclePoint;
     obstacleDetected = true;
 }
 
 void Boid::deactivateAvoidanceProtocol()
 {
-    //std::cout << "obstacleDetected\n";
+    std::cout << "deactivateAvoidanceProtocol\n";
     obstacleDetected = false;
 }

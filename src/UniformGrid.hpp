@@ -12,6 +12,9 @@
 class UniformGrid
 {
 public:
+    
+    float m_VOXEL_SIZE = 0;
+    
     UniformGrid(){};
     UniformGrid(size_t nx, size_t ny, size_t nz, ofVec3f minPoint, ofVec3f maxPoint);
     UniformGrid(size_t width, size_t height, size_t depth, ofVec3f pivot, float VOXEL_SIZE);
@@ -27,7 +30,12 @@ public:
            void          getVoxelByWorldCoordinates(const ofVec3f &point);
     // TODO add a method that allow for unit increment (i,j,k)
            void          getVoxelByIndex(size_t index);
-           ofVec3f       getVoxelPositionByIndex(size_t index);
+    
+    /**
+     * Gives the position of the voxel in world space
+     */
+    const  ofVec3f       getVoxelPositionByIndex(size_t index) const;
+    
     const  ofVec3f&      getObstaclePositionByIndex(size_t index) const;
     const  size_t        getGridSize();
     const  int           isPointInsideAVoxel(const ofVec3f &pointQuery) const;
@@ -68,6 +76,14 @@ public:
     const  bool          getVoxelIntersectionState(int i) const;
     //NEW for obstacle avoidance
     std::vector<int> obstaclesIndexs;
+    
+    /**
+     * Given a 1D index of a voxel, returns the position in world space of the center of the voxel.
+     * This is use to give the boid a way to determine if the voxel obstacle is to the right or to the left
+     * @param voxelIndex The voxel, usually the one detected by the ray
+     * @return A position in world space
+     */
+    const  ofVec3f      getVoxelWorldCenterPosition(int voxelIndex) const;
     
 private:
     struct Voxel // Bucket in Rynolds PS3 approach

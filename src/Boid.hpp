@@ -101,7 +101,7 @@ private:
     int wanderCounter = 0;
     int wanderChange = 0;
     //Steering forces
-    float   MAX_SPEED           =     400.0f;
+    float   MAX_SPEED           =     500.0f;
     
     // Avoidance
     bool obstacleDetected = false;
