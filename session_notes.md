@@ -128,59 +128,58 @@ position += velocity * ofGetLastFrameTime();
 
 **Pseudocode:** Update the reference of one obstacle, the current intersection point.
 ```C++
-1 if obstacle detected, update obstacle position to avoid
-2 when the ray stops detecting obstacle, keep the last obstacle reference
+1 if obstacle is detected, update the obstacle position to avoid
+2 when the ray stops detecting obstacles, keep the last obstacle reference
 3 while distance obstacle-boid <= critical radius
 4   Apply rotation operator
 5 if distance obstacle-boid > critical radius
 6   set rotation operator to zero
 ```
 
-Results:
+### Results:
 
-When reaching the last obstacle and leaving the bounding volume, the boid disappears. This was due to not updating the boid-to-obstacle distance, so the distance was zero, and the force shot the boid out instantly.
-Some cases:
+> ### Some fixed bugs:
+> - When reaching the last obstacle and leaving the bounding volume, the boid disappears. The force shot the boid out instantly because the boid-to-obstacle distance was not updated.
+> - Noticed the orientation of the turn has changed. Due to the -Z axis.
+> - Noticed the boid jumps when deciding the direction. The algorithm works by comparing the velocity and boid-to-obstacle angle. Since the ray returns a point along the ray, taking that point as the obstacle yields a zero angle, causing the boid to **guess** which side the obstacle is on. I checnged the algorithm to fit Ma's method, passing the the center of the voxel.
 
-Noticed the boid jumps when deciding the direction. The algorithm works by comparing the velocity and boid-to-obstacle angle. Since the ray returns a point along the ray, taking that point as the obstacle yields a zero angle, causing the boid to guess which side the obstacle is on. We need the center of the voxel.
-Noticed the orientation of the turn has changed.
+### Some cases:
 
-Case 1: In-line obstacles
-![alt text](images/in_line.gif)
+**Case 1:** In-line obstacles
+An IMPORTANT consideration is to reflect the cross-product to account for the -Z axis.<br/>
+<img src="images/in_line.gif" width="45%">
 
-IMPORTANT consideration is to reflect the Cross product to account for the -Z axis.
+**Case 2:** A wall obstacle
+It fails miserably when multiple obstacles are close (size by size) and have distinct centers. The voxel grid model would have to support subgroups of obstacles to distinguish between a large obstacle consisting of multiple voxels sharing the same center. This is still useful as the first part of the algorithm helps understand the shortest escape path, but during the avoidance protocol, the boid will have to check surrounding areas to fly free.<br/>
+<img src="images/fails_wall_case.gif" width="45%">
 
-Case 2: A wall obstacle
-![alt text](images/fails_wall_case.gif)
+**Case 3:** Zig-zag obstacles
+Sparsed obstacles are an easy task for the rotation operator.<br/>
+<img src="images/zig_zag.gif" width="45%">
 
-It fails miserably when multiple obstacles are close (size by size) and have distinct centers. The voxel grid model would have to support subgroups of obstacles to distinguish between a large obstacle consisting of multiple voxels sharing the same center. This is still useful as the first part of the algorithm helps understand the shortest escape path, but during the avoidance protocol, the boid will have to check surrounding areas to fly free.
+**Case 4:** In-line on the x-axis
+As with the wall, obstacles close to each other are troublesome. It fails again because the ray is pushed to the voxel on the side, but the new voxel center is further outwards, making the operator steer the boid to the opposite side again.<br/>
+<img src="images/in-line horizontal.gif" width="45%">
 
-Case 2: Zig-zag obstacles
-![alt text](images/zig_zag.gif)
-Sparsed obstacle are an easy task for the rotation operator.
+### Multiple boids, n = 20
 
-Case 4: In-line on x-axis
-![alt text](<images/in-line horizontal.gif>)
-As with the wall, obstacles close to each other are troublesome. It fails again because the ray is push to the voxel on the side, but the voxel center is further outwards, making the operator steer the boid to the other side again.
+**Case 1:** Sparsed obstacle field: 
+In a flock, sparsed obstacles are also easy.<br/>
+<img src="images/cross_sparse_obstacle_field.gif" width="45%">
 
-*Multiple boids, n = 20*
-
-- Case 1: sparsed obstacle field
-![alt text](images/cross_sparse_obstacle_field.gif)
-In a flock, sparsed obstacle are also easy
-
-- Case 3: Comparisson, Random obstacles with and without rotation operator
+**Case 2:** Comparison, Random obstacles with and without rotation operator:
+One can see that without (left) the operator, there are more collisions (red voxels) than when the operator is present (right). Another heuristic is still needed to handle this scenario properly.<br/>
 <div style="display: flex; justify-content: space-around;">
-    <img src="images/many_random_without.gif" alt="Without Avoidance" width="45%">
-    <img src="images/many_random_with.gif" alt="With Avoidance" width="45%">
+    <img src="images/many random without.gif" alt="Without Avoidance" width="45%">
+    <img src="images/many random with.gif" alt="With Avoidance" width="45%">
 </div>
-One can see that without (left) the operator, there are more collission (red voxels), than when the operator is present (right). There still the need for a another heuristic to handle this scenatio propertly.
 
-Conclusion:
-- Tracking juts one obstacle is unrealistic and does not mimic the behaviour of real agents. It might be better to follow C. W. Reynolds, “Steering Behaviors For Autonomous Characters” original method, or evaluate how the operator con complemente Raynolds's mehtod.
-- The operator ALONE simply does not work if there are obstacle verry close to each other. Theres is the need for a more complex logic.
-- It does offers a smooth way to deal with small discrite obstacles, but if the voxel grid is too dense, meaning the vobstacle voxel are smaller, it might be overkill. It work well when the obstacle is comparatively similar to the size of the boid.
+### Conclusion:
+- Tracking just one obstacle is unrealistic and does not mimic the behavior of real agents. It might be better to follow C. W. Reynolds, “Steering Behaviors For Autonomous Characters” original method, or evaluate how the operator con complements Raynolds's method.
+- The operator ALONE simply does not work if there are obstacles verry close to each other. There is a need for more complex logic.
+- It does offer a smooth way to deal with small discrete obstacles, but if the voxel grid is too dense, meaning the obstacle voxel is smaller, it might be overkill. It works well when the obstacle is comparatively similar to the size of the boid.
 
-Next Setps:
+### Next Steps:
 - Track multiple obstacles
 - Add Reynolds methods
-- Fix original boids behaviour, and add follow target behaviour
+- Fix original boids behavior, and add follow target behavior
